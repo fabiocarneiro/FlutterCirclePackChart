@@ -104,7 +104,8 @@ class CirclePacker {
     for (int i = 2; i < circles.length; i++) {
       // Let's try to avoid overlap for the tests.
       _placeCircle(circles, i);
-    }  }
+    }
+  }
 
   static void _placeCircle(List<_Circle> circles, int index) {
     final _Circle current = circles[index];

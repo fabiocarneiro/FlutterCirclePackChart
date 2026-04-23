@@ -27,14 +27,18 @@ void main() {
 
 void _printNode(PackedNode node, int depth) {
   final indent = '  ' * depth;
-  print('${indent}Node: ${node.node.label}, x: ${node.x.toStringAsFixed(2)}, y: ${node.y.toStringAsFixed(2)}, r: ${node.r.toStringAsFixed(2)}');
+  print(
+    '${indent}Node: ${node.node.label}, x: ${node.x.toStringAsFixed(2)}, y: ${node.y.toStringAsFixed(2)}, r: ${node.r.toStringAsFixed(2)}',
+  );
   for (final child in node.children) {
     _printNode(child, depth + 1);
-    
+
     // Simple verification check
     final dist = sqrt(pow(child.x - node.x, 2) + pow(child.y - node.y, 2));
     if (dist + child.r > node.r + 0.001) {
-      print('${indent}  WARNING: Child ${child.node.label} exceeds parent ${node.node.label} boundary!');
+      print(
+        '$indent  WARNING: Child ${child.node.label} exceeds parent ${node.node.label} boundary!',
+      );
     }
   }
 }
