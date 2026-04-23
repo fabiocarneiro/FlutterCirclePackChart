@@ -23,9 +23,12 @@ Add `flutter_circle_pack_chart` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  flutter_circle_pack_chart:
-    git:
-      url: https://github.com/fabiocarneiro/FlutterCirclePackChart.git
+  flutter_circle_pack_chart: ^1.0.0
+```
+
+Alternatively, run:
+```bash
+flutter pub add flutter_circle_pack_chart
 ```
 
 ## 🚀 Getting Started
