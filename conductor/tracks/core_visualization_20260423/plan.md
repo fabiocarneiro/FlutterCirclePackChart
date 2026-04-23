@@ -27,10 +27,10 @@
     - [x] Create `TreemapController` using `ValueNotifier` to track the current focused node.
     - [x] Add navigation logic (drill down to child, move up to parent).
     - [x] Write unit tests for state transitions.
-- [~] Task: Add zoom/transform animations for drill-down
-    - [ ] Implement view transformation logic (calculate scale and offset to focus on a node).
-    - [ ] Wrap the painter in an `AnimatedBuilder` to animate the transformation.
-    - [ ] Write widget tests for animation triggers and state updates.
+- [x] Task: Add zoom/transform animations for drill-down [535443f]
+    - [x] Implement view transformation logic (calculate scale and offset to focus on a node).
+    - [x] Wrap the painter in an `AnimatedBuilder` to animate the transformation.
+    - [x] Write widget tests for animation triggers and state updates.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Interaction & Animation' (Protocol in workflow.md)
 
 ## Phase 4: Legend & Polish
