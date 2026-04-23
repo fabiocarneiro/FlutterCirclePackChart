@@ -16,7 +16,7 @@ void main() {
                 root: packedNode,
                 focusedNode: root,
               ),
-              size: const Size(1000, 1000),
+              size: const Size(200, 200),
             ),
           ),
         ),

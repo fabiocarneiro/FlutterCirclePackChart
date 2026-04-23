@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Circular Treemap Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
@@ -87,30 +88,38 @@ class _TreemapDemoState extends State<TreemapDemo> {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: _controller,
-      builder: (context, child) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text('Treemap: ${_controller.value.label}'),
-            leading: _controller.canGoBack
-                ? IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () => _controller.goBack(),
-                  )
-                : null,
-          ),
-          body: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: CircularTreemap(
-                root: _controller.root,
-                controller: _controller,
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24.0),
+                child: ValueListenableBuilder(
+                  valueListenable: _controller,
+                  builder: (context, value, _) {
+                    return Text(
+                      value.label,
+                      style: Theme.of(context).textTheme.headlineLarge,
+                    );
+                  },
+                ),
               ),
-            ),
+              Expanded(
+                child: CircularTreemap(
+                  root: _controller.root,
+                  controller: _controller,
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text('Tap a circle to drill down. Tap outside to go back.'),
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

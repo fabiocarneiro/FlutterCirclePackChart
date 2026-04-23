@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'circular_treemap.dart';
 
@@ -41,15 +42,15 @@ class _CircularTreemapState extends State<CircularTreemap> with SingleTickerProv
     
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 800),
     );
     _animation = CurvedAnimation(
       parent: _animationController,
       curve: Curves.easeInOutCubic,
     );
     
-    // Initial packing with a large nominal radius
-    _packedRoot = CirclePacker.pack(widget.root, radius: 500.0);
+    // Initial packing
+    _packedRoot = CirclePacker.pack(widget.root, radius: 100.0);
     _animationController.value = 1.0;
   }
 
@@ -62,7 +63,7 @@ class _CircularTreemapState extends State<CircularTreemap> with SingleTickerProv
       _controller.addListener(_onStateChanged);
     }
     if (widget.root != oldWidget.root) {
-      _packedRoot = CirclePacker.pack(widget.root, radius: 500.0);
+      _packedRoot = CirclePacker.pack(widget.root, radius: 100.0);
     }
   }
 
@@ -77,9 +78,15 @@ class _CircularTreemapState extends State<CircularTreemap> with SingleTickerProv
   }
 
   void _onStateChanged() {
-    _startScale = _targetScale;
-    _startOffset = _targetOffset;
-    _animationController.forward(from: 0.0);
+    setState(() {
+      // Capture the current interpolated state as the start for the next animation
+      _startScale = lerpDouble(_startScale, _targetScale, _animation.value) ?? _startScale;
+      _startOffset = Offset(
+        lerpDouble(_startOffset.dx, _targetOffset.dx, _animation.value) ?? _startOffset.dx,
+        lerpDouble(_startOffset.dy, _targetOffset.dy, _animation.value) ?? _startOffset.dy,
+      );
+      _animationController.forward(from: 0.0);
+    });
   }
 
   PackedNode? _findPackedNode(PackedNode root, CircleNode target) {
@@ -95,15 +102,17 @@ class _CircularTreemapState extends State<CircularTreemap> with SingleTickerProv
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final double viewportRadius = min(constraints.maxWidth, constraints.maxHeight) / 2;
+        final double minSide = min(constraints.maxWidth, constraints.maxHeight);
+        final double viewportRadius = minSide / 2;
         
+        // Calculate the NEW target based on the current controller value
         final focusedPacked = _findPackedNode(_packedRoot!, _controller.value);
         if (focusedPacked != null && focusedPacked.r > 0) {
-          // Nominal scale to fit viewportRadius (based on nominal 500 radius)
           _targetScale = viewportRadius / focusedPacked.r;
           _targetOffset = Offset(-focusedPacked.x * _targetScale, -focusedPacked.y * _targetScale);
         }
 
+        // Snap targets if not animating and just initialized
         if (!_animationController.isAnimating && _animationController.value == 1.0) {
             _startScale = _targetScale;
             _startOffset = _targetOffset;
@@ -116,52 +125,56 @@ class _CircularTreemapState extends State<CircularTreemap> with SingleTickerProv
             final centerX = constraints.maxWidth / 2;
             final centerY = constraints.maxHeight / 2;
             
-            final currentScale = Tween(begin: _startScale, end: _targetScale).evaluate(_animation);
-            final currentOffset = Tween(begin: _startOffset, end: _targetOffset).evaluate(_animation);
+            final double scale = lerpDouble(_startScale, _targetScale, _animation.value) ?? _startScale;
+            final Offset offset = Offset(
+                lerpDouble(_startOffset.dx, _targetOffset.dx, _animation.value) ?? _startOffset.dx,
+                lerpDouble(_startOffset.dy, _targetOffset.dy, _animation.value) ?? _startOffset.dy,
+            );
             
-            // Adjust for centering and transform
-            final relativeX = (localOffset.dx - centerX - currentOffset.dx) / currentScale;
-            final relativeY = (localOffset.dy - centerY - currentOffset.dy) / currentScale;
+            final relativeX = (localOffset.dx - centerX - offset.dx) / scale;
+            final relativeY = (localOffset.dy - centerY - offset.dy) / scale;
 
             final currentFocusedPacked = _findPackedNode(_packedRoot!, _controller.value);
             if (currentFocusedPacked != null) {
+              bool tappedChild = false;
               for (final child in currentFocusedPacked.children) {
                 final dx = relativeX - child.x;
                 final dy = relativeY - child.y;
                 if (dx * dx + dy * dy <= child.r * child.r) {
                   _controller.drillDown(child.node);
+                  tappedChild = true;
                   break;
                 }
+              }
+
+              if (!tappedChild && _controller.canGoBack) {
+                _controller.goBack();
               }
             }
           },
           child: AnimatedBuilder(
             animation: _animation,
             builder: (context, child) {
-              final scale = Tween(begin: _startScale, end: _targetScale).evaluate(_animation);
-              final offset = Tween(begin: _startOffset, end: _targetOffset).evaluate(_animation);
+              final scale = lerpDouble(_startScale, _targetScale, _animation.value) ?? _startScale;
+              final dx = lerpDouble(_startOffset.dx, _targetOffset.dx, _animation.value) ?? _startOffset.dx;
+              final dy = lerpDouble(_startOffset.dy, _targetOffset.dy, _animation.value) ?? _startOffset.dy;
 
-              return Center(
-                child: ClipOval(
-                  child: Container(
-                    width: viewportRadius * 2,
-                    height: viewportRadius * 2,
-                    color: Colors.black.withValues(alpha: 0.05), // Subtle background
-                    child: OverflowBox(
-                      maxWidth: double.infinity,
-                      maxHeight: double.infinity,
-                      child: Transform(
-                        transform: Matrix4.identity()
-                          ..translate(offset.dx, offset.dy)
-                          ..scale(scale),
-                        alignment: Alignment.center,
-                        child: CustomPaint(
-                          painter: CircularTreemapPainter(
-                            root: _packedRoot!,
-                            focusedNode: _controller.value,
-                          ),
-                          size: const Size(1000, 1000), // Match nominal packing size
+              return ClipRect(
+                child: Center(
+                  child: OverflowBox(
+                    maxWidth: double.infinity,
+                    maxHeight: double.infinity,
+                    child: Transform(
+                      transform: Matrix4.identity()
+                        ..translate(dx, dy)
+                        ..scale(scale),
+                      alignment: Alignment.center,
+                      child: CustomPaint(
+                        painter: CircularTreemapPainter(
+                          root: _packedRoot!,
+                          focusedNode: _controller.value,
                         ),
+                        size: const Size(200, 200),
                       ),
                     ),
                   ),

@@ -44,20 +44,13 @@ class CircularTreemapPainter extends CustomPainter {
   void _drawLeaf(Canvas canvas, PackedNode node, Color parentColor) {
     final Color color = node.node.color ?? parentColor;
     final paint = Paint()
-      ..color = color.withValues(alpha: 0.8)
+      ..color = color
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(Offset(node.x, node.y), node.r, paint);
 
-    final borderPaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.4)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
-    canvas.drawCircle(Offset(node.x, node.y), node.r, borderPaint);
-
-    if (node.r > 10) {
-      _drawLabel(canvas, node.node.label, Offset(node.x, node.y), node.r);
-    }
+    // Labels are drawn for all visible leaves if they have enough space.
+    _drawLabel(canvas, node.node.label, Offset(node.x, node.y), node.r);
   }
 
   bool _isAncestor(CircleNode potentialAncestor, CircleNode target) {
@@ -70,13 +63,17 @@ class CircularTreemapPainter extends CustomPainter {
   }
 
   void _drawLabel(Canvas canvas, String label, Offset center, double radius) {
+    if (radius < 5) return;
+
+    final double fontSize = (radius / 3.0).clamp(2.0, 24.0);
+    
     final textPainter = TextPainter(
       text: TextSpan(
         text: label,
         style: TextStyle(
           color: Colors.white,
-          fontSize: (radius / 3.5).clamp(6.0, 14.0),
-          fontWeight: FontWeight.bold,
+          fontSize: fontSize,
+          fontWeight: FontWeight.w600,
         ),
       ),
       textDirection: TextDirection.ltr,
@@ -86,11 +83,13 @@ class CircularTreemapPainter extends CustomPainter {
     );
 
     textPainter.layout(maxWidth: radius * 1.8);
-    if (textPainter.width < radius * 1.9) {
-        textPainter.paint(
-          canvas,
-          center - Offset(textPainter.width / 2, textPainter.height / 2),
-        );
+    
+    // Only paint if the text is not overwhelmingly large for the circle
+    if (textPainter.height < radius * 1.5) {
+      textPainter.paint(
+        canvas,
+        center - Offset(textPainter.width / 2, textPainter.height / 2),
+      );
     }
   }
 
