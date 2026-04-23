@@ -1,3 +1,8 @@
+## 1.0.1
+
+* Update README with official pub.dev installation instructions.
+* Link to the live demo website in README.
+
 ## 1.0.0
 
 * Initial release of FlutterCirclePackChart.
