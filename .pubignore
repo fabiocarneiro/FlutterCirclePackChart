@@ -1,0 +1,17 @@
+# Pub.dev Ignore File
+
+# Exclude Conductor artifacts
+/conductor/
+
+# Exclude local build and tool artifacts
+/.dart_tool/
+/.idea/
+/.flutter-plugins
+/.flutter-plugins-dependencies
+/pubspec.lock
+
+# Exclude local example build
+/example/build/
+
+# Exclude dev-only scripts
+/example/verify_packing.dart
