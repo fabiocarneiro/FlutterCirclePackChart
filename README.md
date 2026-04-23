@@ -1,39 +1,95 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# FlutterCirclePackChart
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
+A powerful, interactive, and highly customizable Circle Pack Chart (Circular Treemap) library for Flutter. Built with performance and user experience in mind, it features immersive drill-down navigation and a responsive label system.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
+## 🌟 Features
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+- **🚀 Immersive Drill-Down:** Tapping a circle triggers a smooth, symmetric "breaking apart" animation where children emerge from the parent's center as the view zooms in.
+- **♾️ Infinite Zoom Context:** Sibling nodes remain visible and partially overflow the square viewport during transitions, maintaining clear hierarchical context.
+- **🔄 Bidirectional Navigation:** Seamlessly supports both drill-in (explosion) and drill-out (implosion) animations for a natural, physical feel.
+- **📏 Professional Label System:**
+  - **Guaranteed Visibility:** Enforces a minimum circle size to ensure every item has a legible label.
+  - **Anti-Scaled Consistency:** Labels maintain a constant visual size on screen regardless of the zoom level.
+  - **Clean Aesthetic:** Flat, normal-weight text with automatic single-line ellipsis for long names.
+- **📋 Dynamic Legend:** Includes a built-in vertical legend component that automatically updates to reflect the items, colors, and values of the currently focused level.
+- **🎨 Highly Customizable:** Adjust animation speed, minimum radius ratios, font size factors, and colors to match your app's brand.
 
-## Features
+## 📦 Installation
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+Add `flutter_circle_pack_chart` to your `pubspec.yaml`:
 
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
+```yaml
+dependencies:
+  flutter_circle_pack_chart:
+    git:
+      url: https://github.com/fabiocarneiro/FlutterCirclePackChart.git
 ```
 
-## Additional information
+## 🚀 Getting Started
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+### 1. Define your data
+Create a hierarchy of `CircleNode` objects:
+
+```dart
+final root = CircleNode(
+  label: 'World',
+  color: Colors.blueGrey,
+  children: [
+    CircleNode(
+      label: 'Asia',
+      color: Colors.red,
+      children: [
+        CircleNode(label: 'China', value: 1400.0),
+        CircleNode(label: 'India', value: 1300.0),
+        CircleNode(label: 'Japan', value: 125.0),
+      ],
+    ),
+    CircleNode(
+      label: 'Europe',
+      color: Colors.blue,
+      children: [
+        CircleNode(label: 'Germany', value: 83.0),
+        CircleNode(label: 'France', value: 67.0),
+      ],
+    ),
+  ],
+);
+```
+
+### 2. Add the Widget
+Place the `FlutterCirclePackChart` in your widget tree. Optionally use a `FlutterCirclePackChartController` for advanced navigation.
+
+```dart
+// Initialize the controller
+final controller = FlutterCirclePackChartController(root: root);
+
+// In your build method
+Column(
+  children: [
+    Expanded(
+      child: FlutterCirclePackChart(
+        root: root,
+        controller: controller,
+      ),
+    ),
+    // Add the dynamic legend
+    FlutterCirclePackChartLegend(controller: controller),
+  ],
+)
+```
+
+## 🛠️ Customization
+
+| Property | Description | Default |
+| :--- | :--- | :--- |
+| `minRadiusRatio` | Minimum radius of a child circle as a fraction of its parent. | `0.20` |
+| `fontSizeFactor` | A multiplier to adjust the responsive font size globally. | `1.0` |
+| `controller` | Custom controller to manage focus and navigation state. | `Auto-generated` |
+
+## 🤝 Contributing
+
+Contributions are welcome! If you find a bug or have a feature request, please open an issue or submit a pull request.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
