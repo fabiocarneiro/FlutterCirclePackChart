@@ -17,4 +17,4 @@
 - [x] Task: Update Example App
     - [x] Update `example/pubspec.yaml` dependency name.
     - [x] Update imports in `example/lib/main.dart`.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Documentation & Example Rename' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Documentation & Example Rename' (Protocol in workflow.md) [b59108a]
