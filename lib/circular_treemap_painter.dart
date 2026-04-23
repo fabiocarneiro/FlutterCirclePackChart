@@ -1,48 +1,72 @@
 import 'package:flutter/material.dart';
 import 'circular_treemap.dart';
 
-/// A [CustomPainter] that renders a focused level of a circular treemap.
+/// A [CustomPainter] that renders a circular treemap with focus-based visibility.
 class CircularTreemapPainter extends CustomPainter {
-  /// The focused node (acting as root for the current view).
-  final PackedNode packedNode;
+  /// The absolute root of the packed hierarchy.
+  final PackedNode root;
 
-  CircularTreemapPainter({required this.packedNode});
+  /// The currently focused node.
+  final CircleNode focusedNode;
+
+  CircularTreemapPainter({
+    required this.root,
+    required this.focusedNode,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
     canvas.save();
     canvas.translate(size.width / 2, size.height / 2);
-
-    // We only draw the children of the currently focused packedNode.
-    // The parent (packedNode itself) is not drawn, as per the drill-down requirement.
-    final Color baseColor = packedNode.node.color ?? Colors.blue;
-
-    for (final child in packedNode.children) {
-      _drawChild(canvas, child, baseColor);
-    }
-
+    _drawNode(canvas, root, root.node.color ?? Colors.blue);
     canvas.restore();
   }
 
-  void _drawChild(Canvas canvas, PackedNode node, Color parentColor) {
+  void _drawNode(Canvas canvas, PackedNode node, Color parentColor) {
     final Color color = node.node.color ?? parentColor;
 
+    if (node.node == focusedNode) {
+      // Draw children of the focused node.
+      for (final child in node.children) {
+        _drawLeaf(canvas, child, color);
+      }
+    } else if (_isAncestor(node.node, focusedNode)) {
+      // If it's an ancestor, we don't draw its boundary, we just look inside.
+      for (final child in node.children) {
+        _drawNode(canvas, child, color);
+      }
+    } else {
+      // Sibling or unrelated branch: draw as a single leaf circle.
+      _drawLeaf(canvas, node, color);
+    }
+  }
+
+  void _drawLeaf(Canvas canvas, PackedNode node, Color parentColor) {
+    final Color color = node.node.color ?? parentColor;
     final paint = Paint()
-      ..color = color.withValues(alpha: 0.7)
+      ..color = color.withValues(alpha: 0.8)
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(Offset(node.x, node.y), node.r, paint);
 
     final borderPaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.5)
+      ..color = Colors.white.withValues(alpha: 0.4)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
     canvas.drawCircle(Offset(node.x, node.y), node.r, borderPaint);
 
-    // Draw label
-    if (node.r > 15) {
+    if (node.r > 10) {
       _drawLabel(canvas, node.node.label, Offset(node.x, node.y), node.r);
     }
+  }
+
+  bool _isAncestor(CircleNode potentialAncestor, CircleNode target) {
+    if (potentialAncestor.children.isEmpty) return false;
+    for (final child in potentialAncestor.children) {
+      if (child == target) return true;
+      if (_isAncestor(child, target)) return true;
+    }
+    return false;
   }
 
   void _drawLabel(Canvas canvas, String label, Offset center, double radius) {
@@ -51,7 +75,7 @@ class CircularTreemapPainter extends CustomPainter {
         text: label,
         style: TextStyle(
           color: Colors.white,
-          fontSize: (radius / 3).clamp(8.0, 16.0),
+          fontSize: (radius / 3.5).clamp(6.0, 14.0),
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -62,14 +86,16 @@ class CircularTreemapPainter extends CustomPainter {
     );
 
     textPainter.layout(maxWidth: radius * 1.8);
-    textPainter.paint(
-      canvas,
-      center - Offset(textPainter.width / 2, textPainter.height / 2),
-    );
+    if (textPainter.width < radius * 1.9) {
+        textPainter.paint(
+          canvas,
+          center - Offset(textPainter.width / 2, textPainter.height / 2),
+        );
+    }
   }
 
   @override
   bool shouldRepaint(covariant CircularTreemapPainter oldDelegate) {
-    return oldDelegate.packedNode != packedNode;
+    return oldDelegate.root != root || oldDelegate.focusedNode != focusedNode;
   }
 }
