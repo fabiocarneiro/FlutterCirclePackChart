@@ -1,6 +1,6 @@
 # Implementation Plan - Implement core circular treemap layout and drill-down visualization
 
-## Phase 1: Foundation & Data Model
+## Phase 1: Foundation & Data Model [checkpoint: 36bce31]
 - [x] Task: Define Hierarchical Data Model [4eb6776]
     - [x] Create `CircleNode` class with properties for label, value, color, and children.
     - [x] Implement a factory or utility to convert a `Map` or `JSON` to `CircleNode`.
@@ -10,7 +10,7 @@
     - [x] Implement the core packing logic (calculate local $x, y, r$ for a list of siblings).
     - [x] Implement recursive calculation for the entire tree.
     - [x] Write unit tests to verify packing correctness and non-overlapping constraints.
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Data Model' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Data Model' (Protocol in workflow.md) [36bce31]
 
 ## Phase 2: Rendering & Visualization
 - [ ] Task: Implement CustomPainter for circle rendering
