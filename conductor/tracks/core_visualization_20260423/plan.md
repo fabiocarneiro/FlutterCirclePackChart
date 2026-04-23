@@ -13,9 +13,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Data Model' (Protocol in workflow.md) [36bce31]
 
 ## Phase 2: Rendering & Visualization
-- [~] Task: Implement CustomPainter for circle rendering
-    - [ ] Create `CircularTreemapPainter` to draw circles and basic text labels.
-    - [ ] Write widget tests for `CustomPainter` rendering.
+- [x] Task: Implement CustomPainter for circle rendering [6eb0d96]
+    - [x] Create `CircularTreemapPainter` to draw circles and basic text labels.
+    - [x] Write widget tests for `CustomPainter` rendering.
 - [ ] Task: Create basic CircularTreemap widget
     - [ ] Create `CircularTreemap` widget that takes a `CircleNode` root.
     - [ ] Integrate the `CirclePacker` and `CircularTreemapPainter`.
