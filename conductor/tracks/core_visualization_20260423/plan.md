@@ -16,10 +16,10 @@
 - [x] Task: Implement CustomPainter for circle rendering [6eb0d96]
     - [x] Create `CircularTreemapPainter` to draw circles and basic text labels.
     - [x] Write widget tests for `CustomPainter` rendering.
-- [~] Task: Create basic CircularTreemap widget
-    - [ ] Create `CircularTreemap` widget that takes a `CircleNode` root.
-    - [ ] Integrate the `CirclePacker` and `CircularTreemapPainter`.
-    - [ ] Write widget tests for initial rendering.
+- [x] Task: Create basic CircularTreemap widget [ec20cc6]
+    - [x] Create `CircularTreemap` widget that takes a `CircleNode` root.
+    - [x] Integrate the `CirclePacker` and `CircularTreemapPainter`.
+    - [x] Write widget tests for initial rendering.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Rendering & Visualization' (Protocol in workflow.md)
 
 ## Phase 3: Interaction & Animation
