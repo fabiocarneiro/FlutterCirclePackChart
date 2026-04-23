@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:circular_treemap/circular_treemap.dart';
+import 'package:circle_pack_chart/circle_pack_chart.dart';
 
 void main() {
-  testWidgets('TreemapLegend should display items for focused node', (
+  testWidgets('CirclePackChartLegend should display items for focused node', (
     WidgetTester tester,
   ) async {
     final root = CircleNode(
@@ -13,11 +13,11 @@ void main() {
         CircleNode(label: 'B', value: 20, color: Colors.blue),
       ],
     );
-    final controller = TreemapController(root: root);
+    final controller = CirclePackChartController(root: root);
 
     await tester.pumpWidget(
       MaterialApp(
-        home: Scaffold(body: TreemapLegend(controller: controller)),
+        home: Scaffold(body: CirclePackChartLegend(controller: controller)),
       ),
     );
 

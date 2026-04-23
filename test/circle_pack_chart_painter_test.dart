@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:circular_treemap/circular_treemap.dart';
+import 'package:circle_pack_chart/circle_pack_chart.dart';
 
 void main() {
-  testWidgets('CircularTreemapPainter should render circles', (
+  testWidgets('CirclePackChartPainter should render circles', (
     WidgetTester tester,
   ) async {
     final root = CircleNode(label: 'Root', value: 100.0);
@@ -14,7 +14,7 @@ void main() {
         home: Scaffold(
           body: Center(
             child: CustomPaint(
-              painter: CircularTreemapPainter(
+              painter: CirclePackChartPainter(
                 root: packedNode,
                 focusedNode: root,
                 animationValue: 1.0,
@@ -32,7 +32,7 @@ void main() {
     expect(
       find.byWidgetPredicate(
         (widget) =>
-            widget is CustomPaint && widget.painter is CircularTreemapPainter,
+            widget is CustomPaint && widget.painter is CirclePackChartPainter,
       ),
       findsOneWidget,
     );

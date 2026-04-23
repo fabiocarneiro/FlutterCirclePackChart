@@ -1,14 +1,14 @@
 import 'package:flutter/foundation.dart';
-import 'circular_treemap.dart';
+import 'circle_pack_chart.dart';
 
-/// A controller for the [CircularTreemap] that manages the navigation state.
-class TreemapController extends ValueNotifier<CircleNode> {
+/// A controller for the [CirclePackChart] that manages the navigation state.
+class CirclePackChartController extends ValueNotifier<CircleNode> {
   /// The absolute root of the hierarchy.
   final CircleNode root;
 
   final List<CircleNode> _navigationStack = [];
 
-  TreemapController({required this.root}) : super(root);
+  CirclePackChartController({required this.root}) : super(root);
 
   /// Whether it is possible to navigate back to a parent level.
   bool get canGoBack => _navigationStack.isNotEmpty;

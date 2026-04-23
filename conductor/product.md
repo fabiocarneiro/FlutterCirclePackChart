@@ -1,7 +1,7 @@
 # Initial Concept
 Its a library that allows the user to draw a circle pack chart (also known as circular treemap)
 
-# Product Definition - Circular Treemap Library for Flutter
+# Product Definition - Circle Pack Chart Library for Flutter
 
 ## Vision
 To provide Flutter developers with a powerful, easy-to-use, and highly customizable library for creating interactive circular treemaps (circle pack charts). The library specializes in a drill-down exploration pattern, allowing users to intuitively navigate hierarchical data levels with smooth, focused transitions.

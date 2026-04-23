@@ -1,4 +1,4 @@
-import 'package:circular_treemap/circular_treemap.dart';
+import 'package:circle_pack_chart/circle_pack_chart.dart';
 import 'dart:math';
 
 void main() {

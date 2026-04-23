@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'circular_treemap.dart';
+import 'circle_pack_chart.dart';
 
 /// Represents a node that has been positioned and sized in the treemap.
 class PackedNode {
@@ -32,11 +32,21 @@ class CirclePacker {
   /// Packs the [root] node and its children into a circle with the given [radius].
   /// [minRadiusRatio] defines the minimum radius of a child circle as a fraction
   /// of the parent radius (default is 0.1, meaning 10% of parent).
-  static PackedNode pack(CircleNode root, {required double radius, double minRadiusRatio = 0.1}) {
+  static PackedNode pack(
+    CircleNode root, {
+    required double radius,
+    double minRadiusRatio = 0.1,
+  }) {
     return _packNode(root, 0.0, 0.0, radius, minRadiusRatio);
   }
 
-  static PackedNode _packNode(CircleNode node, double x, double y, double r, double minRadiusRatio) {
+  static PackedNode _packNode(
+    CircleNode node,
+    double x,
+    double y,
+    double r,
+    double minRadiusRatio,
+  ) {
     if (node.children.isEmpty) {
       return PackedNode(node: node, x: x, y: y, r: r);
     }
@@ -49,10 +59,10 @@ class CirclePacker {
     // Calculate initial radii based on value (area proportional to value).
     // We enforce a minimum radius here.
     final double minR = r * minRadiusRatio;
-    
+
     final List<_Circle> circles = node.children.map((child) {
       final double calculatedR = sqrt(child.value);
-      // Ensure it doesn't fall below minR. 
+      // Ensure it doesn't fall below minR.
       // We use a simple max here; the packing algorithm will handle the layout.
       return _Circle(radius: max(calculatedR, minR));
     }).toList();
@@ -91,22 +101,18 @@ class CirclePacker {
     final List<PackedNode> packedChildren = [];
     for (int i = 0; i < node.children.length; i++) {
       final c = circles[i];
-      packedChildren.add(_packNode(
-        node.children[i],
-        x + c.x * scale,
-        y + c.y * scale,
-        c.radius * scale,
-        minRadiusRatio,
-      ));
+      packedChildren.add(
+        _packNode(
+          node.children[i],
+          x + c.x * scale,
+          y + c.y * scale,
+          c.radius * scale,
+          minRadiusRatio,
+        ),
+      );
     }
 
-    return PackedNode(
-      node: node,
-      x: x,
-      y: y,
-      r: r,
-      children: packedChildren,
-    );
+    return PackedNode(node: node, x: x, y: y, r: r, children: packedChildren);
   }
 
   /// Simple circle packing algorithm.
@@ -157,17 +163,21 @@ class CirclePacker {
         }
       }
     }
-    
+
     if (minDistanceToOrigin == double.infinity) {
-        bestX = index * 100.0;
-        bestY = 0;
+      bestX = index * 100.0;
+      bestY = 0;
     }
 
     current.x = bestX;
     current.y = bestY;
   }
 
-  static List<Point<double>> _findTouchPoints(_Circle c1, _Circle c2, double r) {
+  static List<Point<double>> _findTouchPoints(
+    _Circle c1,
+    _Circle c2,
+    double r,
+  ) {
     final double d2 = (pow(c1.x - c2.x, 2) + pow(c1.y - c2.y, 2)).toDouble();
     final double d = sqrt(d2);
     final double r1 = c1.radius + r;
@@ -186,7 +196,13 @@ class CirclePacker {
     ];
   }
 
-  static bool _overlapsAny(double x, double y, double r, List<_Circle> circles, int count) {
+  static bool _overlapsAny(
+    double x,
+    double y,
+    double r,
+    List<_Circle> circles,
+    int count,
+  ) {
     for (int i = 0; i < count; i++) {
       final c = circles[i];
       final dist2 = pow(x - c.x, 2) + pow(y - c.y, 2);

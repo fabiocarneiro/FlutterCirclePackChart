@@ -1,4 +1,4 @@
-# Product Guidelines - Circular Treemap Library
+# Product Guidelines - Circle Pack Chart Library
 
 ## Prose Style
 - **Technical & Concise:** All documentation, API references, and internal comments must be clear, direct, and focused on technical accuracy. Avoid conversational filler; prioritize information density for developers.

@@ -1,4 +1,4 @@
-# Tech Stack - Circular Treemap Library
+# Tech Stack - Circle Pack Chart Library
 
 ## Core Technologies
 - **Language:** [Dart](https://dart.dev/) (3.x) - Leverages sound null safety and efficient compilation.

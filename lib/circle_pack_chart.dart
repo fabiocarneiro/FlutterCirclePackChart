@@ -1,12 +1,12 @@
 import 'dart:ui';
 
 export 'circle_packer.dart';
-export 'circular_treemap_painter.dart';
-export 'circular_treemap_widget.dart';
-export 'treemap_controller.dart';
-export 'treemap_legend.dart';
+export 'circle_pack_chart_painter.dart';
+export 'circle_pack_chart_widget.dart';
+export 'circle_pack_chart_controller.dart';
+export 'circle_pack_chart_legend.dart';
 
-/// Represents a node in the hierarchical data structure for the circular treemap.
+/// Represents a node in the hierarchical data structure for the Circle Pack Chart.
 class CircleNode {
   /// The display label for this node.
   final String label;

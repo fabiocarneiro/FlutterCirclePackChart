@@ -1,10 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'circular_treemap.dart';
+import 'circle_pack_chart.dart';
 
-/// A [CustomPainter] that renders a circular treemap with symmetric 
+/// A [CustomPainter] that renders a circular treemap with symmetric
 /// explosion/implosion animations and anti-scaled labels.
-class CircularTreemapPainter extends CustomPainter {
+class CirclePackChartPainter extends CustomPainter {
   /// The absolute root of the packed hierarchy.
   final PackedNode root;
 
@@ -26,7 +26,7 @@ class CircularTreemapPainter extends CustomPainter {
   /// The base font size for labels (anti-scaled).
   final double baseFontSize;
 
-  CircularTreemapPainter({
+  CirclePackChartPainter({
     required this.root,
     required this.focusedNode,
     this.previousFocusedNode,
@@ -58,11 +58,19 @@ class CircularTreemapPainter extends CustomPainter {
           final double r = lerpDouble(node.r, child.r, animationValue)!;
           _drawLeaf(canvas, x, y, r, child.node, color, opacity: 1.0);
         } else {
-          // Drill Out: new focus is parent. 
+          // Drill Out: new focus is parent.
           if (child.node == previousFocusedNode && animationValue < 1.0) {
             _drawImplodingNode(canvas, child, color);
           } else {
-            _drawLeaf(canvas, child.x, child.y, child.r, child.node, color, opacity: 1.0);
+            _drawLeaf(
+              canvas,
+              child.x,
+              child.y,
+              child.r,
+              child.node,
+              color,
+              opacity: 1.0,
+            );
           }
         }
       }
@@ -79,7 +87,7 @@ class CircularTreemapPainter extends CustomPainter {
 
   void _drawImplodingNode(Canvas canvas, PackedNode node, Color parentColor) {
     final Color color = node.node.color ?? parentColor;
-    
+
     for (final child in node.children) {
       final double x = child.x + (node.x - child.x) * animationValue;
       final double y = child.y + (node.y - child.y) * animationValue;
@@ -87,8 +95,16 @@ class CircularTreemapPainter extends CustomPainter {
       final double opacity = 1.0 - animationValue;
       _drawLeaf(canvas, x, y, r, child.node, color, opacity: opacity);
     }
-    
-    _drawLeaf(canvas, node.x, node.y, node.r, node.node, color, opacity: animationValue);
+
+    _drawLeaf(
+      canvas,
+      node.x,
+      node.y,
+      node.r,
+      node.node,
+      color,
+      opacity: animationValue,
+    );
   }
 
   void _drawLeaf(
@@ -101,7 +117,7 @@ class CircularTreemapPainter extends CustomPainter {
     double opacity = 1.0,
   }) {
     if (opacity <= 0) return;
-    
+
     final Color color = node.color ?? parentColor;
     final paint = Paint()
       ..color = color.withValues(alpha: opacity)
@@ -159,7 +175,7 @@ class CircularTreemapPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CircularTreemapPainter oldDelegate) {
+  bool shouldRepaint(covariant CirclePackChartPainter oldDelegate) {
     return oldDelegate.root != root ||
         oldDelegate.focusedNode != focusedNode ||
         oldDelegate.previousFocusedNode != previousFocusedNode ||

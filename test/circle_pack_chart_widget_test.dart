@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:circular_treemap/circular_treemap.dart';
+import 'package:circle_pack_chart/circle_pack_chart.dart';
 
 void main() {
-  testWidgets('CircularTreemap widget should render', (
+  testWidgets('CirclePackChart widget should render', (
     WidgetTester tester,
   ) async {
     final root = CircleNode(
@@ -20,12 +20,12 @@ void main() {
           body: SizedBox(
             width: 500,
             height: 500,
-            child: CircularTreemap(root: root),
+            child: CirclePackChart(root: root),
           ),
         ),
       ),
     );
 
-    expect(find.byType(CircularTreemap), findsOneWidget);
+    expect(find.byType(CirclePackChart), findsOneWidget);
   });
 }

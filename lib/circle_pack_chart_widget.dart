@@ -2,15 +2,15 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
-import 'circular_treemap.dart';
+import 'circle_pack_chart.dart';
 
 /// A widget that displays an animated circular treemap with camera-style drill-down.
-class CircularTreemap extends StatefulWidget {
+class CirclePackChart extends StatefulWidget {
   /// The root node of the hierarchical data to display.
   final CircleNode root;
 
   /// Optional controller to manage the navigation state.
-  final TreemapController? controller;
+  final CirclePackChartController? controller;
 
   /// Defines the minimum radius of a child circle as a fraction of its parent.
   /// Defaults to 0.20 to allow better visual hierarchy while maintaining labels.
@@ -20,7 +20,7 @@ class CircularTreemap extends StatefulWidget {
   /// Defaults to 1.0. Higher values make text larger globally.
   final double fontSizeFactor;
 
-  const CircularTreemap({
+  const CirclePackChart({
     super.key,
     required this.root,
     this.controller,
@@ -29,21 +29,22 @@ class CircularTreemap extends StatefulWidget {
   });
 
   @override
-  State<CircularTreemap> createState() => _CircularTreemapState();
+  State<CirclePackChart> createState() => _CirclePackChartState();
 }
 
-class _CircularTreemapState extends State<CircularTreemap> with SingleTickerProviderStateMixin {
-  late TreemapController _controller;
+class _CirclePackChartState extends State<CirclePackChart>
+    with SingleTickerProviderStateMixin {
+  late CirclePackChartController _controller;
   late AnimationController _animationController;
   late Animation<double> _animation;
 
   PackedNode? _packedRoot;
-  
+
   // State tracking for transitions
   late CircleNode _currentFocus;
   CircleNode? _previousFocus;
   bool _isDrillingIn = true;
-  
+
   // Transform state
   double _startScale = 1.0;
   Offset _startOffset = Offset.zero;
@@ -53,10 +54,11 @@ class _CircularTreemapState extends State<CircularTreemap> with SingleTickerProv
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ?? TreemapController(root: widget.root);
+    _controller =
+        widget.controller ?? CirclePackChartController(root: widget.root);
     _currentFocus = _controller.value;
     _controller.addListener(_onStateChanged);
-    
+
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
@@ -65,10 +67,10 @@ class _CircularTreemapState extends State<CircularTreemap> with SingleTickerProv
       parent: _animationController,
       curve: Curves.easeInOutCubic,
     );
-    
+
     // Initial packing
     _packedRoot = CirclePacker.pack(
-      widget.root, 
+      widget.root,
       radius: 100.0,
       minRadiusRatio: widget.minRadiusRatio,
     );
@@ -76,16 +78,18 @@ class _CircularTreemapState extends State<CircularTreemap> with SingleTickerProv
   }
 
   @override
-  void didUpdateWidget(CircularTreemap oldWidget) {
+  void didUpdateWidget(CirclePackChart oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.controller != oldWidget.controller) {
       oldWidget.controller?.removeListener(_onStateChanged);
-      _controller = widget.controller ?? TreemapController(root: widget.root);
+      _controller =
+          widget.controller ?? CirclePackChartController(root: widget.root);
       _controller.addListener(_onStateChanged);
     }
-    if (widget.root != oldWidget.root || widget.minRadiusRatio != oldWidget.minRadiusRatio) {
+    if (widget.root != oldWidget.root ||
+        widget.minRadiusRatio != oldWidget.minRadiusRatio) {
       _packedRoot = CirclePacker.pack(
-        widget.root, 
+        widget.root,
         radius: 100.0,
         minRadiusRatio: widget.minRadiusRatio,
       );
@@ -106,15 +110,19 @@ class _CircularTreemapState extends State<CircularTreemap> with SingleTickerProv
     setState(() {
       final oldFocus = _currentFocus;
       final newFocus = _controller.value;
-      
+
       _isDrillingIn = _isAncestor(oldFocus, newFocus);
       _previousFocus = oldFocus;
       _currentFocus = newFocus;
-      
-      _startScale = lerpDouble(_startScale, _targetScale, _animation.value) ?? _startScale;
+
+      _startScale =
+          lerpDouble(_startScale, _targetScale, _animation.value) ??
+          _startScale;
       _startOffset = Offset(
-        lerpDouble(_startOffset.dx, _targetOffset.dx, _animation.value) ?? _startOffset.dx,
-        lerpDouble(_startOffset.dy, _targetOffset.dy, _animation.value) ?? _startOffset.dy,
+        lerpDouble(_startOffset.dx, _targetOffset.dx, _animation.value) ??
+            _startOffset.dx,
+        lerpDouble(_startOffset.dy, _targetOffset.dy, _animation.value) ??
+            _startOffset.dy,
       );
       _animationController.forward(from: 0.0);
     });
@@ -147,17 +155,22 @@ class _CircularTreemapState extends State<CircularTreemap> with SingleTickerProv
 
         // Responsive font calculation:
         // Baseline 12.0 + small increment based on screen size, modified by factor.
-        final double responsiveBaseFontSize = (10.0 + (minSide / 120)) * widget.fontSizeFactor;
-        
+        final double responsiveBaseFontSize =
+            (10.0 + (minSide / 120)) * widget.fontSizeFactor;
+
         final focusedPacked = _findPackedNode(_packedRoot!, _controller.value);
         if (focusedPacked != null && focusedPacked.r > 0) {
           _targetScale = viewportRadius / focusedPacked.r;
-          _targetOffset = Offset(-focusedPacked.x * _targetScale, -focusedPacked.y * _targetScale);
+          _targetOffset = Offset(
+            -focusedPacked.x * _targetScale,
+            -focusedPacked.y * _targetScale,
+          );
         }
 
-        if (!_animationController.isAnimating && _animationController.value == 1.0) {
-            _startScale = _targetScale;
-            _startOffset = _targetOffset;
+        if (!_animationController.isAnimating &&
+            _animationController.value == 1.0) {
+          _startScale = _targetScale;
+          _startOffset = _targetOffset;
         }
 
         return GestureDetector(
@@ -166,17 +179,24 @@ class _CircularTreemapState extends State<CircularTreemap> with SingleTickerProv
             final localOffset = box.globalToLocal(details.globalPosition);
             final centerX = constraints.maxWidth / 2;
             final centerY = constraints.maxHeight / 2;
-            
-            final double scale = lerpDouble(_startScale, _targetScale, _animation.value) ?? _startScale;
+
+            final double scale =
+                lerpDouble(_startScale, _targetScale, _animation.value) ??
+                _startScale;
             final Offset offset = Offset(
-                lerpDouble(_startOffset.dx, _targetOffset.dx, _animation.value) ?? _startOffset.dx,
-                lerpDouble(_startOffset.dy, _targetOffset.dy, _animation.value) ?? _startOffset.dy,
+              lerpDouble(_startOffset.dx, _targetOffset.dx, _animation.value) ??
+                  _startOffset.dx,
+              lerpDouble(_startOffset.dy, _targetOffset.dy, _animation.value) ??
+                  _startOffset.dy,
             );
-            
+
             final relativeX = (localOffset.dx - centerX - offset.dx) / scale;
             final relativeY = (localOffset.dy - centerY - offset.dy) / scale;
 
-            final currentFocusedPacked = _findPackedNode(_packedRoot!, _controller.value);
+            final currentFocusedPacked = _findPackedNode(
+              _packedRoot!,
+              _controller.value,
+            );
             if (currentFocusedPacked != null) {
               bool tappedChild = false;
               for (final child in currentFocusedPacked.children) {
@@ -197,9 +217,23 @@ class _CircularTreemapState extends State<CircularTreemap> with SingleTickerProv
           child: AnimatedBuilder(
             animation: _animation,
             builder: (context, child) {
-              final scale = lerpDouble(_startScale, _targetScale, _animation.value) ?? _startScale;
-              final dx = lerpDouble(_startOffset.dx, _targetOffset.dx, _animation.value) ?? _startOffset.dx;
-              final dy = lerpDouble(_startOffset.dy, _targetOffset.dy, _animation.value) ?? _startOffset.dy;
+              final scale =
+                  lerpDouble(_startScale, _targetScale, _animation.value) ??
+                  _startScale;
+              final dx =
+                  lerpDouble(
+                    _startOffset.dx,
+                    _targetOffset.dx,
+                    _animation.value,
+                  ) ??
+                  _startOffset.dx;
+              final dy =
+                  lerpDouble(
+                    _startOffset.dy,
+                    _targetOffset.dy,
+                    _animation.value,
+                  ) ??
+                  _startOffset.dy;
 
               return ClipRect(
                 child: Center(
@@ -214,10 +248,12 @@ class _CircularTreemapState extends State<CircularTreemap> with SingleTickerProv
                       ),
                       alignment: Alignment.center,
                       child: CustomPaint(
-                        painter: CircularTreemapPainter(
+                        painter: CirclePackChartPainter(
                           root: _packedRoot!,
                           focusedNode: _controller.value,
-                          previousFocusedNode: _animationController.isAnimating ? _previousFocus : null,
+                          previousFocusedNode: _animationController.isAnimating
+                              ? _previousFocus
+                              : null,
                           animationValue: _animation.value,
                           isDrillingIn: _isDrillingIn,
                           cameraScale: scale,

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:circular_treemap/circular_treemap.dart';
+import 'package:circle_pack_chart/circle_pack_chart.dart';
 
 void main() {
   group('CircleNode', () {

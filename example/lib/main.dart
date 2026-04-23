@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:circular_treemap/circular_treemap.dart';
+import 'package:circle_pack_chart/circle_pack_chart.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,26 +11,26 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Circular Treemap Demo',
+      title: 'Circle Pack Chart Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const TreemapDemo(),
+      home: const CirclePackChartDemo(),
     );
   }
 }
 
-class TreemapDemo extends StatefulWidget {
-  const TreemapDemo({super.key});
+class CirclePackChartDemo extends StatefulWidget {
+  const CirclePackChartDemo({super.key});
 
   @override
-  State<TreemapDemo> createState() => _TreemapDemoState();
+  State<CirclePackChartDemo> createState() => _CirclePackChartDemoState();
 }
 
-class _TreemapDemoState extends State<TreemapDemo> {
-  late TreemapController _controller;
+class _CirclePackChartDemoState extends State<CirclePackChartDemo> {
+  late CirclePackChartController _controller;
 
   @override
   void initState() {
@@ -95,7 +95,10 @@ class _TreemapDemoState extends State<TreemapDemo> {
         CircleNode(
           label: 'Tiny Items',
           color: Colors.purple,
-          children: List.generate(15, (i) => CircleNode(label: 'T$i', value: 0.1)),
+          children: List.generate(
+            15,
+            (i) => CircleNode(label: 'T$i', value: 0.1),
+          ),
         ),
         CircleNode(
           label: 'Long Names',
@@ -108,7 +111,7 @@ class _TreemapDemoState extends State<TreemapDemo> {
         ),
       ],
     );
-    _controller = TreemapController(root: root);
+    _controller = CirclePackChartController(root: root);
   }
 
   @override
@@ -145,7 +148,7 @@ class _TreemapDemoState extends State<TreemapDemo> {
 
               // Main Treemap Visualization
               Expanded(
-                child: CircularTreemap(
+                child: CirclePackChart(
                   root: _controller.root,
                   controller: _controller,
                 ),
@@ -158,7 +161,7 @@ class _TreemapDemoState extends State<TreemapDemo> {
                 child: SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: TreemapLegend(controller: _controller),
+                    child: CirclePackChartLegend(controller: _controller),
                   ),
                 ),
               ),
