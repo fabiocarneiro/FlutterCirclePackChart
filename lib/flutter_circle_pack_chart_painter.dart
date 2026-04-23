@@ -161,13 +161,14 @@ class FlutterCirclePackChartPainter extends CustomPainter {
       ),
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.center,
-      maxLines: 1,
+      maxLines: 2, // Allow up to 2 lines
       ellipsis: '...',
     );
 
     // Allow some overflow for tiny circles to ensure labels are visible.
     textPainter.layout(maxWidth: radius * 2.5);
 
+    // Ensure the entire block is centered by subtracting half width AND half height
     textPainter.paint(
       canvas,
       center - Offset(textPainter.width / 2, textPainter.height / 2),
