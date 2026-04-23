@@ -1,4 +1,4 @@
-# Project Context - Circle Pack Chart
+# Project Context - FlutterCirclePackChart
 
 ## Definition
 - [Product Definition](./product.md)
