@@ -31,7 +31,8 @@ class CircularTreemapPainter extends CustomPainter {
     final borderPaint = Paint()
       ..color = Colors.white.withValues(alpha: 0.5)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;    canvas.drawCircle(Offset(node.x, node.y), node.r, borderPaint);
+      ..strokeWidth = 1.0;
+    canvas.drawCircle(Offset(node.x, node.y), node.r, borderPaint);
 
     // Recursively draw all nested children.
     for (final child in node.children) {
