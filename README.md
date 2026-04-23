@@ -1,6 +1,6 @@
 # FlutterCirclePackChart
 
-A powerful, interactive, and highly customizable Circle Pack Chart (Circular Treemap) library for Flutter. Built with performance and user experience in mind, it features immersive drill-down navigation and a responsive label system.
+A powerful, interactive, and highly customizable Circle Pack Chart (Circular Treemap) library for Flutter. Built with performance and user experience in mind, it features immersive drill-down navigation and a responsive, structured label system.
 
 ## 🌟 Features
 
@@ -8,6 +8,7 @@ A powerful, interactive, and highly customizable Circle Pack Chart (Circular Tre
 - **♾️ Infinite Zoom Context:** Sibling nodes remain visible and partially overflow the square viewport during transitions, maintaining clear hierarchical context.
 - **🔄 Bidirectional Navigation:** Seamlessly supports both drill-in (explosion) and drill-out (implosion) animations for a natural, physical feel.
 - **📏 Professional Label System:**
+  - **Structured Data:** Use `label` for the name and `secondaryLabel` for monetary values or subtitles.
   - **Guaranteed Visibility:** Enforces a minimum circle size to ensure every item has a legible label.
   - **Anti-Scaled Consistency:** Labels maintain a constant visual size on screen regardless of the zoom level.
   - **Clean Aesthetic:** Flat, normal-weight text with automatic single-line ellipsis for long names.
@@ -28,28 +29,28 @@ dependencies:
 ## 🚀 Getting Started
 
 ### 1. Define your data
-Create a hierarchy of `CircleNode` objects:
+Create a hierarchy of `CircleNode` objects. You can use both `label` and `secondaryLabel` to display structured data on two lines:
 
 ```dart
 final root = CircleNode(
-  label: 'World',
+  label: 'Monthly Budget',
   color: Colors.blueGrey,
   children: [
     CircleNode(
-      label: 'Asia',
-      color: Colors.red,
+      label: 'Needs',
+      secondaryLabel: '\$2500',
+      color: Colors.orange,
       children: [
-        CircleNode(label: 'China', value: 1400.0),
-        CircleNode(label: 'India', value: 1300.0),
-        CircleNode(label: 'Japan', value: 125.0),
+        CircleNode(label: 'Rent', secondaryLabel: '\$1500', value: 1500.0),
+        CircleNode(label: 'Groceries', secondaryLabel: '\$400', value: 400.0),
       ],
     ),
     CircleNode(
-      label: 'Europe',
-      color: Colors.blue,
+      label: 'Wants',
+      secondaryLabel: '\$1100',
+      color: Colors.pink,
       children: [
-        CircleNode(label: 'Germany', value: 83.0),
-        CircleNode(label: 'France', value: 67.0),
+        CircleNode(label: 'Dining', secondaryLabel: '\$300', value: 300.0),
       ],
     ),
   ],
@@ -57,7 +58,7 @@ final root = CircleNode(
 ```
 
 ### 2. Add the Widget
-Place the `FlutterCirclePackChart` in your widget tree. Optionally use a `FlutterCirclePackChartController` for advanced navigation.
+Place the `FlutterCirclePackChart` in your widget tree. Optionally use a `FlutterCirclePackChartController` for advanced navigation and legend support.
 
 ```dart
 // Initialize the controller
@@ -72,7 +73,7 @@ Column(
         controller: controller,
       ),
     ),
-    // Add the dynamic legend
+    // Add the dynamic legend (shows primary labels only)
     FlutterCirclePackChartLegend(controller: controller),
   ],
 )

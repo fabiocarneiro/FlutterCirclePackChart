@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/widgets.dart';
 
 export 'circle_packer.dart';
 export 'flutter_circle_pack_chart_painter.dart';
@@ -6,13 +7,20 @@ export 'flutter_circle_pack_chart_widget.dart';
 export 'flutter_circle_pack_chart_controller.dart';
 export 'flutter_circle_pack_chart_legend.dart';
 
+/// A function that builds a widget for a given [CircleNode].
+typedef NodeWidgetBuilder = Widget Function(BuildContext context, CircleNode node);
+
 /// Represents a node in the hierarchical data structure for the Circle Pack Chart.
 class CircleNode {
-  /// The primary display label for this node.
+  /// The display label for this node (used for the legend and default labels).
   final String label;
 
   /// An optional secondary label (e.g. a monetary value or subtitle).
   final String? secondaryLabel;
+
+  /// An optional builder to provide a custom widget as a label inside the circle.
+  /// If provided, this takes precedence over [label] and [secondaryLabel] in the chart view.
+  final NodeWidgetBuilder? childBuilder;
 
   /// The internal value for this node. If children are present, the value is
   /// typically the sum of children values.
@@ -27,6 +35,7 @@ class CircleNode {
   CircleNode({
     required this.label,
     this.secondaryLabel,
+    this.childBuilder,
     double? value,
     this.color,
     this.children = const [],
