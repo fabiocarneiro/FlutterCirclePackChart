@@ -32,36 +32,95 @@ class MainNavigationScreen extends StatefulWidget {
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _selectedIndex = 0;
 
-  static final List<Widget> _pages = [
-    const WorldPopulationExample(),
-    const BudgetTrackerExample(),
-    const StressTestExample(),
+  static final List<_ExamplePage> _pages = [
+    const _ExamplePage(
+      title: 'Countries',
+      icon: Icons.public,
+      widget: WorldPopulationExample(),
+    ),
+    const _ExamplePage(
+      title: 'Budget',
+      icon: Icons.account_balance_wallet,
+      widget: BudgetTrackerExample(),
+    ),
+    const _ExamplePage(
+      title: 'Stress Tests',
+      icon: Icons.speed,
+      widget: StressTestExample(),
+    ),
   ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    Navigator.pop(context); // Close the drawer
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: (index) => setState(() => _selectedIndex = index),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.public),
-            label: 'Countries',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance_wallet),
-            label: 'Budget',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.speed),
-            label: 'Stress Tests',
-          ),
-        ],
+      appBar: AppBar(
+        title: Text(_pages[_selectedIndex].title),
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primaryContainer,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'CirclePackChart',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.onPrimaryContainer,
+                        ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Interactive Visualization',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onPrimaryContainer
+                              .withValues(alpha: 0.8),
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            ...List.generate(_pages.length, (index) {
+              final page = _pages[index];
+              return ListTile(
+                leading: Icon(page.icon),
+                title: Text(page.title),
+                selected: _selectedIndex == index,
+                onTap: () => _onItemTapped(index),
+              );
+            }),
+          ],
+        ),
+      ),
+      body: _pages[_selectedIndex].widget,
     );
   }
+}
+
+class _ExamplePage {
+  final String title;
+  final IconData icon;
+  final Widget widget;
+
+  const _ExamplePage({
+    required this.title,
+    required this.icon,
+    required this.widget,
+  });
 }
 
 /// A generic base widget for the examples to maintain consistency
@@ -81,64 +140,62 @@ class ChartExampleScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = FlutterCirclePackChartController(root: root);
 
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: ValueListenableBuilder(
-                  valueListenable: controller,
-                  builder: (context, value, _) {
-                    return Column(
-                      children: [
-                        Text(
-                          title,
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            color: Colors.grey,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          value.label,
-                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 24.0),
+              child: ValueListenableBuilder(
+                valueListenable: controller,
+                builder: (context, value, _) {
+                  return Column(
+                    children: [
+                      Text(
+                        title,
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                              color: Colors.grey,
+                              letterSpacing: 1.2,
+                            ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        value.label,
+                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+            Expanded(
+              child: FlutterCirclePackChart(
+                root: root,
+                controller: controller,
+              ),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              height: 200,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: FlutterCirclePackChartLegend(controller: controller),
                 ),
               ),
-              Expanded(
-                child: FlutterCirclePackChart(
-                  root: root,
-                  controller: controller,
-                ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Text(
+                subtitle,
+                style: const TextStyle(color: Colors.grey, fontSize: 12),
+                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 16),
-              SizedBox(
-                height: 180,
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: FlutterCirclePackChartLegend(controller: controller),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(
-                  subtitle,
-                  style: const TextStyle(color: Colors.grey, fontSize: 11),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -163,6 +220,8 @@ class WorldPopulationExample extends StatelessWidget {
             CircleNode(label: 'Japan', value: 125.0),
             CircleNode(label: 'Indonesia', value: 270.0),
             CircleNode(label: 'Pakistan', value: 220.0),
+            CircleNode(label: 'Bangladesh', value: 170.0),
+            CircleNode(label: 'Vietnam', value: 98.0),
           ],
         ),
         CircleNode(
@@ -173,6 +232,9 @@ class WorldPopulationExample extends StatelessWidget {
             CircleNode(label: 'France', value: 67.0),
             CircleNode(label: 'UK', value: 66.0),
             CircleNode(label: 'Italy', value: 60.0),
+            CircleNode(label: 'Spain', value: 47.0),
+            CircleNode(label: 'Ukraine', value: 44.0),
+            CircleNode(label: 'Poland', value: 38.0),
           ],
         ),
         CircleNode(
@@ -181,16 +243,33 @@ class WorldPopulationExample extends StatelessWidget {
           children: [
             CircleNode(label: 'USA', value: 330.0),
             CircleNode(label: 'Brazil', value: 210.0),
+            CircleNode(label: 'Mexico', value: 128.0),
+            CircleNode(label: 'Colombia', value: 50.0),
+            CircleNode(label: 'Argentina', value: 45.0),
             CircleNode(label: 'Canada', value: 38.0),
+            CircleNode(label: 'Peru', value: 33.0),
+          ],
+        ),
+        CircleNode(
+          label: 'Africa',
+          color: Colors.orange,
+          children: [
+            CircleNode(label: 'Nigeria', value: 200.0),
+            CircleNode(label: 'Ethiopia', value: 110.0),
+            CircleNode(label: 'Egypt', value: 100.0),
+            CircleNode(label: 'DRC', value: 90.0),
+            CircleNode(label: 'Tanzania', value: 60.0),
+            CircleNode(label: 'South Africa', value: 59.0),
+            CircleNode(label: 'Kenya', value: 53.0),
           ],
         ),
       ],
     );
 
     return ChartExampleScaffold(
-      title: 'WORLD POPULATION',
+      title: 'POPULATION STATISTICS',
       root: root,
-      subtitle: 'Tapping a continent shows top countries by population.',
+      subtitle: 'Drill down into continents to see population by country.',
     );
   }
 }
@@ -212,6 +291,7 @@ class BudgetTrackerExample extends StatelessWidget {
             CircleNode(label: 'Groceries', value: 400.0),
             CircleNode(label: 'Utilities', value: 250.0),
             CircleNode(label: 'Insurance', value: 200.0),
+            CircleNode(label: 'Transport', value: 150.0),
           ],
         ),
         CircleNode(
@@ -222,6 +302,7 @@ class BudgetTrackerExample extends StatelessWidget {
             CircleNode(label: 'Subscriptions', value: 50.0),
             CircleNode(label: 'Shopping', value: 200.0),
             CircleNode(label: 'Hobbies', value: 150.0),
+            CircleNode(label: 'Travel', value: 400.0),
           ],
         ),
         CircleNode(
@@ -231,15 +312,16 @@ class BudgetTrackerExample extends StatelessWidget {
             CircleNode(label: 'Emergency Fund', value: 500.0),
             CircleNode(label: 'Retirement', value: 400.0),
             CircleNode(label: 'Investments', value: 300.0),
+            CircleNode(label: 'Debt Payoff', value: 200.0),
           ],
         ),
       ],
     );
 
     return ChartExampleScaffold(
-      title: 'FINANCIAL TRACKER',
+      title: 'HOUSEHOLD BUDGET',
       root: root,
-      subtitle: '50/30/20 Rule: Split your income into Needs, Wants, and Savings.',
+      subtitle: 'Manage your monthly spending using the 50/30/20 rule.',
     );
   }
 }
@@ -266,6 +348,7 @@ class StressTestExample extends StatelessWidget {
             CircleNode(label: 'Saint Vincent and the Grenadines', value: 50.0),
             CircleNode(label: 'Bosnia and Herzegovina', value: 40.0),
             CircleNode(label: 'Trinidad and Tobago', value: 30.0),
+            CircleNode(label: 'The United Kingdom of Great Britain and Northern Ireland', value: 20.0),
           ],
         ),
         CircleNode(
@@ -280,9 +363,9 @@ class StressTestExample extends StatelessWidget {
     );
 
     return ChartExampleScaffold(
-      title: 'LIBRARY STRESS TESTS',
+      title: 'LIBRARY LIMITS',
       root: root,
-      subtitle: 'Testing minimum sizes, long label truncation, and recursive density.',
+      subtitle: 'Testing minimum radii, anti-scaling, and label overflow.',
     );
   }
 }
