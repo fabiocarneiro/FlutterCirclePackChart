@@ -1,67 +1,97 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_circle_pack_chart/flutter_circle_pack_chart.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 
 void main() {
+  // Use path-based routing instead of hash-based (#)
+  usePathUrlStrategy();
   runApp(const MyApp());
 }
+
+final _router = GoRouter(
+  initialLocation: '/countries',
+  routes: [
+    ShellRoute(
+      builder: (context, state, child) {
+        return MainNavigationScreen(child: child);
+      },
+      routes: [
+        GoRoute(
+          path: '/countries',
+          builder: (context, state) => const WorldPopulationExample(),
+        ),
+        GoRoute(
+          path: '/budget',
+          builder: (context, state) => const BudgetTrackerExample(),
+        ),
+        GoRoute(
+          path: '/stress-tests',
+          builder: (context, state) => const StressTestExample(),
+        ),
+      ],
+    ),
+  ],
+);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'FlutterCirclePackChart Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const MainNavigationScreen(),
+      routerConfig: _router,
     );
   }
 }
 
-class MainNavigationScreen extends StatefulWidget {
-  const MainNavigationScreen({super.key});
-
-  @override
-  State<MainNavigationScreen> createState() => _MainNavigationScreenState();
-}
-
-class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _selectedIndex = 0;
+class MainNavigationScreen extends StatelessWidget {
+  final Widget child;
+  const MainNavigationScreen({super.key, required this.child});
 
   static final List<_ExamplePage> _pages = [
     const _ExamplePage(
       title: 'Countries',
+      path: '/countries',
       icon: Icons.public,
-      widget: WorldPopulationExample(),
     ),
     const _ExamplePage(
       title: 'Budget',
+      path: '/budget',
       icon: Icons.account_balance_wallet,
-      widget: BudgetTrackerExample(),
     ),
     const _ExamplePage(
       title: 'Stress Tests',
+      path: '/stress-tests',
       icon: Icons.speed,
-      widget: StressTestExample(),
     ),
   ];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  int _getSelectedIndex(BuildContext context) {
+    final String location = GoRouterState.of(context).uri.path;
+    if (location.startsWith('/budget')) return 1;
+    if (location.startsWith('/stress-tests')) return 2;
+    return 0; // Default to countries
+  }
+
+  void _onItemTapped(int index, BuildContext context) {
+    context.go(_pages[index].path);
     Navigator.pop(context); // Close the drawer
   }
 
   @override
   Widget build(BuildContext context) {
+    final selectedIndex = _getSelectedIndex(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(_pages[_selectedIndex].title),
+        title: Text(_pages[selectedIndex].title),
       ),
       drawer: Drawer(
         child: ListView(
@@ -99,27 +129,27 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               return ListTile(
                 leading: Icon(page.icon),
                 title: Text(page.title),
-                selected: _selectedIndex == index,
-                onTap: () => _onItemTapped(index),
+                selected: selectedIndex == index,
+                onTap: () => _onItemTapped(index, context),
               );
             }),
           ],
         ),
       ),
-      body: _pages[_selectedIndex].widget,
+      body: child,
     );
   }
 }
 
 class _ExamplePage {
   final String title;
+  final String path;
   final IconData icon;
-  final Widget widget;
 
   const _ExamplePage({
     required this.title,
+    required this.path,
     required this.icon,
-    required this.widget,
   });
 }
 
