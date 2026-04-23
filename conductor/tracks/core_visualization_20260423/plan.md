@@ -34,7 +34,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Interaction & Animation' (Protocol in workflow.md) [d6851ca]
 
 ## Phase 4: Legend & Polish
-- [ ] Task: Implement dynamic legend widget
+- [~] Task: Implement dynamic legend widget
     - [ ] Create `TreemapLegend` widget that listens to the `TreemapController`.
     - [ ] Implement logic to display items within the currently focused level.
     - [ ] Write widget tests for legend updates.

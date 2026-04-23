@@ -1,9 +1,8 @@
-import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'circular_treemap.dart';
 
-/// A [CustomPainter] that renders a circular treemap with symmetric 
+/// A [CustomPainter] that renders a circular treemap with symmetric
 /// explosion/implosion animations.
 class CircularTreemapPainter extends CustomPainter {
   /// The absolute root of the packed hierarchy.
@@ -53,10 +52,20 @@ class CircularTreemapPainter extends CustomPainter {
           _drawLeaf(canvas, x, y, r, child.node, color, opacity: opacity);
         } else {
           // Drill Out: new focus is parent. Draw normally.
-          _drawLeaf(canvas, child.x, child.y, child.r, child.node, color, opacity: 0.8);
+          _drawLeaf(
+            canvas,
+            child.x,
+            child.y,
+            child.r,
+            child.node,
+            color,
+            opacity: 0.8,
+          );
         }
       }
-    } else if (node.node == previousFocusedNode && !isDrillingIn && animationValue < 1.0) {
+    } else if (node.node == previousFocusedNode &&
+        !isDrillingIn &&
+        animationValue < 1.0) {
       // Drill Out: previous focus is imploding towards its center (node.x, node.y)
       for (final child in node.children) {
         // Move children from their packed positions back to parent center (node.x, node.y)
@@ -88,7 +97,7 @@ class CircularTreemapPainter extends CustomPainter {
     double opacity = 0.8,
   }) {
     if (opacity <= 0) return;
-    
+
     final Color color = node.color ?? parentColor;
     final paint = Paint()
       ..color = color.withValues(alpha: opacity)
@@ -113,9 +122,15 @@ class CircularTreemapPainter extends CustomPainter {
     return false;
   }
 
-  void _drawLabel(Canvas canvas, String label, Offset center, double radius, double opacity) {
+  void _drawLabel(
+    Canvas canvas,
+    String label,
+    Offset center,
+    double radius,
+    double opacity,
+  ) {
     final double fontSize = (radius / 3.0).clamp(2.0, 24.0);
-    
+
     final textPainter = TextPainter(
       text: TextSpan(
         text: label,

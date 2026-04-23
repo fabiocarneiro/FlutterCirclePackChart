@@ -114,7 +114,9 @@ class _TreemapDemoState extends State<TreemapDemo> {
               ),
               const Padding(
                 padding: EdgeInsets.all(8.0),
-                child: Text('Tap a circle to drill down. Tap outside to go back.'),
+                child: Text(
+                  'Tap a circle to drill down. Tap outside to go back.',
+                ),
               ),
             ],
           ),

@@ -4,6 +4,7 @@ export 'circle_packer.dart';
 export 'circular_treemap_painter.dart';
 export 'circular_treemap_widget.dart';
 export 'treemap_controller.dart';
+export 'treemap_legend.dart';
 
 /// Represents a node in the hierarchical data structure for the circular treemap.
 class CircleNode {
