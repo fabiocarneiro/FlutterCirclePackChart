@@ -5,7 +5,7 @@
     - [x] Create `CircleNode` class with properties for label, value, color, and children.
     - [x] Implement a factory or utility to convert a `Map` or `JSON` to `CircleNode`.
     - [x] Write unit tests for data model validation.
-- [ ] Task: Implement recursive circle packing algorithm
+- [~] Task: Implement recursive circle packing algorithm
     - [ ] Create `CirclePacker` class.
     - [ ] Implement the core packing logic (calculate local $x, y, r$ for a list of siblings).
     - [ ] Implement recursive calculation for the entire tree.

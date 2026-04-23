@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+export 'circle_packer.dart';
+
 /// Represents a node in the hierarchical data structure for the circular treemap.
 class CircleNode {
   /// The display label for this node.
