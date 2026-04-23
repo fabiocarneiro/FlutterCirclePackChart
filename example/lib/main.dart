@@ -29,14 +29,12 @@ class TreemapDemo extends StatefulWidget {
 }
 
 class _TreemapDemoState extends State<TreemapDemo> {
-  late CircleNode root;
-  late CircleNode focusedNode;
-  List<CircleNode> navigationStack = [];
+  late TreemapController _controller;
 
   @override
   void initState() {
     super.initState();
-    root = CircleNode(
+    final root = CircleNode(
       label: 'World',
       color: Colors.blueGrey,
       children: [
@@ -78,76 +76,41 @@ class _TreemapDemoState extends State<TreemapDemo> {
         ),
       ],
     );
-    focusedNode = root;
+    _controller = TreemapController(root: root);
   }
 
-  void _onTap(PackedNode packed) {
-    if (packed.node.children.isNotEmpty) {
-      setState(() {
-        navigationStack.add(focusedNode);
-        focusedNode = packed.node;
-      });
-    }
-  }
-
-  void _goBack() {
-    if (navigationStack.isNotEmpty) {
-      setState(() {
-        focusedNode = navigationStack.removeLast();
-      });
-    }
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Treemap: ${focusedNode.label}'),
-        leading: navigationStack.isNotEmpty
-            ? IconButton(icon: const Icon(Icons.arrow_back), onPressed: _goBack)
-            : null,
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final double radius =
-                  (constraints.maxWidth < constraints.maxHeight
-                      ? constraints.maxWidth
-                      : constraints.maxHeight) /
-                  2;
-
-              final packed = CirclePacker.pack(focusedNode, radius: radius);
-
-              return GestureDetector(
-                onTapUp: (details) {
-                  final RenderBox box = context.findRenderObject() as RenderBox;
-                  final localOffset = box.globalToLocal(details.globalPosition);
-                  // Adjust for centering
-                  final centerX = constraints.maxWidth / 2;
-                  final centerY = constraints.maxHeight / 2;
-                  final relativeX = localOffset.dx - centerX;
-                  final relativeY = localOffset.dy - centerY;
-
-                  for (final child in packed.children) {
-                    final dx = relativeX - child.x;
-                    final dy = relativeY - child.y;
-                    if (dx * dx + dy * dy <= child.r * child.r) {
-                      _onTap(child);
-                      break;
-                    }
-                  }
-                },
-                child: CustomPaint(
-                  painter: CircularTreemapPainter(packedNode: packed),
-                  size: Size(radius * 2, radius * 2),
-                ),
-              );
-            },
+    return ListenableBuilder(
+      listenable: _controller,
+      builder: (context, child) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Treemap: ${_controller.value.label}'),
+            leading: _controller.canGoBack
+                ? IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () => _controller.goBack(),
+                  )
+                : null,
           ),
-        ),
-      ),
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: CircularTreemap(
+                root: _controller.root,
+                controller: _controller,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
