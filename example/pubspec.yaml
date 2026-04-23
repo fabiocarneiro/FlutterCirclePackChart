@@ -38,6 +38,7 @@ dependencies:
     path: ..
   go_router: ^17.2.2
   url_launcher: ^6.3.2
+  url_launcher_web: ^2.4.2
 
 dev_dependencies:
   flutter_test:

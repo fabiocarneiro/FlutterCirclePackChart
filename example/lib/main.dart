@@ -138,9 +138,14 @@ class MainNavigationScreen extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.code),
               title: const Text('View on GitHub'),
-              onTap: () => launchUrl(
-                Uri.parse('https://github.com/fabiocarneiro/FlutterCirclePackChart'),
-              ),
+              onTap: () async {
+                final url = Uri.parse(
+                  'https://github.com/fabiocarneiro/FlutterCirclePackChart',
+                );
+                if (await canLaunchUrl(url)) {
+                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                }
+              },
             ),
           ],
         ),
