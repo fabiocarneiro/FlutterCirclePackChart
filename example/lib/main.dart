@@ -11,31 +11,145 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Circle Pack Chart Demo',
+      title: 'FlutterCirclePackChart Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const FlutterCirclePackChartDemo(),
+      home: const MainNavigationScreen(),
     );
   }
 }
 
-class FlutterCirclePackChartDemo extends StatefulWidget {
-  const FlutterCirclePackChartDemo({super.key});
+class MainNavigationScreen extends StatefulWidget {
+  const MainNavigationScreen({super.key});
 
   @override
-  State<FlutterCirclePackChartDemo> createState() => _FlutterCirclePackChartDemoState();
+  State<MainNavigationScreen> createState() => _MainNavigationScreenState();
 }
 
-class _FlutterCirclePackChartDemoState extends State<FlutterCirclePackChartDemo> {
-  late FlutterCirclePackChartController _controller;
+class _MainNavigationScreenState extends State<MainNavigationScreen> {
+  int _selectedIndex = 0;
+
+  static final List<Widget> _pages = [
+    const WorldPopulationExample(),
+    const BudgetTrackerExample(),
+    const StressTestExample(),
+  ];
 
   @override
-  void initState() {
-    super.initState();
-    // Build a sample hierarchical dataset
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: (index) => setState(() => _selectedIndex = index),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.public),
+            label: 'Countries',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_balance_wallet),
+            label: 'Budget',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.speed),
+            label: 'Stress Tests',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A generic base widget for the examples to maintain consistency
+class ChartExampleScaffold extends StatelessWidget {
+  final String title;
+  final CircleNode root;
+  final String subtitle;
+
+  const ChartExampleScaffold({
+    super.key,
+    required this.title,
+    required this.root,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = FlutterCirclePackChartController(root: root);
+
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: ValueListenableBuilder(
+                  valueListenable: controller,
+                  builder: (context, value, _) {
+                    return Column(
+                      children: [
+                        Text(
+                          title,
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            color: Colors.grey,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          value.label,
+                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+              Expanded(
+                child: FlutterCirclePackChart(
+                  root: root,
+                  controller: controller,
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                height: 180,
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: FlutterCirclePackChartLegend(controller: controller),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  subtitle,
+                  style: const TextStyle(color: Colors.grey, fontSize: 11),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class WorldPopulationExample extends StatelessWidget {
+  const WorldPopulationExample({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     final root = CircleNode(
       label: 'World',
       color: Colors.blueGrey,
@@ -49,8 +163,6 @@ class _FlutterCirclePackChartDemoState extends State<FlutterCirclePackChartDemo>
             CircleNode(label: 'Japan', value: 125.0),
             CircleNode(label: 'Indonesia', value: 270.0),
             CircleNode(label: 'Pakistan', value: 220.0),
-            CircleNode(label: 'Bangladesh', value: 170.0),
-            CircleNode(label: 'Vietnam', value: 98.0),
           ],
         ),
         CircleNode(
@@ -61,9 +173,6 @@ class _FlutterCirclePackChartDemoState extends State<FlutterCirclePackChartDemo>
             CircleNode(label: 'France', value: 67.0),
             CircleNode(label: 'UK', value: 66.0),
             CircleNode(label: 'Italy', value: 60.0),
-            CircleNode(label: 'Spain', value: 47.0),
-            CircleNode(label: 'Ukraine', value: 44.0),
-            CircleNode(label: 'Poland', value: 38.0),
           ],
         ),
         CircleNode(
@@ -72,111 +181,108 @@ class _FlutterCirclePackChartDemoState extends State<FlutterCirclePackChartDemo>
           children: [
             CircleNode(label: 'USA', value: 330.0),
             CircleNode(label: 'Brazil', value: 210.0),
-            CircleNode(label: 'Mexico', value: 128.0),
-            CircleNode(label: 'Colombia', value: 50.0),
-            CircleNode(label: 'Argentina', value: 45.0),
             CircleNode(label: 'Canada', value: 38.0),
-            CircleNode(label: 'Peru', value: 33.0),
-          ],
-        ),
-        CircleNode(
-          label: 'Africa',
-          color: Colors.orange,
-          children: [
-            CircleNode(label: 'Nigeria', value: 200.0),
-            CircleNode(label: 'Ethiopia', value: 110.0),
-            CircleNode(label: 'Egypt', value: 100.0),
-            CircleNode(label: 'DRC', value: 90.0),
-            CircleNode(label: 'Tanzania', value: 60.0),
-            CircleNode(label: 'South Africa', value: 59.0),
-            CircleNode(label: 'Kenya', value: 53.0),
-          ],
-        ),
-        CircleNode(
-          label: 'Tiny Items',
-          color: Colors.purple,
-          children: List.generate(
-            15,
-            (i) => CircleNode(label: 'T$i', value: 0.1),
-          ),
-        ),
-        CircleNode(
-          label: 'Long Names',
-          color: Colors.teal,
-          children: [
-            CircleNode(label: 'Republic of the Congo', value: 100.0),
-            CircleNode(label: 'Sao Tome and Principe', value: 50.0),
-            CircleNode(label: 'Saint Vincent and the Grenadines', value: 30.0),
           ],
         ),
       ],
     );
-    _controller = FlutterCirclePackChartController(root: root);
-  }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+    return ChartExampleScaffold(
+      title: 'WORLD POPULATION',
+      root: root,
+      subtitle: 'Tapping a continent shows top countries by population.',
+    );
   }
+}
+
+class BudgetTrackerExample extends StatelessWidget {
+  const BudgetTrackerExample({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              // Header displaying current level
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24.0),
-                child: ValueListenableBuilder(
-                  valueListenable: _controller,
-                  builder: (context, value, _) {
-                    return Text(
-                      value.label,
-                      style: Theme.of(context).textTheme.headlineLarge
-                          ?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                    );
-                  },
-                ),
-              ),
-
-              // Main Treemap Visualization
-              Expanded(
-                child: FlutterCirclePackChart(
-                  root: _controller.root,
-                  controller: _controller,
-                ),
-              ),
-
-              // Fixed-height Legend Area to prevent layout jumps
-              const SizedBox(height: 24),
-              SizedBox(
-                height: 180,
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: FlutterCirclePackChartLegend(controller: _controller),
-                  ),
-                ),
-              ),
-
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(
-                  'Tap a circle to drill down • Tap background to go back',
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
-                ),
-              ),
-            ],
-          ),
+    final root = CircleNode(
+      label: 'Monthly Budget',
+      color: Colors.blueGrey,
+      children: [
+        CircleNode(
+          label: 'Needs',
+          color: Colors.orange,
+          children: [
+            CircleNode(label: 'Rent/Mortgage', value: 1500.0),
+            CircleNode(label: 'Groceries', value: 400.0),
+            CircleNode(label: 'Utilities', value: 250.0),
+            CircleNode(label: 'Insurance', value: 200.0),
+          ],
         ),
-      ),
+        CircleNode(
+          label: 'Wants',
+          color: Colors.pink,
+          children: [
+            CircleNode(label: 'Dining Out', value: 300.0),
+            CircleNode(label: 'Subscriptions', value: 50.0),
+            CircleNode(label: 'Shopping', value: 200.0),
+            CircleNode(label: 'Hobbies', value: 150.0),
+          ],
+        ),
+        CircleNode(
+          label: 'Savings',
+          color: Colors.teal,
+          children: [
+            CircleNode(label: 'Emergency Fund', value: 500.0),
+            CircleNode(label: 'Retirement', value: 400.0),
+            CircleNode(label: 'Investments', value: 300.0),
+          ],
+        ),
+      ],
+    );
+
+    return ChartExampleScaffold(
+      title: 'FINANCIAL TRACKER',
+      root: root,
+      subtitle: '50/30/20 Rule: Split your income into Needs, Wants, and Savings.',
+    );
+  }
+}
+
+class StressTestExample extends StatelessWidget {
+  const StressTestExample({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final root = CircleNode(
+      label: 'Stress Tests',
+      color: Colors.deepPurple,
+      children: [
+        CircleNode(
+          label: 'Tiny Items',
+          color: Colors.purple,
+          children: List.generate(20, (i) => CircleNode(label: 'T$i', value: 0.1)),
+        ),
+        CircleNode(
+          label: 'Long Names',
+          color: Colors.indigo,
+          children: [
+            CircleNode(label: 'Democratic Republic of the Congo', value: 100.0),
+            CircleNode(label: 'Saint Vincent and the Grenadines', value: 50.0),
+            CircleNode(label: 'Bosnia and Herzegovina', value: 40.0),
+            CircleNode(label: 'Trinidad and Tobago', value: 30.0),
+          ],
+        ),
+        CircleNode(
+          label: 'High Density',
+          color: Colors.deepOrange,
+          children: List.generate(10, (i) => CircleNode(
+            label: 'Group $i',
+            children: List.generate(5, (j) => CircleNode(label: 'Item $i-$j', value: 5.0)),
+          )),
+        ),
+      ],
+    );
+
+    return ChartExampleScaffold(
+      title: 'LIBRARY STRESS TESTS',
+      root: root,
+      subtitle: 'Testing minimum sizes, long label truncation, and recursive density.',
     );
   }
 }
