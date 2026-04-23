@@ -23,6 +23,9 @@ class CircularTreemapPainter extends CustomPainter {
   /// The current camera scale applied to the view.
   final double cameraScale;
 
+  /// The base font size for labels (anti-scaled).
+  final double baseFontSize;
+
   CircularTreemapPainter({
     required this.root,
     required this.focusedNode,
@@ -30,6 +33,7 @@ class CircularTreemapPainter extends CustomPainter {
     required this.animationValue,
     required this.isDrillingIn,
     required this.cameraScale,
+    required this.baseFontSize,
   });
 
   @override
@@ -50,6 +54,7 @@ class CircularTreemapPainter extends CustomPainter {
           // Drill In: children explode from parent center
           final double x = node.x + (child.x - node.x) * animationValue;
           final double y = node.y + (child.y - node.y) * animationValue;
+          // Use parent radius (node.r) as start for interpolation
           final double r = lerpDouble(node.r, child.r, animationValue)!;
           _drawLeaf(canvas, x, y, r, child.node, color, opacity: 1.0);
         } else {
@@ -126,9 +131,8 @@ class CircularTreemapPainter extends CustomPainter {
     double radius,
     double opacity,
   ) {
-    // Use "Anti-Scaling": divide font size by cameraScale to keep it constant on screen.
-    final double targetScreenSize = 12.0;
-    final double fontSize = (targetScreenSize / cameraScale).clamp(0.1, 100.0);
+    // Use "Anti-Scaling": divide baseFontSize by cameraScale to keep it constant on screen.
+    final double fontSize = (baseFontSize / cameraScale).clamp(0.1, 100.0);
 
     final textPainter = TextPainter(
       text: TextSpan(
@@ -145,7 +149,7 @@ class CircularTreemapPainter extends CustomPainter {
       ellipsis: '...',
     );
 
-    // Allow some overflow for tiny circles but keep it tighter than before to avoid edges.
+    // Allow some overflow for tiny circles to ensure labels are visible.
     textPainter.layout(maxWidth: radius * 2.5);
 
     textPainter.paint(
@@ -161,6 +165,7 @@ class CircularTreemapPainter extends CustomPainter {
         oldDelegate.previousFocusedNode != previousFocusedNode ||
         oldDelegate.animationValue != animationValue ||
         oldDelegate.isDrillingIn != isDrillingIn ||
-        oldDelegate.cameraScale != cameraScale;
+        oldDelegate.cameraScale != cameraScale ||
+        oldDelegate.baseFontSize != baseFontSize;
   }
 }

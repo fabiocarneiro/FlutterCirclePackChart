@@ -17,7 +17,8 @@ To provide Flutter developers with a powerful, easy-to-use, and highly customiza
     - **Dynamic Legend:** A built-in vertical legend that automatically updates to reflect the items, colors, and values within the currently focused level.
     - **Professional Label System:** 
         - **Guaranteed Visibility:** Enforces a minimum circle size to ensure every item has a legible label.
-        - **Anti-Scaled Consistency:** Labels maintain a constant visual size on screen regardless of zoom level.
+        - **Responsive Scaling:** Automatically adjusts the base font size according to the viewport resolution, ensuring readability on both mobile and large desktop displays.
+        - **Anti-Scaled Consistency:** Labels maintain a constant visual size on screen during zoom transitions.
         - **Flat Aesthetic:** Clean, normal-weight white text with single-line ellipsis for long names.
 - **Recursive Packing Algorithm:** Implementation of a robust layout algorithm that efficiently packs circles within circles, optimized for dynamic transitions and scaling between levels.
 - **Flutter-First Design:** Built specifically for the Flutter ecosystem, leveraging its animation framework for smooth zooming and panning transitions.

@@ -20,6 +20,7 @@ void main() {
                 animationValue: 1.0,
                 isDrillingIn: true,
                 cameraScale: 1.0,
+                baseFontSize: 12.0,
               ),
               size: const Size(200, 200),
             ),
