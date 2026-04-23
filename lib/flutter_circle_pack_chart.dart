@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/widgets.dart';
 
 export 'circle_packer.dart';
