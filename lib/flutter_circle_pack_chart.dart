@@ -12,14 +12,15 @@ typedef NodeWidgetBuilder = Widget Function(BuildContext context, CircleNode nod
 
 /// Represents a node in the hierarchical data structure for the Circle Pack Chart.
 class CircleNode {
-  /// The display label for this node (used for the legend and default labels).
+  /// The primary display label for this node (used for the legend and default labels).
   final String label;
 
-  /// An optional secondary label (e.g. a monetary value or subtitle).
-  final String? secondaryLabel;
+  /// An optional label appearing above the primary label (e.g. a monetary value).
+  /// Rendered larger and bold in the chart view.
+  final String? upperLabel;
 
   /// An optional builder to provide a custom widget as a label inside the circle.
-  /// If provided, this takes precedence over [label] and [secondaryLabel] in the chart view.
+  /// If provided, this takes precedence over [label] and [upperLabel] in the chart view.
   final NodeWidgetBuilder? childBuilder;
 
   /// The internal value for this node. If children are present, the value is
@@ -34,7 +35,7 @@ class CircleNode {
 
   CircleNode({
     required this.label,
-    this.secondaryLabel,
+    this.upperLabel,
     this.childBuilder,
     double? value,
     this.color,
@@ -55,7 +56,7 @@ class CircleNode {
   factory CircleNode.fromMap(Map<String, dynamic> map) {
     return CircleNode(
       label: map['label'] as String,
-      secondaryLabel: map['secondaryLabel'] as String?,
+      upperLabel: map['upperLabel'] as String?,
       value: (map['value'] as num?)?.toDouble(),
       color: map['color'] != null ? Color(map['color'] as int) : null,
       children: (map['children'] as List<dynamic>?)

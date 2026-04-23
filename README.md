@@ -8,7 +8,7 @@ A powerful, interactive, and highly customizable Circle Pack Chart (Circular Tre
 - **♾️ Infinite Zoom Context:** Sibling nodes remain visible and partially overflow the square viewport during transitions, maintaining clear hierarchical context.
 - **🔄 Bidirectional Navigation:** Seamlessly supports both drill-in (explosion) and drill-out (implosion) animations for a natural, physical feel.
 - **📏 Professional Label System:**
-  - **Structured Data:** Use `label` for the name and `secondaryLabel` for monetary values or subtitles.
+  - **Structured Data:** Use `label` for the name and `upperLabel` for monetary values or subtitles (rendered larger and bold).
   - **Guaranteed Visibility:** Enforces a minimum circle size to ensure every item has a legible label.
   - **Anti-Scaled Consistency:** Labels maintain a constant visual size on screen regardless of the zoom level.
   - **Clean Aesthetic:** Flat, normal-weight text with automatic single-line ellipsis for long names.

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'flutter_circle_pack_chart.dart';
 
 /// A [CustomPainter] that renders the circular treemap circles with symmetric 
-/// explosion/implosion animations. Labels are now handled by a widget overlay.
+/// explosion/implosion animations and anti-scaled labels.
 class FlutterCirclePackChartPainter extends CustomPainter {
   /// The absolute root of the packed hierarchy.
   final PackedNode root;
@@ -20,12 +20,20 @@ class FlutterCirclePackChartPainter extends CustomPainter {
   /// Whether we are currently drilling deeper into the hierarchy.
   final bool isDrillingIn;
 
+  /// The current camera scale applied to the view.
+  final double cameraScale;
+
+  /// The base font size for labels (anti-scaled).
+  final double baseFontSize;
+
   FlutterCirclePackChartPainter({
     required this.root,
     required this.focusedNode,
     this.previousFocusedNode,
     required this.animationValue,
     required this.isDrillingIn,
+    required this.cameraScale,
+    required this.baseFontSize,
   });
 
   @override
@@ -46,6 +54,7 @@ class FlutterCirclePackChartPainter extends CustomPainter {
           // Drill In: children explode from parent center
           final double x = node.x + (child.x - node.x) * animationValue;
           final double y = node.y + (child.y - node.y) * animationValue;
+          // Use parent radius (node.r) as start for interpolation
           final double r = lerpDouble(node.r, child.r, animationValue)!;
           _drawLeaf(canvas, x, y, r, child.node, color, opacity: 1.0);
         } else {
@@ -102,6 +111,8 @@ class FlutterCirclePackChartPainter extends CustomPainter {
     final double effectiveRadius = (r - padding).clamp(0.0, r);
 
     canvas.drawCircle(Offset(x, y), effectiveRadius, paint);
+
+    _drawLabel(canvas, node, Offset(x, y), effectiveRadius, opacity);
   }
 
   bool _isAncestor(CircleNode potentialAncestor, CircleNode target) {
@@ -113,12 +124,65 @@ class FlutterCirclePackChartPainter extends CustomPainter {
     return false;
   }
 
+  void _drawLabel(
+    Canvas canvas,
+    CircleNode node,
+    Offset center,
+    double radius,
+    double opacity,
+  ) {
+    // Use "Anti-Scaling": divide baseFontSize by cameraScale to keep it constant on screen.
+    final double targetScreenSize = 12.0;
+    final double fontSize = (targetScreenSize / cameraScale).clamp(0.1, 100.0);
+
+    final TextSpan span = TextSpan(
+      children: [
+        if (node.upperLabel != null) ...[
+          TextSpan(
+            text: '${node.upperLabel}\n',
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: opacity),
+              fontSize: fontSize * 1.2, // Upper line is 20% larger
+              fontWeight: FontWeight.bold, // Upper line is bold
+            ),
+          ),
+        ],
+        TextSpan(
+          text: node.label,
+          style: TextStyle(
+            color: Colors.white.withValues(alpha: opacity),
+            fontSize: fontSize,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+      ],
+    );
+
+    final textPainter = TextPainter(
+      text: span,
+      textDirection: TextDirection.ltr,
+      textAlign: TextAlign.center,
+      maxLines: 2,
+      ellipsis: '...',
+    );
+
+    // Allow some overflow for tiny circles but keep it tighter than before to avoid edges.
+    textPainter.layout(maxWidth: radius * 2.5);
+
+    textPainter.paint(
+      canvas,
+      center - Offset(textPainter.width / 2, textPainter.height / 2),
+    );
+  }
+
   @override
   bool shouldRepaint(covariant FlutterCirclePackChartPainter oldDelegate) {
     return oldDelegate.root != root ||
         oldDelegate.focusedNode != focusedNode ||
         oldDelegate.previousFocusedNode != previousFocusedNode ||
         oldDelegate.animationValue != animationValue ||
-        oldDelegate.isDrillingIn != isDrillingIn;
+        oldDelegate.isDrillingIn != isDrillingIn ||
+        oldDelegate.cameraScale != cameraScale ||
+        oldDelegate.baseFontSize != baseFontSize;
   }
 }
