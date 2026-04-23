@@ -1,7 +1,7 @@
 # Implementation Plan - Implement core circular treemap layout and drill-down visualization
 
 ## Phase 1: Foundation & Data Model
-- [ ] Task: Define Hierarchical Data Model
+- [~] Task: Define Hierarchical Data Model
     - [ ] Create `CircleNode` class with properties for label, value, color, and children.
     - [ ] Implement a factory or utility to convert a `Map` or `JSON` to `CircleNode`.
     - [ ] Write unit tests for data model validation.
