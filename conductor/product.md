@@ -11,11 +11,10 @@ To provide Flutter developers with a powerful, easy-to-use, and highly customiza
 
 ## Key Features
 - **Drill-Down Interactivity:**
-    - **Initial State:** Displays only the highest-level circles.
-    - **Focused Exploration:** Tapping a circle triggers a transition where that circle and its children expand to fill the view area.
-    - **View Constraints:** During drill-down, the focused circle's internal items are guaranteed to remain within the visible view area.
-    - **Overflow Handling:** Sibling circles and the parent hierarchy may overflow outside the visible area to maintain focus on the selected node.
-    - **Dynamic Legend:** A built-in legend that automatically updates to reflect the items within the currently focused circle or level.
+    - **Immersive Drill-Down:** Tapping a circle triggers a smooth, symmetric "breaking apart" animation where children emerge from the parent's center as the view zooms in.
+    - **Infinite Zoom Context:** Sibling nodes remain visible and partially overflow the square viewport during transitions, maintaining hierarchical context.
+    - **Bidirectional Navigation:** Supports both drill-in (explosion) and drill-out (implosion) animations for a natural, physical feel.
+    - **Dynamic Legend:** A built-in vertical legend that automatically updates to reflect the items, colors, and values within the currently focused level.
 - **Recursive Packing Algorithm:** Implementation of a robust layout algorithm that efficiently packs circles within circles, optimized for dynamic transitions and scaling between levels.
 - **Flutter-First Design:** Built specifically for the Flutter ecosystem, leveraging its animation framework for smooth zooming and panning transitions.
 
