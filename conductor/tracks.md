@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [x] **Track: Implement core circular treemap layout and drill-down visualization**
+- [~] **Track: Implement core circular treemap layout and drill-down visualization**
   *Link: [./tracks/core_visualization_20260423/](./tracks/core_visualization_20260423/)*

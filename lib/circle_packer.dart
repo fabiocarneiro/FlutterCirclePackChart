@@ -30,12 +30,13 @@ class PackedNode {
 /// Helper class to perform circle packing calculations.
 class CirclePacker {
   /// Packs the [root] node and its children into a circle with the given [radius].
-  /// Returns a [PackedNode] tree with calculated positions and radii.
-  static PackedNode pack(CircleNode root, {required double radius}) {
-    return _packNode(root, 0.0, 0.0, radius);
+  /// [minRadiusRatio] defines the minimum radius of a child circle as a fraction
+  /// of the parent radius (default is 0.1, meaning 10% of parent).
+  static PackedNode pack(CircleNode root, {required double radius, double minRadiusRatio = 0.1}) {
+    return _packNode(root, 0.0, 0.0, radius, minRadiusRatio);
   }
 
-  static PackedNode _packNode(CircleNode node, double x, double y, double r) {
+  static PackedNode _packNode(CircleNode node, double x, double y, double r, double minRadiusRatio) {
     if (node.children.isEmpty) {
       return PackedNode(node: node, x: x, y: y, r: r);
     }
@@ -46,8 +47,14 @@ class CirclePacker {
     }
 
     // Calculate initial radii based on value (area proportional to value).
+    // We enforce a minimum radius here.
+    final double minR = r * minRadiusRatio;
+    
     final List<_Circle> circles = node.children.map((child) {
-      return _Circle(radius: sqrt(child.value));
+      final double calculatedR = sqrt(child.value);
+      // Ensure it doesn't fall below minR. 
+      // We use a simple max here; the packing algorithm will handle the layout.
+      return _Circle(radius: max(calculatedR, minR));
     }).toList();
 
     _packCircles(circles);
@@ -78,27 +85,31 @@ class CirclePacker {
       maxDist = max(maxDist, sqrt(c.x * c.x + c.y * c.y) + c.radius);
     }
 
+    // Scale back to parent r.
     final double scale = maxDist > 0 ? r / maxDist : 1.0;
 
     final List<PackedNode> packedChildren = [];
     for (int i = 0; i < node.children.length; i++) {
       final c = circles[i];
-      packedChildren.add(
-        _packNode(
-          node.children[i],
-          x + c.x * scale,
-          y + c.y * scale,
-          c.radius * scale,
-        ),
-      );
+      packedChildren.add(_packNode(
+        node.children[i],
+        x + c.x * scale,
+        y + c.y * scale,
+        c.radius * scale,
+        minRadiusRatio,
+      ));
     }
 
-    return PackedNode(node: node, x: x, y: y, r: r, children: packedChildren);
+    return PackedNode(
+      node: node,
+      x: x,
+      y: y,
+      r: r,
+      children: packedChildren,
+    );
   }
 
   /// Simple circle packing algorithm.
-  /// For a production library, a more robust implementation like d3-hierarchy's
-  /// front-chain packing would be used.
   static void _packCircles(List<_Circle> circles) {
     if (circles.isEmpty) return;
 
@@ -111,7 +122,6 @@ class CirclePacker {
     circles[1].x = circles[0].radius + circles[1].radius;
     circles[1].y = 0;
     if (circles.length == 2) {
-      // Center them around the origin.
       final double offset = circles[1].x / 2;
       circles[0].x -= offset;
       circles[1].x -= offset;
@@ -119,18 +129,13 @@ class CirclePacker {
     }
 
     // 3. Place subsequent circles touching two previous circles.
-    // We use a simplified version: place in a spiral for now.
-    // TODO: Implement more efficient packing if needed.
     for (int i = 2; i < circles.length; i++) {
-      // Let's try to avoid overlap for the tests.
       _placeCircle(circles, i);
     }
   }
 
   static void _placeCircle(List<_Circle> circles, int index) {
     final _Circle current = circles[index];
-    // Find a position for circles[index] that touches two already placed circles.
-    // We'll search through pairs of placed circles.
     double minDistanceToOrigin = double.infinity;
     double bestX = 0;
     double bestY = 0;
@@ -152,24 +157,18 @@ class CirclePacker {
         }
       }
     }
-
-    // Fallback if no pair found (should not happen for first few)
+    
     if (minDistanceToOrigin == double.infinity) {
-      // Just put it far away
-      bestX = index * 100.0;
-      bestY = 0;
+        bestX = index * 100.0;
+        bestY = 0;
     }
 
     current.x = bestX;
     current.y = bestY;
   }
 
-  static List<Point<double>> _findTouchPoints(
-    _Circle c1,
-    _Circle c2,
-    double r,
-  ) {
-    final double d2 = pow(c1.x - c2.x, 2) + pow(c1.y - c2.y, 2) as double;
+  static List<Point<double>> _findTouchPoints(_Circle c1, _Circle c2, double r) {
+    final double d2 = (pow(c1.x - c2.x, 2) + pow(c1.y - c2.y, 2)).toDouble();
     final double d = sqrt(d2);
     final double r1 = c1.radius + r;
     final double r2 = c2.radius + r;
@@ -187,13 +186,7 @@ class CirclePacker {
     ];
   }
 
-  static bool _overlapsAny(
-    double x,
-    double y,
-    double r,
-    List<_Circle> circles,
-    int count,
-  ) {
+  static bool _overlapsAny(double x, double y, double r, List<_Circle> circles, int count) {
     for (int i = 0; i < count; i++) {
       final c = circles[i];
       final dist2 = pow(x - c.x, 2) + pow(y - c.y, 2);

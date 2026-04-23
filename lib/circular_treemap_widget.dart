@@ -12,7 +12,16 @@ class CircularTreemap extends StatefulWidget {
   /// Optional controller to manage the navigation state.
   final TreemapController? controller;
 
-  const CircularTreemap({super.key, required this.root, this.controller});
+  /// Defines the minimum radius of a child circle as a fraction of its parent.
+  /// Defaults to 0.15 to ensure visibility of labels.
+  final double minRadiusRatio;
+
+  const CircularTreemap({
+    super.key,
+    required this.root,
+    this.controller,
+    this.minRadiusRatio = 0.15,
+  });
 
   @override
   State<CircularTreemap> createState() => _CircularTreemapState();
@@ -54,7 +63,11 @@ class _CircularTreemapState extends State<CircularTreemap>
     );
 
     // Initial packing
-    _packedRoot = CirclePacker.pack(widget.root, radius: 100.0);
+    _packedRoot = CirclePacker.pack(
+      widget.root,
+      radius: 100.0,
+      minRadiusRatio: widget.minRadiusRatio,
+    );
     _animationController.value = 1.0;
   }
 
@@ -66,8 +79,13 @@ class _CircularTreemapState extends State<CircularTreemap>
       _controller = widget.controller ?? TreemapController(root: widget.root);
       _controller.addListener(_onStateChanged);
     }
-    if (widget.root != oldWidget.root) {
-      _packedRoot = CirclePacker.pack(widget.root, radius: 100.0);
+    if (widget.root != oldWidget.root ||
+        widget.minRadiusRatio != oldWidget.minRadiusRatio) {
+      _packedRoot = CirclePacker.pack(
+        widget.root,
+        radius: 100.0,
+        minRadiusRatio: widget.minRadiusRatio,
+      );
     }
   }
 

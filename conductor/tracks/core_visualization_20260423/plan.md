@@ -33,12 +33,22 @@
     - [x] Write widget tests for animation triggers and state updates.
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Interaction & Animation' (Protocol in workflow.md) [d6851ca]
 
-## Phase 4: Legend & Polish
+## Phase 4: Legend & Polish [checkpoint: c32f471]
 - [x] Task: Implement dynamic legend widget [807da3d]
     - [x] Create `TreemapLegend` widget that listens to the `TreemapController`.
     - [x] Implement logic to display items within the currently focused level.
     - [x] Write widget tests for legend updates.
-- [~] Task: Refinement & Documentation
-    - [ ] Add documentation comments to all public APIs.
-    - [ ] Create a sample `main.dart` demonstrating the library usage.
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Legend & Polish' (Protocol in workflow.md)
+- [x] Task: Refinement & Documentation [c32f471]
+    - [x] Add documentation comments to all public APIs.
+    - [x] Create a sample `main.dart` demonstrating the library usage.
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Legend & Polish' (Protocol in workflow.md) [c32f471]
+
+## Phase 5: Refinement - Label Visibility & Sizing
+- [~] Task: Implement minimum radius logic in CirclePacker
+    - [ ] Update `CirclePacker` to accept a `minRadius` parameter.
+    - [ ] Implement logic to boost small circles and proportionally scale siblings.
+    - [ ] Write unit tests to verify minimum size constraints.
+- [ ] Task: Refine label rendering for small circles
+    - [ ] Ensure labels always appear if the circle meets the minimum size.
+    - [ ] Adjust text scaling and overflow behavior for high-density levels.
+- [ ] Task: Conductor - User Manual Verification 'Phase 5: Refinement - Label Visibility & Sizing' (Protocol in workflow.md)
