@@ -49,7 +49,7 @@ class FlutterCirclePackChartLegend extends StatelessWidget {
                     ),
                     const SizedBox(width: 12),
                     Text(
-                      node.label,
+                      node.label.split('\n').last,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w500,
                       ),
