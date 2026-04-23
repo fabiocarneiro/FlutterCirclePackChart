@@ -23,10 +23,10 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Rendering & Visualization' (Protocol in workflow.md)
 
 ## Phase 3: Interaction & Animation
-- [~] Task: Implement drill-down state management
-    - [ ] Create `TreemapController` using `ValueNotifier` to track the current focused node.
-    - [ ] Add navigation logic (drill down to child, move up to parent).
-    - [ ] Write unit tests for state transitions.
+- [x] Task: Implement drill-down state management [08654be]
+    - [x] Create `TreemapController` using `ValueNotifier` to track the current focused node.
+    - [x] Add navigation logic (drill down to child, move up to parent).
+    - [x] Write unit tests for state transitions.
 - [ ] Task: Add zoom/transform animations for drill-down
     - [ ] Implement view transformation logic (calculate scale and offset to focus on a node).
     - [ ] Wrap the painter in an `AnimatedBuilder` to animate the transformation.
