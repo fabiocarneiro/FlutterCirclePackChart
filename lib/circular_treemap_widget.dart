@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:vector_math/vector_math_64.dart' hide Colors;
 import 'circular_treemap.dart';
 
 /// A widget that displays an animated circular treemap with camera-style drill-down.
@@ -24,7 +25,10 @@ class _CircularTreemapState extends State<CircularTreemap>
   late Animation<double> _animation;
 
   PackedNode? _packedRoot;
-  CircleNode? _previousFocusedNode;
+
+  // State tracking for transitions
+  late CircleNode _currentFocus;
+  CircleNode? _previousFocus;
   bool _isDrillingIn = true;
 
   // Transform state
@@ -37,6 +41,7 @@ class _CircularTreemapState extends State<CircularTreemap>
   void initState() {
     super.initState();
     _controller = widget.controller ?? TreemapController(root: widget.root);
+    _currentFocus = _controller.value;
     _controller.addListener(_onStateChanged);
 
     _animationController = AnimationController(
@@ -78,15 +83,13 @@ class _CircularTreemapState extends State<CircularTreemap>
 
   void _onStateChanged() {
     setState(() {
-      final previous = _previousFocusedNode;
-      final current = _controller.value;
+      final oldFocus = _currentFocus;
+      final newFocus = _controller.value;
 
-      // Determine direction
-      if (previous != null) {
-        _isDrillingIn = _isAncestor(previous, current);
-      } else {
-        _isDrillingIn = true;
-      }
+      // Determine direction: Are we going deeper?
+      _isDrillingIn = _isAncestor(oldFocus, newFocus);
+      _previousFocus = oldFocus;
+      _currentFocus = newFocus;
 
       // Capture the current interpolated state as the start for the next animation
       _startScale =
@@ -99,8 +102,6 @@ class _CircularTreemapState extends State<CircularTreemap>
             _startOffset.dy,
       );
       _animationController.forward(from: 0.0);
-
-      _previousFocusedNode = current;
     });
   }
 
@@ -128,9 +129,6 @@ class _CircularTreemapState extends State<CircularTreemap>
       builder: (context, constraints) {
         final double minSide = min(constraints.maxWidth, constraints.maxHeight);
         final double viewportRadius = minSide / 2;
-
-        // Ensure initial previousFocusedNode is set if not already
-        _previousFocusedNode ??= _controller.value;
 
         // Calculate the NEW target based on the current controller value
         final focusedPacked = _findPackedNode(_packedRoot!, _controller.value);
@@ -217,16 +215,18 @@ class _CircularTreemapState extends State<CircularTreemap>
                     maxWidth: double.infinity,
                     maxHeight: double.infinity,
                     child: Transform(
-                      transform: Matrix4.identity()
-                        ..translate(dx, dy, 0.0)
-                        ..scale(scale, scale, 1.0),
+                      transform: Matrix4.compose(
+                        Vector3(dx, dy, 0.0),
+                        Quaternion.identity(),
+                        Vector3(scale, scale, 1.0),
+                      ),
                       alignment: Alignment.center,
                       child: CustomPaint(
                         painter: CircularTreemapPainter(
                           root: _packedRoot!,
                           focusedNode: _controller.value,
                           previousFocusedNode: _animationController.isAnimating
-                              ? _previousFocusedNode
+                              ? _previousFocus
                               : null,
                           animationValue: _animation.value,
                           isDrillingIn: _isDrillingIn,

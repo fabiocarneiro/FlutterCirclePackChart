@@ -38,7 +38,7 @@
     - [x] Create `TreemapLegend` widget that listens to the `TreemapController`.
     - [x] Implement logic to display items within the currently focused level.
     - [x] Write widget tests for legend updates.
-- [ ] Task: Refinement & Documentation
+- [~] Task: Refinement & Documentation
     - [ ] Add documentation comments to all public APIs.
     - [ ] Create a sample `main.dart` demonstrating the library usage.
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Legend & Polish' (Protocol in workflow.md)

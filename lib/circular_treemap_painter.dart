@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'circular_treemap.dart';
 
 /// A [CustomPainter] that renders a circular treemap with symmetric
-/// explosion/implosion animations.
+/// explosion/implosion animations and full opacity.
 class CircularTreemapPainter extends CustomPainter {
   /// The absolute root of the packed hierarchy.
   final PackedNode root;
@@ -40,51 +40,68 @@ class CircularTreemapPainter extends CustomPainter {
     final Color color = node.node.color ?? parentColor;
 
     if (node.node == focusedNode) {
-      // Current focus: draw children
+      // Current focus level
       for (final child in node.children) {
         if (isDrillingIn) {
-          // Drill In: children explode from parent center (node.x, node.y)
+          // Drill In: children explode from parent center
           final double x = node.x + (child.x - node.x) * animationValue;
           final double y = node.y + (child.y - node.y) * animationValue;
-          // Use parent radius (node.r) as start for interpolation
           final double r = lerpDouble(node.r, child.r, animationValue)!;
-          final double opacity = 0.2 + 0.6 * animationValue;
-          _drawLeaf(canvas, x, y, r, child.node, color, opacity: opacity);
+          _drawLeaf(canvas, x, y, r, child.node, color, opacity: 1.0);
         } else {
-          // Drill Out: new focus is parent. Draw normally.
-          _drawLeaf(
-            canvas,
-            child.x,
-            child.y,
-            child.r,
-            child.node,
-            color,
-            opacity: 0.8,
-          );
+          // Drill Out: new focus is parent.
+          // One of these children might be the one we are imploding from.
+          if (child.node == previousFocusedNode && animationValue < 1.0) {
+            _drawImplodingNode(canvas, child, color);
+          } else {
+            _drawLeaf(
+              canvas,
+              child.x,
+              child.y,
+              child.r,
+              child.node,
+              color,
+              opacity: 1.0,
+            );
+          }
         }
       }
-    } else if (node.node == previousFocusedNode &&
-        !isDrillingIn &&
-        animationValue < 1.0) {
-      // Drill Out: previous focus is imploding towards its center (node.x, node.y)
-      for (final child in node.children) {
-        // Move children from their packed positions back to parent center (node.x, node.y)
-        final double x = child.x + (node.x - child.x) * animationValue;
-        final double y = child.y + (node.y - child.y) * animationValue;
-        // Grow from child.r to parent.r (node.r)
-        final double r = lerpDouble(child.r, node.r, animationValue)!;
-        final double opacity = 0.8 * (1.0 - animationValue);
-        _drawLeaf(canvas, x, y, r, child.node, color, opacity: opacity);
-      }
     } else if (_isAncestor(node.node, focusedNode)) {
-      // Intermediate ancestor: recurse
+      // Higher level ancestor: recurse
       for (final child in node.children) {
         _drawNode(canvas, child, color);
       }
     } else {
-      // Leaf or unrelated branch
-      _drawLeaf(canvas, node.x, node.y, node.r, node.node, color, opacity: 0.8);
+      // Sibling or unrelated branch
+      _drawLeaf(canvas, node.x, node.y, node.r, node.node, color, opacity: 1.0);
     }
+  }
+
+  void _drawImplodingNode(Canvas canvas, PackedNode node, Color parentColor) {
+    // This node (the previous focus) should show its children imploding
+    final Color color = node.node.color ?? parentColor;
+
+    for (final child in node.children) {
+      // Move children from their packed positions back to parent center (node.x, node.y)
+      final double x = child.x + (node.x - child.x) * animationValue;
+      final double y = child.y + (node.y - child.y) * animationValue;
+      // Grow from child.r to parent.r (node.r)
+      final double r = lerpDouble(child.r, node.r, animationValue)!;
+      // Fade out as it implodes
+      final double opacity = 1.0 - animationValue;
+      _drawLeaf(canvas, x, y, r, child.node, color, opacity: opacity);
+    }
+
+    // Also draw the parent itself appearing (fading in)
+    _drawLeaf(
+      canvas,
+      node.x,
+      node.y,
+      node.r,
+      node.node,
+      color,
+      opacity: animationValue,
+    );
   }
 
   void _drawLeaf(
@@ -94,7 +111,7 @@ class CircularTreemapPainter extends CustomPainter {
     double r,
     CircleNode node,
     Color parentColor, {
-    double opacity = 0.8,
+    double opacity = 1.0,
   }) {
     if (opacity <= 0) return;
 
