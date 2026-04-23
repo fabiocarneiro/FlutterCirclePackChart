@@ -44,11 +44,11 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 4: Legend & Polish' (Protocol in workflow.md) [c32f471]
 
 ## Phase 5: Refinement - Label Visibility & Sizing
-- [~] Task: Implement minimum radius logic in CirclePacker
-    - [ ] Update `CirclePacker` to accept a `minRadius` parameter.
-    - [ ] Implement logic to boost small circles and proportionally scale siblings.
-    - [ ] Write unit tests to verify minimum size constraints.
-- [ ] Task: Refine label rendering for small circles
-    - [ ] Ensure labels always appear if the circle meets the minimum size.
-    - [ ] Adjust text scaling and overflow behavior for high-density levels.
+- [x] Task: Implement minimum radius logic in CirclePacker [df36ffe]
+    - [x] Update `CirclePacker` to accept a `minRadius` parameter.
+    - [x] Implement logic to boost small circles and proportionally scale siblings.
+    - [x] Write unit tests to verify minimum size constraints.
+- [x] Task: Refine label rendering for small circles [df36ffe]
+    - [x] Ensure labels always appear if the circle meets the minimum size.
+    - [x] Adjust text scaling and overflow behavior for high-density levels.
 - [ ] Task: Conductor - User Manual Verification 'Phase 5: Refinement - Label Visibility & Sizing' (Protocol in workflow.md)

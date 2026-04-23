@@ -97,6 +97,15 @@ class _TreemapDemoState extends State<TreemapDemo> {
           color: Colors.purple,
           children: List.generate(15, (i) => CircleNode(label: 'T$i', value: 0.1)),
         ),
+        CircleNode(
+          label: 'Long Names',
+          color: Colors.teal,
+          children: [
+            CircleNode(label: 'Republic of the Congo', value: 100.0),
+            CircleNode(label: 'Sao Tome and Principe', value: 50.0),
+            CircleNode(label: 'Saint Vincent and the Grenadines', value: 30.0),
+          ],
+        ),
       ],
     );
     _controller = TreemapController(root: root);

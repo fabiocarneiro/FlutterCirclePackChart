@@ -19,6 +19,7 @@ void main() {
                 focusedNode: root,
                 animationValue: 1.0,
                 isDrillingIn: true,
+                cameraScale: 1.0,
               ),
               size: const Size(200, 200),
             ),

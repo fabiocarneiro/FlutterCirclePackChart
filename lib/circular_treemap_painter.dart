@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'circular_treemap.dart';
 
 /// A [CustomPainter] that renders a circular treemap with symmetric 
-/// explosion/implosion animations and full opacity.
+/// explosion/implosion animations and anti-scaled labels.
 class CircularTreemapPainter extends CustomPainter {
   /// The absolute root of the packed hierarchy.
   final PackedNode root;
@@ -20,12 +20,16 @@ class CircularTreemapPainter extends CustomPainter {
   /// Whether we are currently drilling deeper into the hierarchy.
   final bool isDrillingIn;
 
+  /// The current camera scale applied to the view.
+  final double cameraScale;
+
   CircularTreemapPainter({
     required this.root,
     required this.focusedNode,
     this.previousFocusedNode,
     required this.animationValue,
     required this.isDrillingIn,
+    required this.cameraScale,
   });
 
   @override
@@ -46,7 +50,6 @@ class CircularTreemapPainter extends CustomPainter {
           // Drill In: children explode from parent center
           final double x = node.x + (child.x - node.x) * animationValue;
           final double y = node.y + (child.y - node.y) * animationValue;
-          // Use parent radius (node.r) as start for interpolation
           final double r = lerpDouble(node.r, child.r, animationValue)!;
           _drawLeaf(canvas, x, y, r, child.node, color, opacity: 1.0);
         } else {
@@ -70,7 +73,6 @@ class CircularTreemapPainter extends CustomPainter {
   }
 
   void _drawImplodingNode(Canvas canvas, PackedNode node, Color parentColor) {
-    // This node (the previous focus) should show its children imploding
     final Color color = node.node.color ?? parentColor;
     
     for (final child in node.children) {
@@ -81,7 +83,6 @@ class CircularTreemapPainter extends CustomPainter {
       _drawLeaf(canvas, x, y, r, child.node, color, opacity: opacity);
     }
     
-    // Also draw the parent itself appearing (fading in)
     _drawLeaf(canvas, node.x, node.y, node.r, node.node, color, opacity: animationValue);
   }
 
@@ -125,9 +126,9 @@ class CircularTreemapPainter extends CustomPainter {
     double radius,
     double opacity,
   ) {
-    if (radius < 4.0) return;
-
-    final double fontSize = (radius / 2.8).clamp(3.0, 24.0);
+    // Use "Anti-Scaling": divide font size by cameraScale to keep it constant on screen.
+    final double targetScreenSize = 12.0;
+    final double fontSize = (targetScreenSize / cameraScale).clamp(0.1, 100.0);
 
     final textPainter = TextPainter(
       text: TextSpan(
@@ -135,23 +136,22 @@ class CircularTreemapPainter extends CustomPainter {
         style: TextStyle(
           color: Colors.white.withValues(alpha: opacity),
           fontSize: fontSize,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.normal,
         ),
       ),
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.center,
-      maxLines: 2,
+      maxLines: 1,
       ellipsis: '...',
     );
 
-    textPainter.layout(maxWidth: radius * 1.85);
+    // Allow some overflow for tiny circles but keep it tighter than before to avoid edges.
+    textPainter.layout(maxWidth: radius * 2.5);
 
-    if (textPainter.height < radius * 1.8) {
-      textPainter.paint(
-        canvas,
-        center - Offset(textPainter.width / 2, textPainter.height / 2),
-      );
-    }
+    textPainter.paint(
+      canvas,
+      center - Offset(textPainter.width / 2, textPainter.height / 2),
+    );
   }
 
   @override
@@ -160,6 +160,7 @@ class CircularTreemapPainter extends CustomPainter {
         oldDelegate.focusedNode != focusedNode ||
         oldDelegate.previousFocusedNode != previousFocusedNode ||
         oldDelegate.animationValue != animationValue ||
-        oldDelegate.isDrillingIn != isDrillingIn;
+        oldDelegate.isDrillingIn != isDrillingIn ||
+        oldDelegate.cameraScale != cameraScale;
   }
 }

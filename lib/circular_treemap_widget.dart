@@ -13,14 +13,14 @@ class CircularTreemap extends StatefulWidget {
   final TreemapController? controller;
 
   /// Defines the minimum radius of a child circle as a fraction of its parent.
-  /// Defaults to 0.15 to ensure visibility of labels.
+  /// Defaults to 0.20 to allow better visual hierarchy while maintaining labels.
   final double minRadiusRatio;
 
   const CircularTreemap({
     super.key,
     required this.root,
     this.controller,
-    this.minRadiusRatio = 0.15,
+    this.minRadiusRatio = 0.20,
   });
 
   @override
@@ -248,6 +248,7 @@ class _CircularTreemapState extends State<CircularTreemap>
                               : null,
                           animationValue: _animation.value,
                           isDrillingIn: _isDrillingIn,
+                          cameraScale: scale,
                         ),
                         size: const Size(200, 200),
                       ),
