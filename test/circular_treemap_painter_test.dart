@@ -15,6 +15,8 @@ void main() {
               painter: CircularTreemapPainter(
                 root: packedNode,
                 focusedNode: root,
+                animationValue: 1.0,
+                isDrillingIn: true,
               ),
               size: const Size(200, 200),
             ),

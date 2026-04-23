@@ -1,7 +1,10 @@
+import 'dart:math';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'circular_treemap.dart';
 
-/// A [CustomPainter] that renders a circular treemap with focus-based visibility.
+/// A [CustomPainter] that renders a circular treemap with symmetric 
+/// explosion/implosion animations.
 class CircularTreemapPainter extends CustomPainter {
   /// The absolute root of the packed hierarchy.
   final PackedNode root;
@@ -9,9 +12,21 @@ class CircularTreemapPainter extends CustomPainter {
   /// The currently focused node.
   final CircleNode focusedNode;
 
+  /// The node that was focused before the current transition.
+  final CircleNode? previousFocusedNode;
+
+  /// The current progress of the animation (0.0 to 1.0).
+  final double animationValue;
+
+  /// Whether we are currently drilling deeper into the hierarchy.
+  final bool isDrillingIn;
+
   CircularTreemapPainter({
     required this.root,
     required this.focusedNode,
+    this.previousFocusedNode,
+    required this.animationValue,
+    required this.isDrillingIn,
   });
 
   @override
@@ -26,31 +41,67 @@ class CircularTreemapPainter extends CustomPainter {
     final Color color = node.node.color ?? parentColor;
 
     if (node.node == focusedNode) {
-      // Draw children of the focused node.
+      // Current focus: draw children
       for (final child in node.children) {
-        _drawLeaf(canvas, child, color);
+        if (isDrillingIn) {
+          // Drill In: children explode from parent center (node.x, node.y)
+          final double x = node.x + (child.x - node.x) * animationValue;
+          final double y = node.y + (child.y - node.y) * animationValue;
+          // Use parent radius (node.r) as start for interpolation
+          final double r = lerpDouble(node.r, child.r, animationValue)!;
+          final double opacity = 0.2 + 0.6 * animationValue;
+          _drawLeaf(canvas, x, y, r, child.node, color, opacity: opacity);
+        } else {
+          // Drill Out: new focus is parent. Draw normally.
+          _drawLeaf(canvas, child.x, child.y, child.r, child.node, color, opacity: 0.8);
+        }
+      }
+    } else if (node.node == previousFocusedNode && !isDrillingIn && animationValue < 1.0) {
+      // Drill Out: previous focus is imploding towards its center (node.x, node.y)
+      for (final child in node.children) {
+        // Move children from their packed positions back to parent center (node.x, node.y)
+        final double x = child.x + (node.x - child.x) * animationValue;
+        final double y = child.y + (node.y - child.y) * animationValue;
+        // Grow from child.r to parent.r (node.r)
+        final double r = lerpDouble(child.r, node.r, animationValue)!;
+        final double opacity = 0.8 * (1.0 - animationValue);
+        _drawLeaf(canvas, x, y, r, child.node, color, opacity: opacity);
       }
     } else if (_isAncestor(node.node, focusedNode)) {
-      // If it's an ancestor, we don't draw its boundary, we just look inside.
+      // Intermediate ancestor: recurse
       for (final child in node.children) {
         _drawNode(canvas, child, color);
       }
     } else {
-      // Sibling or unrelated branch: draw as a single leaf circle.
-      _drawLeaf(canvas, node, color);
+      // Leaf or unrelated branch
+      _drawLeaf(canvas, node.x, node.y, node.r, node.node, color, opacity: 0.8);
     }
   }
 
-  void _drawLeaf(Canvas canvas, PackedNode node, Color parentColor) {
-    final Color color = node.node.color ?? parentColor;
+  void _drawLeaf(
+    Canvas canvas,
+    double x,
+    double y,
+    double r,
+    CircleNode node,
+    Color parentColor, {
+    double opacity = 0.8,
+  }) {
+    if (opacity <= 0) return;
+    
+    final Color color = node.color ?? parentColor;
     final paint = Paint()
-      ..color = color
+      ..color = color.withValues(alpha: opacity)
       ..style = PaintingStyle.fill;
 
-    canvas.drawCircle(Offset(node.x, node.y), node.r, paint);
+    final double padding = r * 0.05;
+    final double effectiveRadius = (r - padding).clamp(0.0, r);
 
-    // Labels are drawn for all visible leaves if they have enough space.
-    _drawLabel(canvas, node.node.label, Offset(node.x, node.y), node.r);
+    canvas.drawCircle(Offset(x, y), effectiveRadius, paint);
+
+    if (effectiveRadius > 5) {
+      _drawLabel(canvas, node.label, Offset(x, y), effectiveRadius, opacity);
+    }
   }
 
   bool _isAncestor(CircleNode potentialAncestor, CircleNode target) {
@@ -62,16 +113,14 @@ class CircularTreemapPainter extends CustomPainter {
     return false;
   }
 
-  void _drawLabel(Canvas canvas, String label, Offset center, double radius) {
-    if (radius < 5) return;
-
+  void _drawLabel(Canvas canvas, String label, Offset center, double radius, double opacity) {
     final double fontSize = (radius / 3.0).clamp(2.0, 24.0);
     
     final textPainter = TextPainter(
       text: TextSpan(
         text: label,
         style: TextStyle(
-          color: Colors.white,
+          color: Colors.white.withValues(alpha: opacity),
           fontSize: fontSize,
           fontWeight: FontWeight.w600,
         ),
@@ -83,8 +132,6 @@ class CircularTreemapPainter extends CustomPainter {
     );
 
     textPainter.layout(maxWidth: radius * 1.8);
-    
-    // Only paint if the text is not overwhelmingly large for the circle
     if (textPainter.height < radius * 1.5) {
       textPainter.paint(
         canvas,
@@ -95,6 +142,10 @@ class CircularTreemapPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CircularTreemapPainter oldDelegate) {
-    return oldDelegate.root != root || oldDelegate.focusedNode != focusedNode;
+    return oldDelegate.root != root ||
+        oldDelegate.focusedNode != focusedNode ||
+        oldDelegate.previousFocusedNode != previousFocusedNode ||
+        oldDelegate.animationValue != animationValue ||
+        oldDelegate.isDrillingIn != isDrillingIn;
   }
 }

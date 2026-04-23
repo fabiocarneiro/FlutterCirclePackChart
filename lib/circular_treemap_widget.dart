@@ -27,6 +27,8 @@ class _CircularTreemapState extends State<CircularTreemap> with SingleTickerProv
   late Animation<double> _animation;
 
   PackedNode? _packedRoot;
+  CircleNode? _previousFocusedNode;
+  bool _isDrillingIn = true;
   
   // Transform state
   double _startScale = 1.0;
@@ -79,6 +81,16 @@ class _CircularTreemapState extends State<CircularTreemap> with SingleTickerProv
 
   void _onStateChanged() {
     setState(() {
+      final previous = _previousFocusedNode;
+      final current = _controller.value;
+      
+      // Determine direction
+      if (previous != null) {
+         _isDrillingIn = _isAncestor(previous, current);
+      } else {
+         _isDrillingIn = true;
+      }
+      
       // Capture the current interpolated state as the start for the next animation
       _startScale = lerpDouble(_startScale, _targetScale, _animation.value) ?? _startScale;
       _startOffset = Offset(
@@ -86,7 +98,18 @@ class _CircularTreemapState extends State<CircularTreemap> with SingleTickerProv
         lerpDouble(_startOffset.dy, _targetOffset.dy, _animation.value) ?? _startOffset.dy,
       );
       _animationController.forward(from: 0.0);
+      
+      _previousFocusedNode = current;
     });
+  }
+
+  bool _isAncestor(CircleNode potentialAncestor, CircleNode target) {
+    if (potentialAncestor.children.isEmpty) return false;
+    for (final child in potentialAncestor.children) {
+      if (child == target) return true;
+      if (_isAncestor(child, target)) return true;
+    }
+    return false;
   }
 
   PackedNode? _findPackedNode(PackedNode root, CircleNode target) {
@@ -105,6 +128,9 @@ class _CircularTreemapState extends State<CircularTreemap> with SingleTickerProv
         final double minSide = min(constraints.maxWidth, constraints.maxHeight);
         final double viewportRadius = minSide / 2;
         
+        // Ensure initial previousFocusedNode is set if not already
+        _previousFocusedNode ??= _controller.value;
+
         // Calculate the NEW target based on the current controller value
         final focusedPacked = _findPackedNode(_packedRoot!, _controller.value);
         if (focusedPacked != null && focusedPacked.r > 0) {
@@ -173,6 +199,9 @@ class _CircularTreemapState extends State<CircularTreemap> with SingleTickerProv
                         painter: CircularTreemapPainter(
                           root: _packedRoot!,
                           focusedNode: _controller.value,
+                          previousFocusedNode: _animationController.isAnimating ? _previousFocusedNode : null,
+                          animationValue: _animation.value,
+                          isDrillingIn: _isDrillingIn,
                         ),
                         size: const Size(200, 200),
                       ),
