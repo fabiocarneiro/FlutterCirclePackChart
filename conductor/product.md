@@ -15,6 +15,10 @@ To provide Flutter developers with a powerful, easy-to-use, and highly customiza
     - **Infinite Zoom Context:** Sibling nodes remain visible and partially overflow the square viewport during transitions, maintaining hierarchical context.
     - **Bidirectional Navigation:** Supports both drill-in (explosion) and drill-out (implosion) animations for a natural, physical feel.
     - **Dynamic Legend:** A built-in vertical legend that automatically updates to reflect the items, colors, and values within the currently focused level.
+    - **Professional Label System:** 
+        - **Guaranteed Visibility:** Enforces a minimum circle size to ensure every item has a legible label.
+        - **Anti-Scaled Consistency:** Labels maintain a constant visual size on screen regardless of zoom level.
+        - **Flat Aesthetic:** Clean, normal-weight white text with single-line ellipsis for long names.
 - **Recursive Packing Algorithm:** Implementation of a robust layout algorithm that efficiently packs circles within circles, optimized for dynamic transitions and scaling between levels.
 - **Flutter-First Design:** Built specifically for the Flutter ecosystem, leveraging its animation framework for smooth zooming and panning transitions.
 
