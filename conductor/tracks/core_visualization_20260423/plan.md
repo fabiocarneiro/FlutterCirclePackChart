@@ -22,7 +22,7 @@
     - [x] Write widget tests for initial rendering.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Rendering & Visualization' (Protocol in workflow.md)
 
-## Phase 3: Interaction & Animation
+## Phase 3: Interaction & Animation [checkpoint: d6851ca]
 - [x] Task: Implement drill-down state management [08654be]
     - [x] Create `TreemapController` using `ValueNotifier` to track the current focused node.
     - [x] Add navigation logic (drill down to child, move up to parent).
@@ -31,7 +31,7 @@
     - [x] Implement view transformation logic (calculate scale and offset to focus on a node).
     - [x] Wrap the painter in an `AnimatedBuilder` to animate the transformation.
     - [x] Write widget tests for animation triggers and state updates.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Interaction & Animation' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Interaction & Animation' (Protocol in workflow.md) [d6851ca]
 
 ## Phase 4: Legend & Polish
 - [ ] Task: Implement dynamic legend widget
