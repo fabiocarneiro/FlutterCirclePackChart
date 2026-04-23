@@ -2,15 +2,15 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
-import 'circle_pack_chart.dart';
+import 'flutter_circle_pack_chart.dart';
 
 /// A widget that displays an animated circular treemap with camera-style drill-down.
-class CirclePackChart extends StatefulWidget {
+class FlutterCirclePackChart extends StatefulWidget {
   /// The root node of the hierarchical data to display.
   final CircleNode root;
 
   /// Optional controller to manage the navigation state.
-  final CirclePackChartController? controller;
+  final FlutterCirclePackChartController? controller;
 
   /// Defines the minimum radius of a child circle as a fraction of its parent.
   /// Defaults to 0.20 to allow better visual hierarchy while maintaining labels.
@@ -20,7 +20,7 @@ class CirclePackChart extends StatefulWidget {
   /// Defaults to 1.0. Higher values make text larger globally.
   final double fontSizeFactor;
 
-  const CirclePackChart({
+  const FlutterCirclePackChart({
     super.key,
     required this.root,
     this.controller,
@@ -29,12 +29,12 @@ class CirclePackChart extends StatefulWidget {
   });
 
   @override
-  State<CirclePackChart> createState() => _CirclePackChartState();
+  State<FlutterCirclePackChart> createState() => _FlutterCirclePackChartState();
 }
 
-class _CirclePackChartState extends State<CirclePackChart>
+class _FlutterCirclePackChartState extends State<FlutterCirclePackChart>
     with SingleTickerProviderStateMixin {
-  late CirclePackChartController _controller;
+  late FlutterCirclePackChartController _controller;
   late AnimationController _animationController;
   late Animation<double> _animation;
 
@@ -55,7 +55,7 @@ class _CirclePackChartState extends State<CirclePackChart>
   void initState() {
     super.initState();
     _controller =
-        widget.controller ?? CirclePackChartController(root: widget.root);
+        widget.controller ?? FlutterCirclePackChartController(root: widget.root);
     _currentFocus = _controller.value;
     _controller.addListener(_onStateChanged);
 
@@ -78,12 +78,12 @@ class _CirclePackChartState extends State<CirclePackChart>
   }
 
   @override
-  void didUpdateWidget(CirclePackChart oldWidget) {
+  void didUpdateWidget(FlutterCirclePackChart oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.controller != oldWidget.controller) {
       oldWidget.controller?.removeListener(_onStateChanged);
       _controller =
-          widget.controller ?? CirclePackChartController(root: widget.root);
+          widget.controller ?? FlutterCirclePackChartController(root: widget.root);
       _controller.addListener(_onStateChanged);
     }
     if (widget.root != oldWidget.root ||
@@ -248,7 +248,7 @@ class _CirclePackChartState extends State<CirclePackChart>
                       ),
                       alignment: Alignment.center,
                       child: CustomPaint(
-                        painter: CirclePackChartPainter(
+                        painter: FlutterCirclePackChartPainter(
                           root: _packedRoot!,
                           focusedNode: _controller.value,
                           previousFocusedNode: _animationController.isAnimating

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:circle_pack_chart/circle_pack_chart.dart';
+import 'package:flutter_circle_pack_chart/flutter_circle_pack_chart.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,20 +17,20 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const CirclePackChartDemo(),
+      home: const FlutterCirclePackChartDemo(),
     );
   }
 }
 
-class CirclePackChartDemo extends StatefulWidget {
-  const CirclePackChartDemo({super.key});
+class FlutterCirclePackChartDemo extends StatefulWidget {
+  const FlutterCirclePackChartDemo({super.key});
 
   @override
-  State<CirclePackChartDemo> createState() => _CirclePackChartDemoState();
+  State<FlutterCirclePackChartDemo> createState() => _FlutterCirclePackChartDemoState();
 }
 
-class _CirclePackChartDemoState extends State<CirclePackChartDemo> {
-  late CirclePackChartController _controller;
+class _FlutterCirclePackChartDemoState extends State<FlutterCirclePackChartDemo> {
+  late FlutterCirclePackChartController _controller;
 
   @override
   void initState() {
@@ -111,7 +111,7 @@ class _CirclePackChartDemoState extends State<CirclePackChartDemo> {
         ),
       ],
     );
-    _controller = CirclePackChartController(root: root);
+    _controller = FlutterCirclePackChartController(root: root);
   }
 
   @override
@@ -148,7 +148,7 @@ class _CirclePackChartDemoState extends State<CirclePackChartDemo> {
 
               // Main Treemap Visualization
               Expanded(
-                child: CirclePackChart(
+                child: FlutterCirclePackChart(
                   root: _controller.root,
                   controller: _controller,
                 ),
@@ -161,7 +161,7 @@ class _CirclePackChartDemoState extends State<CirclePackChartDemo> {
                 child: SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: CirclePackChartLegend(controller: _controller),
+                    child: FlutterCirclePackChartLegend(controller: _controller),
                   ),
                 ),
               ),

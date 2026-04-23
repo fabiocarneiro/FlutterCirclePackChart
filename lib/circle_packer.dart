@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'circle_pack_chart.dart';
+import 'flutter_circle_pack_chart.dart';
 
 /// Represents a node that has been positioned and sized in the treemap.
 class PackedNode {

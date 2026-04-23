@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'circle_pack_chart.dart';
+import 'flutter_circle_pack_chart.dart';
 
 /// A widget that displays a vertical legend for the currently focused level of a circular treemap.
-class CirclePackChartLegend extends StatelessWidget {
+class FlutterCirclePackChartLegend extends StatelessWidget {
   /// The controller whose navigation state this legend follows.
-  final CirclePackChartController controller;
+  final FlutterCirclePackChartController controller;
 
-  const CirclePackChartLegend({super.key, required this.controller});
+  const FlutterCirclePackChartLegend({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {

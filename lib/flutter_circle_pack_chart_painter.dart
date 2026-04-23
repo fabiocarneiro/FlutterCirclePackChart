@@ -1,10 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'circle_pack_chart.dart';
+import 'flutter_circle_pack_chart.dart';
 
 /// A [CustomPainter] that renders a circular treemap with symmetric
 /// explosion/implosion animations and anti-scaled labels.
-class CirclePackChartPainter extends CustomPainter {
+class FlutterCirclePackChartPainter extends CustomPainter {
   /// The absolute root of the packed hierarchy.
   final PackedNode root;
 
@@ -26,7 +26,7 @@ class CirclePackChartPainter extends CustomPainter {
   /// The base font size for labels (anti-scaled).
   final double baseFontSize;
 
-  CirclePackChartPainter({
+  FlutterCirclePackChartPainter({
     required this.root,
     required this.focusedNode,
     this.previousFocusedNode,
@@ -175,7 +175,7 @@ class CirclePackChartPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CirclePackChartPainter oldDelegate) {
+  bool shouldRepaint(covariant FlutterCirclePackChartPainter oldDelegate) {
     return oldDelegate.root != root ||
         oldDelegate.focusedNode != focusedNode ||
         oldDelegate.previousFocusedNode != previousFocusedNode ||

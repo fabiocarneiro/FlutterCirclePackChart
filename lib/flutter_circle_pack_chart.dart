@@ -1,10 +1,10 @@
 import 'dart:ui';
 
 export 'circle_packer.dart';
-export 'circle_pack_chart_painter.dart';
-export 'circle_pack_chart_widget.dart';
-export 'circle_pack_chart_controller.dart';
-export 'circle_pack_chart_legend.dart';
+export 'flutter_circle_pack_chart_painter.dart';
+export 'flutter_circle_pack_chart_widget.dart';
+export 'flutter_circle_pack_chart_controller.dart';
+export 'flutter_circle_pack_chart_legend.dart';
 
 /// Represents a node in the hierarchical data structure for the Circle Pack Chart.
 class CircleNode {

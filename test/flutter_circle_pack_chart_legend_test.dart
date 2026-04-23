@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:circle_pack_chart/circle_pack_chart.dart';
+import 'package:flutter_circle_pack_chart/flutter_circle_pack_chart.dart';
 
 void main() {
-  testWidgets('CirclePackChartLegend should display items for focused node', (
+  testWidgets('FlutterCirclePackChartLegend should display items for focused node', (
     WidgetTester tester,
   ) async {
     final root = CircleNode(
@@ -13,11 +13,11 @@ void main() {
         CircleNode(label: 'B', value: 20, color: Colors.blue),
       ],
     );
-    final controller = CirclePackChartController(root: root);
+    final controller = FlutterCirclePackChartController(root: root);
 
     await tester.pumpWidget(
       MaterialApp(
-        home: Scaffold(body: CirclePackChartLegend(controller: controller)),
+        home: Scaffold(body: FlutterCirclePackChartLegend(controller: controller)),
       ),
     );
 

@@ -1,5 +1,5 @@
-name: circle_pack_chart
-description: A powerful and interactive circular treemap (circle pack chart) library for Flutter.
+name: flutter_circle_pack_chart
+description: A powerful and interactive circle pack chart (circular treemap) library for Flutter.
 version: 0.0.1
 homepage: https://github.com/yourusername/circle_pack_chart
 

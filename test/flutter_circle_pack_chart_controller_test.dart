@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:circle_pack_chart/circle_pack_chart.dart';
+import 'package:flutter_circle_pack_chart/flutter_circle_pack_chart.dart';
 
 void main() {
-  group('CirclePackChartController', () {
+  group('FlutterCirclePackChartController', () {
     test('should start with root as focused node', () {
       final root = CircleNode(label: 'Root');
-      final controller = CirclePackChartController(root: root);
+      final controller = FlutterCirclePackChartController(root: root);
       expect(controller.value, root);
       expect(controller.canGoBack, isFalse);
     });
@@ -14,7 +14,7 @@ void main() {
       final leaf = CircleNode(label: 'Leaf', value: 10.0);
       final child = CircleNode(label: 'Child', children: [leaf]);
       final root = CircleNode(label: 'Root', children: [child]);
-      final controller = CirclePackChartController(root: root);
+      final controller = FlutterCirclePackChartController(root: root);
 
       controller.drillDown(child);
       expect(controller.value, child);
@@ -25,7 +25,7 @@ void main() {
       final leaf = CircleNode(label: 'Leaf', value: 10.0);
       final child = CircleNode(label: 'Child', children: [leaf]);
       final root = CircleNode(label: 'Root', children: [child]);
-      final controller = CirclePackChartController(root: root);
+      final controller = FlutterCirclePackChartController(root: root);
 
       controller.drillDown(child);
       controller.goBack();

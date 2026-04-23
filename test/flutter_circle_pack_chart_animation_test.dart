@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:circle_pack_chart/circle_pack_chart.dart';
+import 'package:flutter_circle_pack_chart/flutter_circle_pack_chart.dart';
 
 void main() {
-  testWidgets('CirclePackChart should animate on drill down', (
+  testWidgets('FlutterCirclePackChart should animate on drill down', (
     WidgetTester tester,
   ) async {
     final child = CircleNode(
@@ -12,7 +12,7 @@ void main() {
     );
     final root = CircleNode(label: 'Root', children: [child]);
 
-    final controller = CirclePackChartController(root: root);
+    final controller = FlutterCirclePackChartController(root: root);
 
     await tester.pumpWidget(
       MaterialApp(
@@ -20,14 +20,14 @@ void main() {
           body: SizedBox(
             width: 500,
             height: 500,
-            child: CirclePackChart(root: root, controller: controller),
+            child: FlutterCirclePackChart(root: root, controller: controller),
           ),
         ),
       ),
     );
 
     // Initial state
-    expect(find.byType(CirclePackChart), findsOneWidget);
+    expect(find.byType(FlutterCirclePackChart), findsOneWidget);
 
     // Trigger drill down
     controller.drillDown(child);
