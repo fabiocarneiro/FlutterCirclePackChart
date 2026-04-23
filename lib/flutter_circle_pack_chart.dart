@@ -8,8 +8,11 @@ export 'flutter_circle_pack_chart_legend.dart';
 
 /// Represents a node in the hierarchical data structure for the Circle Pack Chart.
 class CircleNode {
-  /// The display label for this node.
+  /// The primary display label for this node.
   final String label;
+
+  /// An optional secondary label (e.g. a monetary value or subtitle).
+  final String? secondaryLabel;
 
   /// The internal value for this node. If children are present, the value is
   /// typically the sum of children values.
@@ -23,6 +26,7 @@ class CircleNode {
 
   CircleNode({
     required this.label,
+    this.secondaryLabel,
     double? value,
     this.color,
     this.children = const [],
@@ -42,10 +46,10 @@ class CircleNode {
   factory CircleNode.fromMap(Map<String, dynamic> map) {
     return CircleNode(
       label: map['label'] as String,
+      secondaryLabel: map['secondaryLabel'] as String?,
       value: (map['value'] as num?)?.toDouble(),
       color: map['color'] != null ? Color(map['color'] as int) : null,
-      children:
-          (map['children'] as List<dynamic>?)
+      children: (map['children'] as List<dynamic>?)
               ?.map(
                 (child) => CircleNode.fromMap(child as Map<String, dynamic>),
               )

@@ -128,7 +128,7 @@ class FlutterCirclePackChartPainter extends CustomPainter {
 
     canvas.drawCircle(Offset(x, y), effectiveRadius, paint);
 
-    _drawLabel(canvas, node.label, Offset(x, y), effectiveRadius, opacity);
+    _drawLabel(canvas, node, Offset(x, y), effectiveRadius, opacity);
   }
 
   bool _isAncestor(CircleNode potentialAncestor, CircleNode target) {
@@ -139,41 +139,44 @@ class FlutterCirclePackChartPainter extends CustomPainter {
     }
     return false;
   }
+void _drawLabel(
+  Canvas canvas,
+  CircleNode node, // Pass the whole node to access secondaryLabel
+  Offset center,
+  double radius,
+  double opacity,
+) {
+  // Use "Anti-Scaling": divide font size by cameraScale to keep it constant on screen.
+  final double targetScreenSize = 12.0;
+  final double fontSize = (targetScreenSize / cameraScale).clamp(0.1, 100.0);
 
-  void _drawLabel(
-    Canvas canvas,
-    String label,
-    Offset center,
-    double radius,
-    double opacity,
-  ) {
-    // Use "Anti-Scaling": divide baseFontSize by cameraScale to keep it constant on screen.
-    final double fontSize = (baseFontSize / cameraScale).clamp(0.1, 100.0);
+  final String fullText = node.secondaryLabel != null
+      ? '${node.secondaryLabel}\n${node.label}'
+      : node.label;
 
-    final textPainter = TextPainter(
-      text: TextSpan(
-        text: label,
-        style: TextStyle(
-          color: Colors.white.withValues(alpha: opacity),
-          fontSize: fontSize,
-          fontWeight: FontWeight.normal,
-        ),
+  final textPainter = TextPainter(
+    text: TextSpan(
+      text: fullText,
+      style: TextStyle(
+        color: Colors.white.withValues(alpha: opacity),
+        fontSize: fontSize,
+        fontWeight: FontWeight.normal,
       ),
-      textDirection: TextDirection.ltr,
-      textAlign: TextAlign.center,
-      maxLines: 2, // Allow up to 2 lines
-      ellipsis: '...',
-    );
+    ),
+    textDirection: TextDirection.ltr,
+    textAlign: TextAlign.center,
+    maxLines: 2,
+    ellipsis: '...',
+  );
 
-    // Allow some overflow for tiny circles to ensure labels are visible.
-    textPainter.layout(maxWidth: radius * 2.5);
+  // Allow some overflow for tiny circles to ensure labels are visible.
+  textPainter.layout(maxWidth: radius * 3.0);
 
-    // Ensure the entire block is centered by subtracting half width AND half height
-    textPainter.paint(
-      canvas,
-      center - Offset(textPainter.width / 2, textPainter.height / 2),
-    );
-  }
+  textPainter.paint(
+    canvas,
+    center - Offset(textPainter.width / 2, textPainter.height / 2),
+  );
+}
 
   @override
   bool shouldRepaint(covariant FlutterCirclePackChartPainter oldDelegate) {
