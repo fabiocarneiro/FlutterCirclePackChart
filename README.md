@@ -2,6 +2,8 @@
 
 A powerful, interactive, and highly customizable Circle Pack Chart (Circular Treemap) library for Flutter. Built with performance and user experience in mind, it features immersive drill-down navigation and a responsive, structured label system.
 
+**[Live Demo](https://fabiocarneiro.github.io/FlutterCirclePackChart/)**
+
 ## 🌟 Features
 
 - **🚀 Immersive Drill-Down:** Tapping a circle triggers a smooth, symmetric "breaking apart" animation where children emerge from the parent's center as the view zooms in.
@@ -29,7 +31,7 @@ dependencies:
 ## 🚀 Getting Started
 
 ### 1. Define your data
-Create a hierarchy of `CircleNode` objects. You can use both `label` and `secondaryLabel` to display structured data on two lines:
+Create a hierarchy of `CircleNode` objects. You can use both `label` and `upperLabel` to display structured data on two lines:
 
 ```dart
 final root = CircleNode(
@@ -38,19 +40,19 @@ final root = CircleNode(
   children: [
     CircleNode(
       label: 'Needs',
-      secondaryLabel: '\$2500',
+      upperLabel: '\$2500',
       color: Colors.orange,
       children: [
-        CircleNode(label: 'Rent', secondaryLabel: '\$1500', value: 1500.0),
-        CircleNode(label: 'Groceries', secondaryLabel: '\$400', value: 400.0),
+        CircleNode(label: 'Rent', upperLabel: '\$1500', value: 1500.0),
+        CircleNode(label: 'Groceries', upperLabel: '\$400', value: 400.0),
       ],
     ),
     CircleNode(
       label: 'Wants',
-      secondaryLabel: '\$1100',
+      upperLabel: '\$1100',
       color: Colors.pink,
       children: [
-        CircleNode(label: 'Dining', secondaryLabel: '\$300', value: 300.0),
+        CircleNode(label: 'Dining', upperLabel: '\$300', value: 300.0),
       ],
     ),
   ],

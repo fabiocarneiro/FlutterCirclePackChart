@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_circle_pack_chart/flutter_circle_pack_chart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   // Use path-based routing instead of hash-based (#)
@@ -133,6 +134,14 @@ class MainNavigationScreen extends StatelessWidget {
                 onTap: () => _onItemTapped(index, context),
               );
             }),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.code),
+              title: const Text('View on GitHub'),
+              onTap: () => launchUrl(
+                Uri.parse('https://github.com/fabiocarneiro/FlutterCirclePackChart'),
+              ),
+            ),
           ],
         ),
       ),

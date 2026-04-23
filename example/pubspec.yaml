@@ -37,6 +37,7 @@ dependencies:
   flutter_circle_pack_chart:
     path: ..
   go_router: ^17.2.2
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:
