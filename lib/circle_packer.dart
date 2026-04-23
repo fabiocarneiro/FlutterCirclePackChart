@@ -52,6 +52,26 @@ class CirclePacker {
 
     _packCircles(circles);
 
+    // Center the packed circles around the origin before scaling.
+    if (circles.isNotEmpty) {
+      double minX = double.infinity, maxX = -double.infinity;
+      double minY = double.infinity, maxY = -double.infinity;
+      for (final c in circles) {
+        minX = min(minX, c.x - c.radius);
+        maxX = max(maxX, c.x + c.radius);
+        minY = min(minY, c.y - c.radius);
+        maxY = max(maxY, c.y + c.radius);
+      }
+
+      final double midX = (minX + maxX) / 2;
+      final double midY = (minY + maxY) / 2;
+
+      for (final c in circles) {
+        c.x -= midX;
+        c.y -= midY;
+      }
+    }
+
     // Find the bounding circle of the packed results to scale them into the parent.
     double maxDist = 0;
     for (final c in circles) {
