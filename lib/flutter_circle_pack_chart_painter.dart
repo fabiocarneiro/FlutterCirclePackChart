@@ -164,49 +164,67 @@ class FlutterCirclePackChartPainter extends CustomPainter {
   ) {
     if (!showValue && !showLabels) return;
 
-    // Use two distinct, anti-scaled font sizes for perfect sharpness.
     final double valueFontSize = (baseFontSize / cameraScale).clamp(0.1, 100.0);
-    // Label is exactly 25% smaller than the base/value size, but using a whole number where possible
     final double labelFontSize = ((baseFontSize * 0.75) / cameraScale).clamp(0.1, 100.0);
+    final double maxWidth = radius * 2.5;
 
-    final TextSpan span = TextSpan(
-      children: [
-        if (showValue) ...[
-          TextSpan(
-            text: '${node.displayValue ?? node.value.toStringAsFixed(0)}${showLabels ? '\n' : ''}',
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: opacity),
-              fontSize: valueFontSize,
-              fontWeight: FontWeight.bold,
-            ),
+    TextPainter? valuePainter;
+    if (showValue) {
+      valuePainter = TextPainter(
+        text: TextSpan(
+          text: node.displayValue ?? node.value.toStringAsFixed(0),
+          style: TextStyle(
+            color: Colors.white.withValues(alpha: opacity),
+            fontSize: valueFontSize,
+            fontWeight: FontWeight.bold,
           ),
-        ],
-        if (showLabels)
-          TextSpan(
-            text: node.label,
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: opacity),
-              fontSize: labelFontSize,
-              fontWeight: FontWeight.normal,
-            ),
+        ),
+        textDirection: TextDirection.ltr,
+        textAlign: TextAlign.center,
+        maxLines: 1,
+        ellipsis: '...',
+      )..layout(maxWidth: maxWidth);
+    }
+
+    TextPainter? labelPainter;
+    if (showLabels) {
+      labelPainter = TextPainter(
+        text: TextSpan(
+          text: node.label,
+          style: TextStyle(
+            color: Colors.white.withValues(alpha: opacity),
+            fontSize: labelFontSize,
+            fontWeight: FontWeight.normal,
           ),
-      ],
-    );
+        ),
+        textDirection: TextDirection.ltr,
+        textAlign: TextAlign.center,
+        maxLines: 1,
+        ellipsis: '...',
+      )..layout(maxWidth: maxWidth);
+    }
 
-    final textPainter = TextPainter(
-      text: span,
-      textDirection: TextDirection.ltr,
-      textAlign: TextAlign.center,
-      maxLines: (showValue && showLabels) ? 2 : 1,
-      ellipsis: '...',
-    );
+    // Calculate total vertical height and center
+    double totalHeight = 0;
+    if (valuePainter != null) totalHeight += valuePainter.height;
+    if (labelPainter != null) totalHeight += labelPainter.height;
+    
+    double currentY = center.dy - (totalHeight / 2);
 
-    textPainter.layout(maxWidth: radius * 2.5);
+    if (valuePainter != null) {
+      valuePainter.paint(
+        canvas,
+        Offset(center.dx - (valuePainter.width / 2), currentY),
+      );
+      currentY += valuePainter.height;
+    }
 
-    textPainter.paint(
-      canvas,
-      center - Offset(textPainter.width / 2, textPainter.height / 2),
-    );
+    if (labelPainter != null) {
+      labelPainter.paint(
+        canvas,
+        Offset(center.dx - (labelPainter.width / 2), currentY),
+      );
+    }
   }
 
   @override
