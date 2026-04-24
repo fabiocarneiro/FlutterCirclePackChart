@@ -1,6 +1,8 @@
 # FlutterCirclePackChart
 
 [![Pub Version](https://img.shields.io/pub/v/flutter_circle_pack_chart.svg)](https://pub.dev/packages/flutter_circle_pack_chart)
+[![Documentation](https://img.shields.io/badge/docs-pub.dev-blue.svg)](https://pub.dev/documentation/flutter_circle_pack_chart/latest/)
+[![Demo](https://img.shields.io/badge/demo-live-brightgreen.svg)](https://fabiocarneiro.github.io/FlutterCirclePackChart/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Deploy to GitHub Pages](https://github.com/fabiocarneiro/FlutterCirclePackChart/actions/workflows/deploy.yml/badge.svg)](https://github.com/fabiocarneiro/FlutterCirclePackChart/actions/workflows/deploy.yml)
 [![Platform](https://img.shields.io/badge/platform-flutter-blue.svg)](https://flutter.dev)
