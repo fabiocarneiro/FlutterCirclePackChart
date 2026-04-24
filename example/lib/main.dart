@@ -257,6 +257,8 @@ class WorldPopulationExample extends StatelessWidget {
       children: [
         CircleNode(
           label: 'Asia',
+          value: 4700.0,
+          displayValue: '4.7B',
           color: Colors.red,
           children: [
             CircleNode(label: 'China', value: 1400.0, displayValue: '1.4B'),
@@ -268,6 +270,8 @@ class WorldPopulationExample extends StatelessWidget {
         ),
         CircleNode(
           label: 'Europe',
+          value: 745.0,
+          displayValue: '745M',
           color: Colors.blue,
           children: [
             CircleNode(label: 'Germany', value: 83.0, displayValue: '83M'),
@@ -278,11 +282,24 @@ class WorldPopulationExample extends StatelessWidget {
         ),
         CircleNode(
           label: 'Americas',
+          value: 1000.0,
+          displayValue: '1.0B',
           color: Colors.green,
           children: [
             CircleNode(label: 'USA', value: 330.0, displayValue: '330M'),
             CircleNode(label: 'Brazil', value: 210.0, displayValue: '210M'),
             CircleNode(label: 'Canada', value: 38.0, displayValue: '38M'),
+          ],
+        ),
+        CircleNode(
+          label: 'Africa',
+          value: 1400.0,
+          displayValue: '1.4B',
+          color: Colors.orange,
+          children: [
+            CircleNode(label: 'Nigeria', value: 200.0, displayValue: '200M'),
+            CircleNode(label: 'Ethiopia', value: 110.0, displayValue: '110M'),
+            CircleNode(label: 'Egypt', value: 100.0, displayValue: '100M'),
           ],
         ),
       ],

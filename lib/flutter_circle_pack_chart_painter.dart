@@ -65,9 +65,7 @@ class FlutterCirclePackChartPainter extends CustomPainter {
       final double minValue = node.children.isEmpty ? 0.0 : node.children.map((c) => c.node.value).reduce((a, b) => a < b ? a : b);
 
       for (final child in sortedChildren) {
-        // Dynamic opacity only applies when we are drilled in deeper than root.
-        // If focusedNode is root, everything at level 1 is 100% opaque.
-        // We use a tight range (0.85 - 1.0) to keep boxes looking solid.
+        // Dynamic opacity with a tight range (0.85 - 1.0)
         final double importance = (focusedNode == root.node)
             ? 1.0
             : (maxValue == minValue
@@ -166,37 +164,29 @@ class FlutterCirclePackChartPainter extends CustomPainter {
   ) {
     if (!showValue && !showLabels) return;
 
-    // Use "Anti-Scaling": divide baseFontSize by cameraScale to keep it constant on screen.
-    final double fontSize = (baseFontSize / cameraScale).clamp(0.1, 100.0);
+    // Use two distinct, anti-scaled font sizes for perfect sharpness.
+    final double valueFontSize = (baseFontSize / cameraScale).clamp(0.1, 100.0);
+    // Label is exactly 25% smaller than the base/value size, but using a whole number where possible
+    final double labelFontSize = ((baseFontSize * 0.75) / cameraScale).clamp(0.1, 100.0);
 
     final TextSpan span = TextSpan(
       children: [
         if (showValue) ...[
-          if (node.displayValue != null)
-            TextSpan(
-              text: '${node.displayValue}${showLabels ? '\n' : ''}',
-              style: TextStyle(
-                color: Colors.white.withValues(alpha: opacity),
-                fontSize: fontSize * 1.2,
-                fontWeight: FontWeight.bold,
-              ),
-            )
-          else
-            TextSpan(
-              text: '${node.value.toStringAsFixed(0)}${showLabels ? '\n' : ''}',
-              style: TextStyle(
-                color: Colors.white.withValues(alpha: opacity),
-                fontSize: fontSize * 1.2,
-                fontWeight: FontWeight.bold,
-              ),
+          TextSpan(
+            text: '${node.displayValue ?? node.value.toStringAsFixed(0)}${showLabels ? '\n' : ''}',
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: opacity),
+              fontSize: valueFontSize,
+              fontWeight: FontWeight.bold,
             ),
+          ),
         ],
         if (showLabels)
           TextSpan(
             text: node.label,
             style: TextStyle(
               color: Colors.white.withValues(alpha: opacity),
-              fontSize: fontSize,
+              fontSize: labelFontSize,
               fontWeight: FontWeight.normal,
             ),
           ),
@@ -211,7 +201,6 @@ class FlutterCirclePackChartPainter extends CustomPainter {
       ellipsis: '...',
     );
 
-    // Allow some overflow for tiny circles but keep it tighter than before to avoid edges.
     textPainter.layout(maxWidth: radius * 2.5);
 
     textPainter.paint(

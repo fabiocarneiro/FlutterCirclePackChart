@@ -1,3 +1,11 @@
+## 2.0.0
+
+* **Breaking Change:** Refactored `CircleNode` data model. Renamed `upperLabel` to `displayValue` and reordered constructor arguments (`value` now comes before `displayValue`).
+* **New Feature:** Added `showValue` and `showLabels` flags to `FlutterCirclePackChart` for granular display control.
+* **New Feature:** Implemented **Dynamic Opacity**: Circles now automatically scale their opacity (0.85 - 1.0) based on their relative values to highlight data importance.
+* **Typographic Refinement:** Implemented independent "anti-scaling" for value and label lines, ensuring perfect sharpness and a balanced visual hierarchy.
+* Refactored example app with three distinct demo categories: Countries, Budget, and Stress Tests.
+
 ## 1.0.4
 
 * Implemented "Deck of Cards" drawing order: larger circles now stay on top of smaller ones during all transitions.
