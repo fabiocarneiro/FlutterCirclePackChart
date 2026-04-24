@@ -19,17 +19,13 @@ A powerful, interactive, and highly customizable Circle Pack Chart (Circular Tre
 
 ## 📦 Installation
 
-Add `flutter_circle_pack_chart` to your `pubspec.yaml`:
+To add **flutter_circle_pack_chart** to your project, run:
 
-```yaml
-dependencies:
-  flutter_circle_pack_chart: ^1.0.0
-```
-
-Alternatively, run:
 ```bash
 flutter pub add flutter_circle_pack_chart
 ```
+
+This will add the latest version of the package to your `pubspec.yaml`.
 
 ## 🚀 Getting Started
 

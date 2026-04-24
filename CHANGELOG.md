@@ -1,3 +1,7 @@
+## 1.0.2
+
+* Simplify installation instructions in README to be version-agnostic.
+
 ## 1.0.1
 
 * Update README with official pub.dev installation instructions.
