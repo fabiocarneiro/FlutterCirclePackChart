@@ -402,22 +402,59 @@ class StressTestExample extends StatelessWidget {
           color: Colors.indigo,
           children: [
             CircleNode(
-              label: 'Level 1',
+              label: 'Branch A',
               color: Colors.blue,
               children: [
                 CircleNode(
-                  label: 'Level 2',
+                  label: 'Group A.1',
                   color: Colors.lightBlue,
                   children: [
                     CircleNode(
-                      label: 'Level 3',
+                      label: 'Subgroup A.1.a',
                       color: Colors.cyan,
                       children: [
-                        CircleNode(label: 'Leaf 4A', value: 50.0),
-                        CircleNode(label: 'Leaf 4B', value: 50.0),
+                        CircleNode(label: 'Leaf A.1.a.1', value: 50.0),
+                        CircleNode(label: 'Leaf A.1.a.2', value: 50.0),
                       ],
                     ),
-                    CircleNode(label: 'Leaf 3B', value: 100.0),
+                    CircleNode(
+                      label: 'Subgroup A.1.b',
+                      color: Colors.cyanAccent,
+                      children: [
+                        CircleNode(label: 'Leaf A.1.b.1', value: 30.0),
+                        CircleNode(label: 'Leaf A.1.b.2', value: 30.0),
+                      ],
+                    ),
+                  ],
+                ),
+                CircleNode(
+                  label: 'Group A.2',
+                  color: Colors.blueAccent,
+                  children: [
+                    CircleNode(label: 'Leaf A.2.1', value: 40.0),
+                    CircleNode(label: 'Leaf A.2.2', value: 40.0),
+                  ],
+                ),
+              ],
+            ),
+            CircleNode(
+              label: 'Branch B',
+              color: Colors.indigoAccent,
+              children: [
+                CircleNode(
+                  label: 'Group B.1',
+                  color: Colors.deepPurple,
+                  children: [
+                    CircleNode(label: 'Leaf B.1.1', value: 60.0),
+                    CircleNode(label: 'Leaf B.1.2', value: 40.0),
+                  ],
+                ),
+                CircleNode(
+                  label: 'Group B.2',
+                  color: Colors.purple,
+                  children: [
+                    CircleNode(label: 'Leaf B.2.1', value: 25.0),
+                    CircleNode(label: 'Leaf B.2.2', value: 25.0),
                   ],
                 ),
               ],
@@ -441,7 +478,7 @@ class StressTestExample extends StatelessWidget {
     return ChartExampleScaffold(
       title: 'LIBRARY LIMITS',
       root: root,
-      showValue: false,
+      showValue: true, // Now showing values as requested
       subtitle: 'Testing minimum radii, anti-scaling, and recursive density.',
     );
   }

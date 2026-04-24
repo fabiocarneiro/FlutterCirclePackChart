@@ -1,3 +1,10 @@
+## 2.0.1
+
+* **Bug Fix:** Implemented linear canvas anti-scaling to eliminate vertical jitter and "jumping" of labels during zoom animations.
+* **UI Refinement:** Switched to a mathematically stable slot-based layout for multi-line labels, ensuring perfect centering and zero overlap.
+* **UI Refinement:** Tightened dynamic opacity range (0.85-1.0) for a more solid and consistent visual style.
+* **Example Update:** Restored and updated the Africa category in the World Population example.
+
 ## 2.0.0
 
 * **Breaking Change:** Refactored `CircleNode` data model. Renamed `upperLabel` to `displayValue` and reordered constructor arguments (`value` now comes before `displayValue`).
