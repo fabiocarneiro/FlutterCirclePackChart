@@ -164,20 +164,18 @@ class FlutterCirclePackChartPainter extends CustomPainter {
   ) {
     if (!showValue && !showLabels) return;
 
-    // --- MATHEMATICALLY STABLE FONT SIZING & SPACING ---
-    // Instead of using TextPainter.height (which jitters), we use a fixed multiplier
-    // of the baseFontSize for vertical positioning.
-    
-    final double valueSize = (baseFontSize / cameraScale).clamp(0.1, 100.0);
-    final double labelSize = ((baseFontSize * 0.75) / cameraScale).clamp(0.1, 100.0);
-    
-    // Total visual vertical height block (in canvas units)
-    // 1.2 and 1.0 are stable line-height multipliers.
-    final double valueHeight = showValue ? (valueSize * 1.2) : 0.0;
-    final double labelHeight = showLabels ? (labelSize * 1.0) : 0.0;
-    final double totalHeight = valueHeight + labelHeight;
-    final double maxWidth = radius * 2.2; // Tighter constraint to avoid edges
+    // Use two distinct, anti-scaled font sizes for perfect sharpness.
+    final double valueFontSize = (baseFontSize / cameraScale).clamp(0.1, 100.0);
+    final double labelFontSize = ((baseFontSize * 0.75) / cameraScale).clamp(0.1, 100.0);
+    final double maxWidth = radius * 2.2;
 
+    // --- SLOT-BASED LAYOUT ---
+    // We define a fixed height for each "slot" to ensure perfect spacing.
+    final double valueSlotHeight = showValue ? (valueFontSize * 1.4) : 0.0;
+    final double labelSlotHeight = showLabels ? (labelFontSize * 1.4) : 0.0;
+    final double totalHeight = valueSlotHeight + labelSlotHeight;
+    
+    // Start at the top of the combined block
     double currentY = center.dy - (totalHeight / 2);
 
     if (showValue) {
@@ -186,7 +184,7 @@ class FlutterCirclePackChartPainter extends CustomPainter {
           text: node.displayValue ?? node.value.toStringAsFixed(0),
           style: TextStyle(
             color: Colors.white.withValues(alpha: opacity),
-            fontSize: valueSize,
+            fontSize: valueFontSize,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -196,11 +194,13 @@ class FlutterCirclePackChartPainter extends CustomPainter {
         ellipsis: '...',
       )..layout(maxWidth: maxWidth);
 
+      // Center the value painter vertically within its own slot
+      final double verticalOffset = (valueSlotHeight - valuePainter.height) / 2;
       valuePainter.paint(
         canvas,
-        Offset(center.dx - (valuePainter.width / 2), currentY),
+        Offset(center.dx - (valuePainter.width / 2), currentY + verticalOffset),
       );
-      currentY += valueHeight; // Advance by the FIXED multiplier, not dynamic height
+      currentY += valueSlotHeight;
     }
 
     if (showLabels) {
@@ -209,7 +209,7 @@ class FlutterCirclePackChartPainter extends CustomPainter {
           text: node.label,
           style: TextStyle(
             color: Colors.white.withValues(alpha: opacity),
-            fontSize: labelSize,
+            fontSize: labelFontSize,
             fontWeight: FontWeight.normal,
           ),
         ),
@@ -219,9 +219,11 @@ class FlutterCirclePackChartPainter extends CustomPainter {
         ellipsis: '...',
       )..layout(maxWidth: maxWidth);
 
+      // Center the label painter vertically within its own slot
+      final double verticalOffset = (labelSlotHeight - labelPainter.height) / 2;
       labelPainter.paint(
         canvas,
-        Offset(center.dx - (labelPainter.width / 2), currentY),
+        Offset(center.dx - (labelPainter.width / 2), currentY + verticalOffset),
       );
     }
   }
