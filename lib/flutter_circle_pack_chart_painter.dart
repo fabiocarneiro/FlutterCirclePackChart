@@ -164,18 +164,29 @@ class FlutterCirclePackChartPainter extends CustomPainter {
   ) {
     if (!showValue && !showLabels) return;
 
-    final double valueFontSize = (baseFontSize / cameraScale).clamp(0.1, 100.0);
-    final double labelFontSize = ((baseFontSize * 0.75) / cameraScale).clamp(0.1, 100.0);
-    final double maxWidth = radius * 2.5;
+    // --- MATHEMATICALLY STABLE FONT SIZING & SPACING ---
+    // Instead of using TextPainter.height (which jitters), we use a fixed multiplier
+    // of the baseFontSize for vertical positioning.
+    
+    final double valueSize = (baseFontSize / cameraScale).clamp(0.1, 100.0);
+    final double labelSize = ((baseFontSize * 0.75) / cameraScale).clamp(0.1, 100.0);
+    
+    // Total visual vertical height block (in canvas units)
+    // 1.2 and 1.0 are stable line-height multipliers.
+    final double valueHeight = showValue ? (valueSize * 1.2) : 0.0;
+    final double labelHeight = showLabels ? (labelSize * 1.0) : 0.0;
+    final double totalHeight = valueHeight + labelHeight;
+    final double maxWidth = radius * 2.2; // Tighter constraint to avoid edges
 
-    TextPainter? valuePainter;
+    double currentY = center.dy - (totalHeight / 2);
+
     if (showValue) {
-      valuePainter = TextPainter(
+      final valuePainter = TextPainter(
         text: TextSpan(
           text: node.displayValue ?? node.value.toStringAsFixed(0),
           style: TextStyle(
             color: Colors.white.withValues(alpha: opacity),
-            fontSize: valueFontSize,
+            fontSize: valueSize,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -184,16 +195,21 @@ class FlutterCirclePackChartPainter extends CustomPainter {
         maxLines: 1,
         ellipsis: '...',
       )..layout(maxWidth: maxWidth);
+
+      valuePainter.paint(
+        canvas,
+        Offset(center.dx - (valuePainter.width / 2), currentY),
+      );
+      currentY += valueHeight; // Advance by the FIXED multiplier, not dynamic height
     }
 
-    TextPainter? labelPainter;
     if (showLabels) {
-      labelPainter = TextPainter(
+      final labelPainter = TextPainter(
         text: TextSpan(
           text: node.label,
           style: TextStyle(
             color: Colors.white.withValues(alpha: opacity),
-            fontSize: labelFontSize,
+            fontSize: labelSize,
             fontWeight: FontWeight.normal,
           ),
         ),
@@ -202,24 +218,7 @@ class FlutterCirclePackChartPainter extends CustomPainter {
         maxLines: 1,
         ellipsis: '...',
       )..layout(maxWidth: maxWidth);
-    }
 
-    // Calculate total vertical height and center
-    double totalHeight = 0;
-    if (valuePainter != null) totalHeight += valuePainter.height;
-    if (labelPainter != null) totalHeight += labelPainter.height;
-    
-    double currentY = center.dy - (totalHeight / 2);
-
-    if (valuePainter != null) {
-      valuePainter.paint(
-        canvas,
-        Offset(center.dx - (valuePainter.width / 2), currentY),
-      );
-      currentY += valuePainter.height;
-    }
-
-    if (labelPainter != null) {
       labelPainter.paint(
         canvas,
         Offset(center.dx - (labelPainter.width / 2), currentY),
