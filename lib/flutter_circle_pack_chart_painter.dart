@@ -80,15 +80,25 @@ class FlutterCirclePackChartPainter extends CustomPainter {
   void _drawImplodingNode(Canvas canvas, PackedNode node, Color parentColor) {
     final Color color = node.node.color ?? parentColor;
     
+    // Staggered threshold: children merge and stay solid until 85% of animation.
+    // This prevents the parent circle from showing through while they are still separate.
+    const double threshold = 0.85;
+    
+    final double childOpacity = (1.0 - (animationValue - threshold) / (1.0 - threshold)).clamp(0.0, 1.0);
+    final double parentOpacity = ((animationValue - threshold) / (1.0 - threshold)).clamp(0.0, 1.0);
+
     for (final child in node.children) {
+      // Move children from their packed positions back to parent center (node.x, node.y)
       final double x = child.x + (node.x - child.x) * animationValue;
       final double y = child.y + (node.y - child.y) * animationValue;
+      // Grow from child.r to parent.r (node.r)
       final double r = lerpDouble(child.r, node.r, animationValue)!;
-      final double opacity = 1.0 - animationValue;
-      _drawLeaf(canvas, x, y, r, child.node, color, opacity: opacity);
+      
+      _drawLeaf(canvas, x, y, r, child.node, color, opacity: childOpacity);
     }
     
-    _drawLeaf(canvas, node.x, node.y, node.r, node.node, color, opacity: animationValue);
+    // Parent circle fades in only at the very end of the implosion
+    _drawLeaf(canvas, node.x, node.y, node.r, node.node, color, opacity: parentOpacity);
   }
 
   void _drawLeaf(
@@ -142,8 +152,8 @@ class FlutterCirclePackChartPainter extends CustomPainter {
             text: '${node.upperLabel}\n',
             style: TextStyle(
               color: Colors.white.withValues(alpha: opacity),
-              fontSize: fontSize * 1.2, // Upper line is 20% larger
-              fontWeight: FontWeight.bold, // Upper line is bold
+              fontSize: fontSize * 1.2,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
@@ -166,7 +176,6 @@ class FlutterCirclePackChartPainter extends CustomPainter {
       ellipsis: '...',
     );
 
-    // Allow some overflow for tiny circles but keep it tighter than before to avoid edges.
     textPainter.layout(maxWidth: radius * 2.5);
 
     textPainter.paint(
