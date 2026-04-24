@@ -1,5 +1,10 @@
 # FlutterCirclePackChart
 
+[![Pub Version](https://img.shields.io/pub/v/flutter_circle_pack_chart.svg)](https://pub.dev/packages/flutter_circle_pack_chart)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Deploy to GitHub Pages](https://github.com/fabiocarneiro/FlutterCirclePackChart/actions/workflows/deploy.yml/badge.svg)](https://github.com/fabiocarneiro/FlutterCirclePackChart/actions/workflows/deploy.yml)
+[![Platform](https://img.shields.io/badge/platform-flutter-blue.svg)](https://flutter.dev)
+
 A powerful, interactive, and highly customizable Circle Pack Chart (Circular Treemap) library for Flutter. Built with performance and user experience in mind, it features immersive drill-down navigation and a responsive, data-driven label system.
 
 **[Live Demo](https://fabiocarneiro.github.io/FlutterCirclePackChart/)**
