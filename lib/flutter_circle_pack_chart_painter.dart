@@ -164,19 +164,29 @@ class FlutterCirclePackChartPainter extends CustomPainter {
   ) {
     if (!showValue && !showLabels) return;
 
-    // Use two distinct, anti-scaled font sizes for perfect sharpness.
-    final double valueFontSize = (baseFontSize / cameraScale).clamp(0.1, 100.0);
-    final double labelFontSize = ((baseFontSize * 0.75) / cameraScale).clamp(0.1, 100.0);
-    final double maxWidth = radius * 2.2;
+    // --- LINEAR CANVAS ANTI-SCALING ---
+    // We use large fixed font sizes for the layout to keep it sharp and stable.
+    const double internalValueSize = 32.0;
+    const double internalLabelSize = 24.0; // 0.75 ratio
 
-    // --- SLOT-BASED LAYOUT ---
-    // We define a fixed height for each "slot" to ensure perfect spacing.
-    final double valueSlotHeight = showValue ? (valueFontSize * 1.4) : 0.0;
-    final double labelSlotHeight = showLabels ? (labelFontSize * 1.4) : 0.0;
-    final double totalHeight = valueSlotHeight + labelSlotHeight;
+    // How much we need to scale the canvas so 'internalValueSize' looks like 'baseFontSize' on screen.
+    // screen_size = (internalSize * painterScale) * cameraScale
+    // We want screen_size = baseFontSize, so:
+    final double painterScale = baseFontSize / (internalValueSize * cameraScale);
+
+    // Fixed slot heights in internal coordinate space
+    final double valueSlotHeight = showValue ? (internalValueSize * 1.4) : 0.0;
+    final double labelSlotHeight = showLabels ? (internalLabelSize * 1.4) : 0.0;
+    final double totalInternalHeight = valueSlotHeight + labelSlotHeight;
     
-    // Start at the top of the combined block
-    double currentY = center.dy - (totalHeight / 2);
+    // Tighter maxWidth to avoid circle edges, converted to internal space
+    final double maxInternalWidth = (radius * 2.2) / painterScale;
+
+    canvas.save();
+    canvas.translate(center.dx, center.dy);
+    canvas.scale(painterScale);
+    
+    double currentInternalY = -(totalInternalHeight / 2);
 
     if (showValue) {
       final valuePainter = TextPainter(
@@ -184,7 +194,7 @@ class FlutterCirclePackChartPainter extends CustomPainter {
           text: node.displayValue ?? node.value.toStringAsFixed(0),
           style: TextStyle(
             color: Colors.white.withValues(alpha: opacity),
-            fontSize: valueFontSize,
+            fontSize: internalValueSize,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -192,15 +202,13 @@ class FlutterCirclePackChartPainter extends CustomPainter {
         textAlign: TextAlign.center,
         maxLines: 1,
         ellipsis: '...',
-      )..layout(maxWidth: maxWidth);
+      )..layout(maxWidth: maxInternalWidth);
 
-      // Center the value painter vertically within its own slot
-      final double verticalOffset = (valueSlotHeight - valuePainter.height) / 2;
       valuePainter.paint(
         canvas,
-        Offset(center.dx - (valuePainter.width / 2), currentY + verticalOffset),
+        Offset(-(valuePainter.width / 2), currentInternalY + (valueSlotHeight - valuePainter.height) / 2),
       );
-      currentY += valueSlotHeight;
+      currentInternalY += valueSlotHeight;
     }
 
     if (showLabels) {
@@ -209,7 +217,7 @@ class FlutterCirclePackChartPainter extends CustomPainter {
           text: node.label,
           style: TextStyle(
             color: Colors.white.withValues(alpha: opacity),
-            fontSize: labelFontSize,
+            fontSize: internalLabelSize,
             fontWeight: FontWeight.normal,
           ),
         ),
@@ -217,15 +225,15 @@ class FlutterCirclePackChartPainter extends CustomPainter {
         textAlign: TextAlign.center,
         maxLines: 1,
         ellipsis: '...',
-      )..layout(maxWidth: maxWidth);
+      )..layout(maxWidth: maxInternalWidth);
 
-      // Center the label painter vertically within its own slot
-      final double verticalOffset = (labelSlotHeight - labelPainter.height) / 2;
       labelPainter.paint(
         canvas,
-        Offset(center.dx - (labelPainter.width / 2), currentY + verticalOffset),
+        Offset(-(labelPainter.width / 2), currentInternalY + (labelSlotHeight - labelPainter.height) / 2),
       );
     }
+
+    canvas.restore();
   }
 
   @override
