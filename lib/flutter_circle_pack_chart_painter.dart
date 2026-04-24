@@ -29,6 +29,9 @@ class FlutterCirclePackChartPainter extends CustomPainter {
   /// Whether to show the [CircleNode.value] or [CircleNode.displayValue] in the circles.
   final bool showValue;
 
+  /// Whether to show the [CircleNode.label] in the circles.
+  final bool showLabels;
+
   FlutterCirclePackChartPainter({
     required this.root,
     required this.focusedNode,
@@ -38,6 +41,7 @@ class FlutterCirclePackChartPainter extends CustomPainter {
     required this.cameraScale,
     required this.baseFontSize,
     this.showValue = true,
+    this.showLabels = true,
   });
 
   @override
@@ -106,8 +110,6 @@ class FlutterCirclePackChartPainter extends CustomPainter {
     final double minValue = node.children.isEmpty ? 0.0 : node.children.map((c) => c.node.value).reduce((a, b) => a < b ? a : b);
 
     for (final child in sortedChildren) {
-      // Imploding nodes use dynamic opacity unless we are imploding back to the root level.
-      // We use a tight range (0.85 - 1.0) to keep boxes looking solid.
       final double importance = (focusedNode == root.node)
           ? 1.0
           : (maxValue == minValue
@@ -162,39 +164,42 @@ class FlutterCirclePackChartPainter extends CustomPainter {
     double radius,
     double opacity,
   ) {
+    if (!showValue && !showLabels) return;
+
     // Use "Anti-Scaling": divide baseFontSize by cameraScale to keep it constant on screen.
-    final double targetScreenSize = 12.0;
-    final double fontSize = (targetScreenSize / cameraScale).clamp(0.1, 100.0);
+    final double fontSize = (baseFontSize / cameraScale).clamp(0.1, 100.0);
 
     final TextSpan span = TextSpan(
       children: [
-        if (showValue && node.displayValue != null) ...[
-          TextSpan(
-            text: '${node.displayValue}\n',
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: opacity),
-              fontSize: fontSize * 1.2,
-              fontWeight: FontWeight.bold,
+        if (showValue) ...[
+          if (node.displayValue != null)
+            TextSpan(
+              text: '${node.displayValue}${showLabels ? '\n' : ''}',
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: opacity),
+                fontSize: fontSize * 1.2,
+                fontWeight: FontWeight.bold,
+              ),
+            )
+          else
+            TextSpan(
+              text: '${node.value.toStringAsFixed(0)}${showLabels ? '\n' : ''}',
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: opacity),
+                fontSize: fontSize * 1.2,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-        ] else if (showValue) ...[
-          TextSpan(
-            text: '${node.value.toStringAsFixed(0)}\n',
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: opacity),
-              fontSize: fontSize * 1.2,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
         ],
-        TextSpan(
-          text: node.label,
-          style: TextStyle(
-            color: Colors.white.withValues(alpha: opacity),
-            fontSize: fontSize,
-            fontWeight: FontWeight.normal,
+        if (showLabels)
+          TextSpan(
+            text: node.label,
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: opacity),
+              fontSize: fontSize,
+              fontWeight: FontWeight.normal,
+            ),
           ),
-        ),
       ],
     );
 
@@ -202,11 +207,11 @@ class FlutterCirclePackChartPainter extends CustomPainter {
       text: span,
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.center,
-      maxLines: 1, // Reset to 1 as per previous steering
+      maxLines: (showValue && showLabels) ? 2 : 1,
       ellipsis: '...',
     );
 
-    // Allow some overflow for tiny circles to ensure labels are visible.
+    // Allow some overflow for tiny circles but keep it tighter than before to avoid edges.
     textPainter.layout(maxWidth: radius * 2.5);
 
     textPainter.paint(
@@ -224,6 +229,7 @@ class FlutterCirclePackChartPainter extends CustomPainter {
         oldDelegate.isDrillingIn != isDrillingIn ||
         oldDelegate.cameraScale != cameraScale ||
         oldDelegate.baseFontSize != baseFontSize ||
-        oldDelegate.showValue != showValue;
+        oldDelegate.showValue != showValue ||
+        oldDelegate.showLabels != showLabels;
   }
 }

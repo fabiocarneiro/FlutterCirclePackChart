@@ -24,6 +24,10 @@ class FlutterCirclePackChart extends StatefulWidget {
   /// inside the circles. Defaults to true.
   final bool showValue;
 
+  /// Whether to show the [CircleNode.label] inside the circles.
+  /// Defaults to true.
+  final bool showLabels;
+
   const FlutterCirclePackChart({
     super.key,
     required this.root,
@@ -31,6 +35,7 @@ class FlutterCirclePackChart extends StatefulWidget {
     this.minRadiusRatio = 0.20,
     this.fontSizeFactor = 1.0,
     this.showValue = true,
+    this.showLabels = true,
   });
 
   @override
@@ -264,6 +269,7 @@ class _FlutterCirclePackChartState extends State<FlutterCirclePackChart>
                           cameraScale: scale,
                           baseFontSize: responsiveBaseFontSize,
                           showValue: widget.showValue,
+                          showLabels: widget.showLabels,
                         ),
                         size: const Size(200, 200),
                       ),
