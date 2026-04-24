@@ -1,3 +1,8 @@
+## 1.0.4
+
+* Implemented "Deck of Cards" drawing order: larger circles now stay on top of smaller ones during all transitions.
+* Enhanced animation aesthetics, allowing smaller circles to naturally emerge from or hide behind larger ones.
+
 ## 1.0.3
 
 * Perfected symmetry of the implosion (drill-out) animation for a more natural feel.
