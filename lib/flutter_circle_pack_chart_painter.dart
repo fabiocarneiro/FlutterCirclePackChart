@@ -61,9 +61,11 @@ class FlutterCirclePackChartPainter extends CustomPainter {
       final double minValue = node.children.isEmpty ? 0.0 : node.children.map((c) => c.node.value).reduce((a, b) => a < b ? a : b);
 
       for (final child in sortedChildren) {
-        // Importance-based opacity (dynamic opacity)
-        // Range: 0.6 (smallest) to 1.0 (largest)
-        final double importance = maxValue == minValue ? 1.0 : 0.6 + (0.4 * (child.node.value - minValue) / (maxValue - minValue));
+        // Dynamic opacity only applies when we are drilled in deeper than root.
+        // If focusedNode is root, everything at level 1 is 100% opaque.
+        final double importance = (focusedNode == root.node) 
+            ? 1.0 
+            : (maxValue == minValue ? 1.0 : 0.6 + (0.4 * (child.node.value - minValue) / (maxValue - minValue)));
 
         if (isDrillingIn) {
           // Drill In: children explode from parent center
@@ -101,7 +103,10 @@ class FlutterCirclePackChartPainter extends CustomPainter {
     final double minValue = node.children.isEmpty ? 0.0 : node.children.map((c) => c.node.value).reduce((a, b) => a < b ? a : b);
 
     for (final child in sortedChildren) {
-      final double importance = maxValue == minValue ? 1.0 : 0.6 + (0.4 * (child.node.value - minValue) / (maxValue - minValue));
+      // Imploding nodes use dynamic opacity unless we are imploding back to the root level.
+      final double importance = (focusedNode == root.node)
+          ? 1.0
+          : (maxValue == minValue ? 1.0 : 0.6 + (0.4 * (child.node.value - minValue) / (maxValue - minValue)));
       
       final double x = child.x + (node.x - child.x) * animationValue;
       final double y = child.y + (node.y - child.y) * animationValue;
@@ -152,7 +157,8 @@ class FlutterCirclePackChartPainter extends CustomPainter {
     double opacity,
   ) {
     // Use "Anti-Scaling": divide baseFontSize by cameraScale to keep it constant on screen.
-    final double fontSize = (baseFontSize / cameraScale).clamp(0.1, 100.0);
+    final double targetScreenSize = 12.0;
+    final double fontSize = (targetScreenSize / cameraScale).clamp(0.1, 100.0);
 
     final TextSpan span = TextSpan(
       children: [
@@ -190,10 +196,11 @@ class FlutterCirclePackChartPainter extends CustomPainter {
       text: span,
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.center,
-      maxLines: 2,
+      maxLines: 1, // Reset to 1 as per previous steering
       ellipsis: '...',
     );
 
+    // Allow some overflow for tiny circles to ensure labels are visible.
     textPainter.layout(maxWidth: radius * 2.5);
 
     textPainter.paint(
