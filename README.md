@@ -1,6 +1,6 @@
 # FlutterCirclePackChart
 
-A powerful, interactive, and highly customizable Circle Pack Chart (Circular Treemap) library for Flutter. Built with performance and user experience in mind, it features immersive drill-down navigation and a responsive, structured label system.
+A powerful, interactive, and highly customizable Circle Pack Chart (Circular Treemap) library for Flutter. Built with performance and user experience in mind, it features immersive drill-down navigation and a responsive, data-driven label system.
 
 **[Live Demo](https://fabiocarneiro.github.io/FlutterCirclePackChart/)**
 
@@ -10,12 +10,12 @@ A powerful, interactive, and highly customizable Circle Pack Chart (Circular Tre
 - **♾️ Infinite Zoom Context:** Sibling nodes remain visible and partially overflow the square viewport during transitions, maintaining clear hierarchical context.
 - **🔄 Bidirectional Navigation:** Seamlessly supports both drill-in (explosion) and drill-out (implosion) animations for a natural, physical feel.
 - **📏 Professional Label System:**
-  - **Structured Data:** Use `label` for the name and `upperLabel` for monetary values or subtitles (rendered larger and bold).
+  - **Structured Data:** Use `label` for the name and `formattedValue` for monetary values, percentages, or custom strings (rendered larger and bold on top).
   - **Guaranteed Visibility:** Enforces a minimum circle size to ensure every item has a legible label.
   - **Anti-Scaled Consistency:** Labels maintain a constant visual size on screen regardless of the zoom level.
-  - **Clean Aesthetic:** Flat, normal-weight text with automatic single-line ellipsis for long names.
-- **📋 Dynamic Legend:** Includes a built-in vertical legend component that automatically updates to reflect the items, colors, and values of the currently focused level.
-- **🎨 Highly Customizable:** Adjust animation speed, minimum radius ratios, font size factors, and colors to match your app's brand.
+  - **Visibility Toggle:** Control whether values are shown inside circles using the `showValue` flag.
+- **✨ Dynamic Opacity:** Automatically scales child circle opacity based on their relative values, visually highlighting more important data points.
+- **📋 Dynamic Legend:** Includes a built-in vertical legend component that automatically updates to reflect labels and formatted values of the currently focused level.
 
 ## 📦 Installation
 
@@ -25,12 +25,10 @@ To add **flutter_circle_pack_chart** to your project, run:
 flutter pub add flutter_circle_pack_chart
 ```
 
-This will add the latest version of the package to your `pubspec.yaml`.
-
 ## 🚀 Getting Started
 
 ### 1. Define your data
-Create a hierarchy of `CircleNode` objects. You can use both `label` and `upperLabel` to display structured data on two lines:
+Create a hierarchy of `CircleNode` objects. Use `formattedValue` to display custom-formatted data like currency:
 
 ```dart
 final root = CircleNode(
@@ -39,19 +37,11 @@ final root = CircleNode(
   children: [
     CircleNode(
       label: 'Needs',
-      upperLabel: '\$2500',
+      formattedValue: '\$2500',
       color: Colors.orange,
       children: [
-        CircleNode(label: 'Rent', upperLabel: '\$1500', value: 1500.0),
-        CircleNode(label: 'Groceries', upperLabel: '\$400', value: 400.0),
-      ],
-    ),
-    CircleNode(
-      label: 'Wants',
-      upperLabel: '\$1100',
-      color: Colors.pink,
-      children: [
-        CircleNode(label: 'Dining', upperLabel: '\$300', value: 300.0),
+        CircleNode(label: 'Rent', formattedValue: '\$1500', value: 1500.0),
+        CircleNode(label: 'Groceries', formattedValue: '\$400', value: 400.0),
       ],
     ),
   ],
@@ -59,24 +49,17 @@ final root = CircleNode(
 ```
 
 ### 2. Add the Widget
-Place the `FlutterCirclePackChart` in your widget tree. Optionally use a `FlutterCirclePackChartController` for advanced navigation and legend support.
+Place the `FlutterCirclePackChart` in your widget tree.
 
 ```dart
 // Initialize the controller
 final controller = FlutterCirclePackChartController(root: root);
 
 // In your build method
-Column(
-  children: [
-    Expanded(
-      child: FlutterCirclePackChart(
-        root: root,
-        controller: controller,
-      ),
-    ),
-    // Add the dynamic legend (shows primary labels only)
-    FlutterCirclePackChartLegend(controller: controller),
-  ],
+FlutterCirclePackChart(
+  root: root,
+  controller: controller,
+  showValue: true, // Toggle value visibility in circles
 )
 ```
 
@@ -84,9 +67,9 @@ Column(
 
 | Property | Description | Default |
 | :--- | :--- | :--- |
+| `showValue` | Whether to display values/formatted values inside the circles. | `true` |
 | `minRadiusRatio` | Minimum radius of a child circle as a fraction of its parent. | `0.20` |
 | `fontSizeFactor` | A multiplier to adjust the responsive font size globally. | `1.0` |
-| `controller` | Custom controller to manage focus and navigation state. | `Auto-generated` |
 
 ## 🤝 Contributing
 

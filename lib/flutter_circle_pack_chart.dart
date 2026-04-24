@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/widgets.dart';
 
 export 'circle_packer.dart';
@@ -11,19 +12,18 @@ typedef NodeWidgetBuilder = Widget Function(BuildContext context, CircleNode nod
 
 /// Represents a node in the hierarchical data structure for the Circle Pack Chart.
 class CircleNode {
-  /// The primary display label for this node (used for the legend and default labels).
+  /// The primary display label for this node (descriptive name).
   final String label;
 
-  /// An optional label appearing above the primary label (e.g. a monetary value).
-  /// Rendered larger and bold in the chart view.
-  final String? upperLabel;
+  /// An optional string representation of the [value] (e.g. "$1,500").
+  /// If provided, this is preferred for display in the chart and legend.
+  final String? formattedValue;
 
   /// An optional builder to provide a custom widget as a label inside the circle.
-  /// If provided, this takes precedence over [label] and [upperLabel] in the chart view.
+  /// If provided, this takes precedence over [label] and [formattedValue] in the chart view.
   final NodeWidgetBuilder? childBuilder;
 
-  /// The internal value for this node. If children are present, the value is
-  /// typically the sum of children values.
+  /// The numeric value for this node, used to drive sizing and legend totals.
   final double? _value;
 
   /// The color associated with this node.
@@ -34,7 +34,7 @@ class CircleNode {
 
   CircleNode({
     required this.label,
-    this.upperLabel,
+    this.formattedValue,
     this.childBuilder,
     double? value,
     this.color,
@@ -55,7 +55,7 @@ class CircleNode {
   factory CircleNode.fromMap(Map<String, dynamic> map) {
     return CircleNode(
       label: map['label'] as String,
-      upperLabel: map['upperLabel'] as String?,
+      formattedValue: map['formattedValue'] as String?,
       value: (map['value'] as num?)?.toDouble(),
       color: map['color'] != null ? Color(map['color'] as int) : null,
       children: (map['children'] as List<dynamic>?)

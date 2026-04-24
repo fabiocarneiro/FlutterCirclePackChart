@@ -20,12 +20,17 @@ class FlutterCirclePackChart extends StatefulWidget {
   /// Defaults to 1.0. Higher values make text larger globally.
   final double fontSizeFactor;
 
+  /// Whether to show the [CircleNode.value] (or [CircleNode.formattedValue])
+  /// inside the circles. Defaults to true.
+  final bool showValue;
+
   const FlutterCirclePackChart({
     super.key,
     required this.root,
     this.controller,
     this.minRadiusRatio = 0.20,
     this.fontSizeFactor = 1.0,
+    this.showValue = true,
   });
 
   @override
@@ -258,6 +263,7 @@ class _FlutterCirclePackChartState extends State<FlutterCirclePackChart>
                           isDrillingIn: _isDrillingIn,
                           cameraScale: scale,
                           baseFontSize: responsiveBaseFontSize,
+                          showValue: widget.showValue,
                         ),
                         size: const Size(200, 200),
                       ),

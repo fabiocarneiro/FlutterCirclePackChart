@@ -169,12 +169,14 @@ class ChartExampleScaffold extends StatelessWidget {
   final String title;
   final CircleNode root;
   final String subtitle;
+  final bool showValue;
 
   const ChartExampleScaffold({
     super.key,
     required this.title,
     required this.root,
     required this.subtitle,
+    this.showValue = true,
   });
 
   @override
@@ -216,6 +218,7 @@ class ChartExampleScaffold extends StatelessWidget {
               child: FlutterCirclePackChart(
                 root: root,
                 controller: controller,
+                showValue: showValue,
               ),
             ),
             const SizedBox(height: 24),
@@ -256,52 +259,30 @@ class WorldPopulationExample extends StatelessWidget {
           label: 'Asia',
           color: Colors.red,
           children: [
-            CircleNode(label: 'China', value: 1400.0),
-            CircleNode(label: 'India', value: 1300.0),
-            CircleNode(label: 'Japan', value: 125.0),
-            CircleNode(label: 'Indonesia', value: 270.0),
-            CircleNode(label: 'Pakistan', value: 220.0),
-            CircleNode(label: 'Bangladesh', value: 170.0),
-            CircleNode(label: 'Vietnam', value: 98.0),
+            CircleNode(label: 'China', formattedValue: '1.4B', value: 1400.0),
+            CircleNode(label: 'India', formattedValue: '1.3B', value: 1300.0),
+            CircleNode(label: 'Japan', formattedValue: '125M', value: 125.0),
+            CircleNode(label: 'Indonesia', formattedValue: '270M', value: 270.0),
+            CircleNode(label: 'Pakistan', formattedValue: '220M', value: 220.0),
           ],
         ),
         CircleNode(
           label: 'Europe',
           color: Colors.blue,
           children: [
-            CircleNode(label: 'Germany', value: 83.0),
-            CircleNode(label: 'France', value: 67.0),
-            CircleNode(label: 'UK', value: 66.0),
-            CircleNode(label: 'Italy', value: 60.0),
-            CircleNode(label: 'Spain', value: 47.0),
-            CircleNode(label: 'Ukraine', value: 44.0),
-            CircleNode(label: 'Poland', value: 38.0),
+            CircleNode(label: 'Germany', formattedValue: '83M', value: 83.0),
+            CircleNode(label: 'France', formattedValue: '67M', value: 67.0),
+            CircleNode(label: 'UK', formattedValue: '66M', value: 66.0),
+            CircleNode(label: 'Italy', formattedValue: '60M', value: 60.0),
           ],
         ),
         CircleNode(
           label: 'Americas',
           color: Colors.green,
           children: [
-            CircleNode(label: 'USA', value: 330.0),
-            CircleNode(label: 'Brazil', value: 210.0),
-            CircleNode(label: 'Mexico', value: 128.0),
-            CircleNode(label: 'Colombia', value: 50.0),
-            CircleNode(label: 'Argentina', value: 45.0),
-            CircleNode(label: 'Canada', value: 38.0),
-            CircleNode(label: 'Peru', value: 33.0),
-          ],
-        ),
-        CircleNode(
-          label: 'Africa',
-          color: Colors.orange,
-          children: [
-            CircleNode(label: 'Nigeria', value: 200.0),
-            CircleNode(label: 'Ethiopia', value: 110.0),
-            CircleNode(label: 'Egypt', value: 100.0),
-            CircleNode(label: 'DRC', value: 90.0),
-            CircleNode(label: 'Tanzania', value: 60.0),
-            CircleNode(label: 'South Africa', value: 59.0),
-            CircleNode(label: 'Kenya', value: 53.0),
+            CircleNode(label: 'USA', formattedValue: '330M', value: 330.0),
+            CircleNode(label: 'Brazil', formattedValue: '210M', value: 210.0),
+            CircleNode(label: 'Canada', formattedValue: '38M', value: 38.0),
           ],
         ),
       ],
@@ -310,7 +291,7 @@ class WorldPopulationExample extends StatelessWidget {
     return ChartExampleScaffold(
       title: 'POPULATION STATISTICS',
       root: root,
-      subtitle: 'Drill down into continents to see population by country.',
+      subtitle: 'Drill down into continents to see population. Dynamic opacity highlights larger nations.',
     );
   }
 }
@@ -326,37 +307,37 @@ class BudgetTrackerExample extends StatelessWidget {
       children: [
         CircleNode(
           label: 'Needs',
-          upperLabel: '\$2500',
+          formattedValue: '\$2500',
           color: Colors.orange,
           children: [
-            CircleNode(label: 'Rent', upperLabel: '\$1500', value: 1500.0),
-            CircleNode(label: 'Groceries', upperLabel: '\$400', value: 400.0),
-            CircleNode(label: 'Utilities', upperLabel: '\$250', value: 250.0),
-            CircleNode(label: 'Insurance', upperLabel: '\$200', value: 200.0),
-            CircleNode(label: 'Transport', upperLabel: '\$150', value: 150.0),
+            CircleNode(label: 'Rent', formattedValue: '\$1500', value: 1500.0),
+            CircleNode(label: 'Groceries', formattedValue: '\$400', value: 400.0),
+            CircleNode(label: 'Utilities', formattedValue: '\$250', value: 250.0),
+            CircleNode(label: 'Insurance', formattedValue: '\$200', value: 200.0),
+            CircleNode(label: 'Transport', formattedValue: '\$150', value: 150.0),
           ],
         ),
         CircleNode(
           label: 'Wants',
-          upperLabel: '\$1100',
+          formattedValue: '\$1100',
           color: Colors.pink,
           children: [
-            CircleNode(label: 'Dining', upperLabel: '\$300', value: 300.0),
-            CircleNode(label: 'Subs', upperLabel: '\$50', value: 50.0),
-            CircleNode(label: 'Shopping', upperLabel: '\$200', value: 200.0),
-            CircleNode(label: 'Hobbies', upperLabel: '\$150', value: 150.0),
-            CircleNode(label: 'Travel', upperLabel: '\$400', value: 400.0),
+            CircleNode(label: 'Dining', formattedValue: '\$300', value: 300.0),
+            CircleNode(label: 'Subs', formattedValue: '\$50', value: 50.0),
+            CircleNode(label: 'Shopping', formattedValue: '\$200', value: 200.0),
+            CircleNode(label: 'Hobbies', formattedValue: '\$150', value: 150.0),
+            CircleNode(label: 'Travel', formattedValue: '\$400', value: 400.0),
           ],
         ),
         CircleNode(
           label: 'Savings',
-          upperLabel: '\$1400',
+          formattedValue: '\$1400',
           color: Colors.teal,
           children: [
-            CircleNode(label: 'Emergency', upperLabel: '\$500', value: 500.0),
-            CircleNode(label: 'Retire', upperLabel: '\$400', value: 400.0),
-            CircleNode(label: 'Invest', upperLabel: '\$300', value: 300.0),
-            CircleNode(label: 'Debt', upperLabel: '\$200', value: 200.0),
+            CircleNode(label: 'Emergency', formattedValue: '\$500', value: 500.0),
+            CircleNode(label: 'Retire', formattedValue: '\$400', value: 400.0),
+            CircleNode(label: 'Invest', formattedValue: '\$300', value: 300.0),
+            CircleNode(label: 'Debt', formattedValue: '\$200', value: 200.0),
           ],
         ),
       ],
@@ -365,7 +346,7 @@ class BudgetTrackerExample extends StatelessWidget {
     return ChartExampleScaffold(
       title: 'HOUSEHOLD BUDGET',
       root: root,
-      subtitle: 'Manage your monthly spending using the 50/30/20 rule.',
+      subtitle: 'Manage your monthly spending. Higher expenses are more opaque.',
     );
   }
 }
@@ -395,21 +376,14 @@ class StressTestExample extends StatelessWidget {
             CircleNode(label: 'The United Kingdom of Great Britain and Northern Ireland', value: 20.0),
           ],
         ),
-        CircleNode(
-          label: 'High Density',
-          color: Colors.deepOrange,
-          children: List.generate(10, (i) => CircleNode(
-            label: 'Group $i',
-            children: List.generate(5, (j) => CircleNode(label: 'Item $i-$j', value: 5.0)),
-          )),
-        ),
       ],
     );
 
-    return ChartExampleScaffold(
+    return const ChartExampleScaffold(
       title: 'LIBRARY LIMITS',
       root: root,
-      subtitle: 'Testing minimum radii, anti-scaling, and label overflow.',
+      showValue: false, // Stress test hidden values
+      subtitle: 'Testing minimum radii and label overflow with hidden values.',
     );
   }
 }

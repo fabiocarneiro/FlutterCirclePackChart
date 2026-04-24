@@ -56,10 +56,10 @@ class FlutterCirclePackChartLegend extends StatelessWidget {
                     ),
                     const Spacer(),
                     Text(
-                      node.value.toStringAsFixed(0),
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodySmall?.copyWith(color: Colors.grey),
+                      node.formattedValue ?? node.value.toStringAsFixed(0),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.grey,
+                      ),
                     ),
                   ],
                 ),

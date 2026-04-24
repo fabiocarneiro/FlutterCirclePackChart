@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'flutter_circle_pack_chart.dart';
 
 /// A [CustomPainter] that renders the circular treemap circles with symmetric 
-/// explosion/implosion animations and anti-scaled labels.
+/// explosion/implosion animations, dynamic opacity, and anti-scaled labels.
 class FlutterCirclePackChartPainter extends CustomPainter {
   /// The absolute root of the packed hierarchy.
   final PackedNode root;
@@ -26,6 +26,9 @@ class FlutterCirclePackChartPainter extends CustomPainter {
   /// The base font size for labels (anti-scaled).
   final double baseFontSize;
 
+  /// Whether to show the [CircleNode.value] or [CircleNode.formattedValue] in the circles.
+  final bool showValue;
+
   FlutterCirclePackChartPainter({
     required this.root,
     required this.focusedNode,
@@ -34,6 +37,7 @@ class FlutterCirclePackChartPainter extends CustomPainter {
     required this.isDrillingIn,
     required this.cameraScale,
     required this.baseFontSize,
+    this.showValue = true,
   });
 
   @override
@@ -48,24 +52,31 @@ class FlutterCirclePackChartPainter extends CustomPainter {
     final Color color = node.node.color ?? parentColor;
 
     if (node.node == focusedNode) {
-      // Current focus level: Sort children by radius ascending to ensure 
-      // larger ones are drawn LAST (on top).
+      // Current focus level
       final sortedChildren = List<PackedNode>.from(node.children)
         ..sort((a, b) => a.r.compareTo(b.r));
 
+      // Calculate max/min values for dynamic opacity
+      final double maxValue = node.children.isEmpty ? 1.0 : node.children.map((c) => c.node.value).reduce((a, b) => a > b ? a : b);
+      final double minValue = node.children.isEmpty ? 0.0 : node.children.map((c) => c.node.value).reduce((a, b) => a < b ? a : b);
+
       for (final child in sortedChildren) {
+        // Importance-based opacity (dynamic opacity)
+        // Range: 0.6 (smallest) to 1.0 (largest)
+        final double importance = maxValue == minValue ? 1.0 : 0.6 + (0.4 * (child.node.value - minValue) / (maxValue - minValue));
+
         if (isDrillingIn) {
           // Drill In: children explode from parent center
           final double x = node.x + (child.x - node.x) * animationValue;
           final double y = node.y + (child.y - node.y) * animationValue;
           final double r = lerpDouble(node.r, child.r, animationValue)!;
-          _drawLeaf(canvas, x, y, r, child.node, color, opacity: 1.0);
+          _drawLeaf(canvas, x, y, r, child.node, color, opacity: importance);
         } else {
           // Drill Out: new focus is parent. 
           if (child.node == previousFocusedNode && animationValue < 1.0) {
             _drawImplodingNode(canvas, child, color);
           } else {
-            _drawLeaf(canvas, child.x, child.y, child.r, child.node, color, opacity: 1.0);
+            _drawLeaf(canvas, child.x, child.y, child.r, child.node, color, opacity: importance);
           }
         }
       }
@@ -83,16 +94,20 @@ class FlutterCirclePackChartPainter extends CustomPainter {
   void _drawImplodingNode(Canvas canvas, PackedNode node, Color parentColor) {
     final Color color = node.node.color ?? parentColor;
     
-    // Sort children by radius ascending to ensure larger ones stay on top during implosion.
     final sortedChildren = List<PackedNode>.from(node.children)
       ..sort((a, b) => a.r.compareTo(b.r));
 
+    final double maxValue = node.children.isEmpty ? 1.0 : node.children.map((c) => c.node.value).reduce((a, b) => a > b ? a : b);
+    final double minValue = node.children.isEmpty ? 0.0 : node.children.map((c) => c.node.value).reduce((a, b) => a < b ? a : b);
+
     for (final child in sortedChildren) {
+      final double importance = maxValue == minValue ? 1.0 : 0.6 + (0.4 * (child.node.value - minValue) / (maxValue - minValue));
+      
       final double x = child.x + (node.x - child.x) * animationValue;
       final double y = child.y + (node.y - child.y) * animationValue;
       final double r = lerpDouble(child.r, node.r, animationValue)!;
       
-      _drawLeaf(canvas, x, y, r, child.node, color, opacity: 1.0);
+      _drawLeaf(canvas, x, y, r, child.node, color, opacity: importance);
     }
   }
 
@@ -136,14 +151,23 @@ class FlutterCirclePackChartPainter extends CustomPainter {
     double radius,
     double opacity,
   ) {
-    final double targetScreenSize = 12.0;
-    final double fontSize = (targetScreenSize / cameraScale).clamp(0.1, 100.0);
+    // Use "Anti-Scaling": divide baseFontSize by cameraScale to keep it constant on screen.
+    final double fontSize = (baseFontSize / cameraScale).clamp(0.1, 100.0);
 
     final TextSpan span = TextSpan(
       children: [
-        if (node.upperLabel != null) ...[
+        if (showValue && node.formattedValue != null) ...[
           TextSpan(
-            text: '${node.upperLabel}\n',
+            text: '${node.formattedValue}\n',
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: opacity),
+              fontSize: fontSize * 1.2,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ] else if (showValue) ...[
+          TextSpan(
+            text: '${node.value.toStringAsFixed(0)}\n',
             style: TextStyle(
               color: Colors.white.withValues(alpha: opacity),
               fontSize: fontSize * 1.2,
@@ -186,6 +210,7 @@ class FlutterCirclePackChartPainter extends CustomPainter {
         oldDelegate.animationValue != animationValue ||
         oldDelegate.isDrillingIn != isDrillingIn ||
         oldDelegate.cameraScale != cameraScale ||
-        oldDelegate.baseFontSize != baseFontSize;
+        oldDelegate.baseFontSize != baseFontSize ||
+        oldDelegate.showValue != showValue;
   }
 }

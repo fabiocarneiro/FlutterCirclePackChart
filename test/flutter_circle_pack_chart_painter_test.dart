@@ -21,6 +21,7 @@ void main() {
                 isDrillingIn: true,
                 cameraScale: 1.0,
                 baseFontSize: 12.0,
+                showValue: true,
               ),
               size: const Size(200, 200),
             ),

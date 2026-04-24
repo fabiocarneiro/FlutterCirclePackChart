@@ -1,0 +1,8 @@
+{
+  "track_id": "v2_refactor_20260423",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-04-23T16:00:00Z",
+  "updated_at": "2026-04-23T16:00:00Z",
+  "description": "Major refactor: Implement value formatting, dynamic opacity, and refined data model (v2.0.0)"
+}
