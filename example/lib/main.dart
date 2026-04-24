@@ -75,7 +75,7 @@ class MainNavigationScreen extends StatelessWidget {
     final String location = GoRouterState.of(context).uri.path;
     if (location.startsWith('/budget')) return 1;
     if (location.startsWith('/stress-tests')) return 2;
-    return 0; // Default to countries
+    return 0;
   }
 
   void _onItemTapped(int index, BuildContext context) {
@@ -308,7 +308,7 @@ class WorldPopulationExample extends StatelessWidget {
     return ChartExampleScaffold(
       title: 'POPULATION STATISTICS',
       root: root,
-      subtitle: 'Drill down into continents to see population. Dynamic opacity highlights larger nations.',
+      subtitle: 'Drill down into continents to see population by country.',
     );
   }
 }
@@ -366,7 +366,7 @@ class BudgetTrackerExample extends StatelessWidget {
     return ChartExampleScaffold(
       title: 'HOUSEHOLD BUDGET',
       root: root,
-      subtitle: 'Manage your monthly spending. Higher expenses are more opaque.',
+      subtitle: 'Manage your monthly spending using the 50/30/20 rule.',
     );
   }
 }
@@ -386,8 +386,47 @@ class StressTestExample extends StatelessWidget {
           children: List.generate(20, (i) => CircleNode(label: 'T$i', value: 0.1)),
         ),
         CircleNode(
-          label: 'Long Names',
+          label: 'Many Items',
+          color: Colors.deepOrange,
+          children: [
+            // 5 Zeros
+            ...List.generate(5, (i) => CircleNode(label: 'Zero $i', value: 0.0)),
+            // 10 Small items
+            ...List.generate(10, (i) => CircleNode(label: 'Small $i', value: 0.1 + (i * 0.1))),
+            // 15 Various sizes
+            ...List.generate(15, (i) => CircleNode(label: 'Item $i', value: 10.0 + (i * 20.0))),
+          ],
+        ),
+        CircleNode(
+          label: 'Deep Nesting',
           color: Colors.indigo,
+          children: [
+            CircleNode(
+              label: 'Level 1',
+              color: Colors.blue,
+              children: [
+                CircleNode(
+                  label: 'Level 2',
+                  color: Colors.lightBlue,
+                  children: [
+                    CircleNode(
+                      label: 'Level 3',
+                      color: Colors.cyan,
+                      children: [
+                        CircleNode(label: 'Leaf 4A', value: 50.0),
+                        CircleNode(label: 'Leaf 4B', value: 50.0),
+                      ],
+                    ),
+                    CircleNode(label: 'Leaf 3B', value: 100.0),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+        CircleNode(
+          label: 'Long Names',
+          color: Colors.teal,
           children: [
             CircleNode(label: 'Democratic Republic of the Congo', value: 100.0),
             CircleNode(label: 'Saint Vincent and the Grenadines', value: 50.0),
@@ -402,8 +441,8 @@ class StressTestExample extends StatelessWidget {
     return ChartExampleScaffold(
       title: 'LIBRARY LIMITS',
       root: root,
-      showValue: false, // Stress test hidden values
-      subtitle: 'Testing minimum radii and label overflow with hidden values.',
+      showValue: false,
+      subtitle: 'Testing minimum radii, anti-scaling, and recursive density.',
     );
   }
 }
