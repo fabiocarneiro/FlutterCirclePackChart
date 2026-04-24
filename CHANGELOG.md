@@ -1,3 +1,8 @@
+## 1.0.3
+
+* Perfected symmetry of the implosion (drill-out) animation for a more natural feel.
+* Fixed visual overlap during transitions by ensuring children merge fully before the parent reappears.
+
 ## 1.0.2
 
 * Simplify installation instructions in README to be version-agnostic.
