@@ -48,13 +48,16 @@ class FlutterCirclePackChartPainter extends CustomPainter {
     final Color color = node.node.color ?? parentColor;
 
     if (node.node == focusedNode) {
-      // Current focus level
-      for (final child in node.children) {
+      // Current focus level: Sort children by radius ascending to ensure 
+      // larger ones are drawn LAST (on top).
+      final sortedChildren = List<PackedNode>.from(node.children)
+        ..sort((a, b) => a.r.compareTo(b.r));
+
+      for (final child in sortedChildren) {
         if (isDrillingIn) {
           // Drill In: children explode from parent center
           final double x = node.x + (child.x - node.x) * animationValue;
           final double y = node.y + (child.y - node.y) * animationValue;
-          // Use parent radius (node.r) as start for interpolation
           final double r = lerpDouble(node.r, child.r, animationValue)!;
           _drawLeaf(canvas, x, y, r, child.node, color, opacity: 1.0);
         } else {
@@ -80,10 +83,11 @@ class FlutterCirclePackChartPainter extends CustomPainter {
   void _drawImplodingNode(Canvas canvas, PackedNode node, Color parentColor) {
     final Color color = node.node.color ?? parentColor;
     
-    // Exact inverse of the explosion:
-    // Children move from their packed positions back to the parent's center
-    // and grow to match the parent's radius.
-    for (final child in node.children) {
+    // Sort children by radius ascending to ensure larger ones stay on top during implosion.
+    final sortedChildren = List<PackedNode>.from(node.children)
+      ..sort((a, b) => a.r.compareTo(b.r));
+
+    for (final child in sortedChildren) {
       final double x = child.x + (node.x - child.x) * animationValue;
       final double y = child.y + (node.y - child.y) * animationValue;
       final double r = lerpDouble(child.r, node.r, animationValue)!;
@@ -132,7 +136,6 @@ class FlutterCirclePackChartPainter extends CustomPainter {
     double radius,
     double opacity,
   ) {
-    // Use "Anti-Scaling": divide baseFontSize by cameraScale to keep it constant on screen.
     final double targetScreenSize = 12.0;
     final double fontSize = (targetScreenSize / cameraScale).clamp(0.1, 100.0);
 
