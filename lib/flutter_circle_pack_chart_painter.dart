@@ -26,7 +26,7 @@ class FlutterCirclePackChartPainter extends CustomPainter {
   /// The base font size for labels (anti-scaled).
   final double baseFontSize;
 
-  /// Whether to show the [CircleNode.value] or [CircleNode.formattedValue] in the circles.
+  /// Whether to show the [CircleNode.value] or [CircleNode.displayValue] in the circles.
   final bool showValue;
 
   FlutterCirclePackChartPainter({
@@ -156,9 +156,9 @@ class FlutterCirclePackChartPainter extends CustomPainter {
 
     final TextSpan span = TextSpan(
       children: [
-        if (showValue && node.formattedValue != null) ...[
+        if (showValue && node.displayValue != null) ...[
           TextSpan(
-            text: '${node.formattedValue}\n',
+            text: '${node.displayValue}\n',
             style: TextStyle(
               color: Colors.white.withValues(alpha: opacity),
               fontSize: fontSize * 1.2,

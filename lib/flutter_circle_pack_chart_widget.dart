@@ -20,7 +20,7 @@ class FlutterCirclePackChart extends StatefulWidget {
   /// Defaults to 1.0. Higher values make text larger globally.
   final double fontSizeFactor;
 
-  /// Whether to show the [CircleNode.value] (or [CircleNode.formattedValue])
+  /// Whether to show the [CircleNode.value] (or [CircleNode.displayValue])
   /// inside the circles. Defaults to true.
   final bool showValue;
 

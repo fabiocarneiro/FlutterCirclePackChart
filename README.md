@@ -10,12 +10,12 @@ A powerful, interactive, and highly customizable Circle Pack Chart (Circular Tre
 - **♾️ Infinite Zoom Context:** Sibling nodes remain visible and partially overflow the square viewport during transitions, maintaining clear hierarchical context.
 - **🔄 Bidirectional Navigation:** Seamlessly supports both drill-in (explosion) and drill-out (implosion) animations for a natural, physical feel.
 - **📏 Professional Label System:**
-  - **Structured Data:** Use `label` for the name and `formattedValue` for monetary values, percentages, or custom strings (rendered larger and bold on top).
+  - **Structured Data:** Use `label` for the name and `displayValue` for monetary values, percentages, or custom strings (rendered larger and bold on top).
   - **Guaranteed Visibility:** Enforces a minimum circle size to ensure every item has a legible label.
   - **Anti-Scaled Consistency:** Labels maintain a constant visual size on screen regardless of the zoom level.
   - **Visibility Toggle:** Control whether values are shown inside circles using the `showValue` flag.
 - **✨ Dynamic Opacity:** Automatically scales child circle opacity based on their relative values, visually highlighting more important data points.
-- **📋 Dynamic Legend:** Includes a built-in vertical legend component that automatically updates to reflect labels and formatted values of the currently focused level.
+- **📋 Dynamic Legend:** Includes a built-in vertical legend component that automatically updates to reflect labels and display values of the currently focused level.
 
 ## 📦 Installation
 
@@ -28,7 +28,7 @@ flutter pub add flutter_circle_pack_chart
 ## 🚀 Getting Started
 
 ### 1. Define your data
-Create a hierarchy of `CircleNode` objects. Use `formattedValue` to display custom-formatted data like currency:
+Create a hierarchy of `CircleNode` objects. Use `displayValue` to show custom-formatted data like currency:
 
 ```dart
 final root = CircleNode(
@@ -37,11 +37,12 @@ final root = CircleNode(
   children: [
     CircleNode(
       label: 'Needs',
-      formattedValue: '\$2500',
+      value: 2500.0,
+      displayValue: '\$2500',
       color: Colors.orange,
       children: [
-        CircleNode(label: 'Rent', formattedValue: '\$1500', value: 1500.0),
-        CircleNode(label: 'Groceries', formattedValue: '\$400', value: 400.0),
+        CircleNode(label: 'Rent', value: 1500.0, displayValue: '\$1500'),
+        CircleNode(label: 'Groceries', value: 400.0, displayValue: '\$400'),
       ],
     ),
   ],

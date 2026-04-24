@@ -259,30 +259,30 @@ class WorldPopulationExample extends StatelessWidget {
           label: 'Asia',
           color: Colors.red,
           children: [
-            CircleNode(label: 'China', formattedValue: '1.4B', value: 1400.0),
-            CircleNode(label: 'India', formattedValue: '1.3B', value: 1300.0),
-            CircleNode(label: 'Japan', formattedValue: '125M', value: 125.0),
-            CircleNode(label: 'Indonesia', formattedValue: '270M', value: 270.0),
-            CircleNode(label: 'Pakistan', formattedValue: '220M', value: 220.0),
+            CircleNode(label: 'China', value: 1400.0),, displayValue: '1.4B'
+            CircleNode(label: 'India', value: 1300.0),, displayValue: '1.3B'
+            CircleNode(label: 'Japan', value: 125.0),, displayValue: '125M'
+            CircleNode(label: 'Indonesia', value: 270.0),, displayValue: '270M'
+            CircleNode(label: 'Pakistan', value: 220.0),, displayValue: '220M'
           ],
         ),
         CircleNode(
           label: 'Europe',
           color: Colors.blue,
           children: [
-            CircleNode(label: 'Germany', formattedValue: '83M', value: 83.0),
-            CircleNode(label: 'France', formattedValue: '67M', value: 67.0),
-            CircleNode(label: 'UK', formattedValue: '66M', value: 66.0),
-            CircleNode(label: 'Italy', formattedValue: '60M', value: 60.0),
+            CircleNode(label: 'Germany', value: 83.0),, displayValue: '83M'
+            CircleNode(label: 'France', value: 67.0),, displayValue: '67M'
+            CircleNode(label: 'UK', value: 66.0),, displayValue: '66M'
+            CircleNode(label: 'Italy', value: 60.0),, displayValue: '60M'
           ],
         ),
         CircleNode(
           label: 'Americas',
           color: Colors.green,
           children: [
-            CircleNode(label: 'USA', formattedValue: '330M', value: 330.0),
-            CircleNode(label: 'Brazil', formattedValue: '210M', value: 210.0),
-            CircleNode(label: 'Canada', formattedValue: '38M', value: 38.0),
+            CircleNode(label: 'USA', value: 330.0),, displayValue: '330M'
+            CircleNode(label: 'Brazil', value: 210.0),, displayValue: '210M'
+            CircleNode(label: 'Canada', value: 38.0),, displayValue: '38M'
           ],
         ),
       ],
@@ -307,37 +307,37 @@ class BudgetTrackerExample extends StatelessWidget {
       children: [
         CircleNode(
           label: 'Needs',
-          formattedValue: '\$2500',
+          displayValue: '\$2500',
           color: Colors.orange,
           children: [
-            CircleNode(label: 'Rent', formattedValue: '\$1500', value: 1500.0),
-            CircleNode(label: 'Groceries', formattedValue: '\$400', value: 400.0),
-            CircleNode(label: 'Utilities', formattedValue: '\$250', value: 250.0),
-            CircleNode(label: 'Insurance', formattedValue: '\$200', value: 200.0),
-            CircleNode(label: 'Transport', formattedValue: '\$150', value: 150.0),
+            CircleNode(label: 'Rent', value: 1500.0),, displayValue: '\$1500'
+            CircleNode(label: 'Groceries', value: 400.0),, displayValue: '\$400'
+            CircleNode(label: 'Utilities', value: 250.0),, displayValue: '\$250'
+            CircleNode(label: 'Insurance', value: 200.0),, displayValue: '\$200'
+            CircleNode(label: 'Transport', value: 150.0),, displayValue: '\$150'
           ],
         ),
         CircleNode(
           label: 'Wants',
-          formattedValue: '\$1100',
+          displayValue: '\$1100',
           color: Colors.pink,
           children: [
-            CircleNode(label: 'Dining', formattedValue: '\$300', value: 300.0),
-            CircleNode(label: 'Subs', formattedValue: '\$50', value: 50.0),
-            CircleNode(label: 'Shopping', formattedValue: '\$200', value: 200.0),
-            CircleNode(label: 'Hobbies', formattedValue: '\$150', value: 150.0),
-            CircleNode(label: 'Travel', formattedValue: '\$400', value: 400.0),
+            CircleNode(label: 'Dining', value: 300.0),, displayValue: '\$300'
+            CircleNode(label: 'Subs', value: 50.0),, displayValue: '\$50'
+            CircleNode(label: 'Shopping', value: 200.0),, displayValue: '\$200'
+            CircleNode(label: 'Hobbies', value: 150.0),, displayValue: '\$150'
+            CircleNode(label: 'Travel', value: 400.0),, displayValue: '\$400'
           ],
         ),
         CircleNode(
           label: 'Savings',
-          formattedValue: '\$1400',
+          displayValue: '\$1400',
           color: Colors.teal,
           children: [
-            CircleNode(label: 'Emergency', formattedValue: '\$500', value: 500.0),
-            CircleNode(label: 'Retire', formattedValue: '\$400', value: 400.0),
-            CircleNode(label: 'Invest', formattedValue: '\$300', value: 300.0),
-            CircleNode(label: 'Debt', formattedValue: '\$200', value: 200.0),
+            CircleNode(label: 'Emergency', value: 500.0),, displayValue: '\$500'
+            CircleNode(label: 'Retire', value: 400.0),, displayValue: '\$400'
+            CircleNode(label: 'Invest', value: 300.0),, displayValue: '\$300'
+            CircleNode(label: 'Debt', value: 200.0),, displayValue: '\$200'
           ],
         ),
       ],

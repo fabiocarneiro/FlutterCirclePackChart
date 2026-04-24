@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/widgets.dart';
 
 export 'circle_packer.dart';
@@ -7,24 +6,17 @@ export 'flutter_circle_pack_chart_widget.dart';
 export 'flutter_circle_pack_chart_controller.dart';
 export 'flutter_circle_pack_chart_legend.dart';
 
-/// A function that builds a widget for a given [CircleNode].
-typedef NodeWidgetBuilder = Widget Function(BuildContext context, CircleNode node);
-
 /// Represents a node in the hierarchical data structure for the Circle Pack Chart.
 class CircleNode {
   /// The primary display label for this node (descriptive name).
   final String label;
 
-  /// An optional string representation of the [value] (e.g. "$1,500").
-  /// If provided, this is preferred for display in the chart and legend.
-  final String? formattedValue;
-
-  /// An optional builder to provide a custom widget as a label inside the circle.
-  /// If provided, this takes precedence over [label] and [formattedValue] in the chart view.
-  final NodeWidgetBuilder? childBuilder;
-
   /// The numeric value for this node, used to drive sizing and legend totals.
   final double? _value;
+
+  /// An optional string representation of the [value] (e.g. "$1,500").
+  /// If provided, this is preferred for display in the chart and legend.
+  final String? displayValue;
 
   /// The color associated with this node.
   final Color? color;
@@ -34,9 +26,8 @@ class CircleNode {
 
   CircleNode({
     required this.label,
-    this.formattedValue,
-    this.childBuilder,
     double? value,
+    this.displayValue,
     this.color,
     this.children = const [],
   }) : _value = value;
@@ -55,8 +46,8 @@ class CircleNode {
   factory CircleNode.fromMap(Map<String, dynamic> map) {
     return CircleNode(
       label: map['label'] as String,
-      formattedValue: map['formattedValue'] as String?,
       value: (map['value'] as num?)?.toDouble(),
+      displayValue: map['displayValue'] as String?,
       color: map['color'] != null ? Color(map['color'] as int) : null,
       children: (map['children'] as List<dynamic>?)
               ?.map(
