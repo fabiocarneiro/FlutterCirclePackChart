@@ -63,9 +63,12 @@ class FlutterCirclePackChartPainter extends CustomPainter {
       for (final child in sortedChildren) {
         // Dynamic opacity only applies when we are drilled in deeper than root.
         // If focusedNode is root, everything at level 1 is 100% opaque.
-        final double importance = (focusedNode == root.node) 
-            ? 1.0 
-            : (maxValue == minValue ? 1.0 : 0.6 + (0.4 * (child.node.value - minValue) / (maxValue - minValue)));
+        // We use a tight range (0.85 - 1.0) to keep boxes looking solid.
+        final double importance = (focusedNode == root.node)
+            ? 1.0
+            : (maxValue == minValue
+                ? 1.0
+                : 0.85 + (0.15 * (child.node.value - minValue) / (maxValue - minValue)));
 
         if (isDrillingIn) {
           // Drill In: children explode from parent center
@@ -104,9 +107,12 @@ class FlutterCirclePackChartPainter extends CustomPainter {
 
     for (final child in sortedChildren) {
       // Imploding nodes use dynamic opacity unless we are imploding back to the root level.
+      // We use a tight range (0.85 - 1.0) to keep boxes looking solid.
       final double importance = (focusedNode == root.node)
           ? 1.0
-          : (maxValue == minValue ? 1.0 : 0.6 + (0.4 * (child.node.value - minValue) / (maxValue - minValue)));
+          : (maxValue == minValue
+              ? 1.0
+              : 0.85 + (0.15 * (child.node.value - minValue) / (maxValue - minValue)));
       
       final double x = child.x + (node.x - child.x) * animationValue;
       final double y = child.y + (node.y - child.y) * animationValue;
