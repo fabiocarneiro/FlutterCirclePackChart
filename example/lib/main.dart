@@ -206,9 +206,19 @@ class BasicUsageExample extends StatelessWidget {
               child: FlutterCirclePackChart(
                 title: 'Simple Chart',
                 children: [
-                  CircleNode(label: 'Item A', value: 100, color: Colors.blue),
-                  CircleNode(label: 'Item B', value: 150, color: Colors.red),
-                  CircleNode(label: 'Item C', value: 80, color: Colors.green),
+                  CircleNode(
+                    label: 'Category 1',
+                    color: Colors.blue,
+                    children: [
+                      CircleNode(label: 'Nested A', value: 120),
+                      CircleNode(label: 'Nested B', value: 80),
+                    ],
+                  ),
+                  CircleNode(
+                    label: 'Category 2',
+                    value: 150,
+                    color: Colors.red,
+                  ),
                 ],
               ),
             ),
