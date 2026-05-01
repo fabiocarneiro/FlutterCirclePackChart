@@ -42,6 +42,12 @@ class CirclePacker {
 
   /// Packs a list of [children] into a circle with the given [radius],
   /// creating a virtual root with the given [label].
+  ///
+  /// This is the core utility that enables the "Widget as Root" architecture.
+  /// It allows users to provide a flat list of top-level categories without
+  /// needing to wrap them in an explicit "Root" [CircleNode] in their data model.
+  /// The packer creates a temporary virtual parent to calculate the initial
+  /// layout within the available viewport.
   static PackedNode packList(
     List<CircleNode> children, {
     required double radius,

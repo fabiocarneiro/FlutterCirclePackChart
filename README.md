@@ -35,7 +35,7 @@ flutter pub add flutter_circle_pack_chart
 ## 🚀 Getting Started
 
 ### 1. Define your data
-Create a list of `CircleNode` objects. Use `displayValue` to show custom-formatted data like currency:
+Create a list of `CircleNode` objects. Use `displayValue` to show custom-formatted data like currency. **Note:** In version 3.0, you no longer need to wrap these in a "Root" node; the widget handles the top-level layout for you.
 
 ```dart
 final children = [
@@ -80,6 +80,14 @@ FlutterCirclePackChart(
   showValue: true, // Toggle value visibility in circles
 )
 ```
+
+### Why "Widget as Root"?
+Previous versions required users to define a single `CircleNode` as the root of their data. This was often redundant and confusing for simple lists of categories. 
+
+Version 3.0 introduces a virtual root system:
+- **Simplified Data Model:** You provide a `List<CircleNode>` representing your top-level categories.
+- **Automatic Packing:** The internal `CirclePacker.packList` utility automatically creates a virtual parent to manage the layout of these items within the viewport.
+- **Cleaner API:** The `title` property of the widget now defines the label for the top-most navigation level, separating display metadata from your raw data structure.
 
 ## 🛠️ Customization
 
