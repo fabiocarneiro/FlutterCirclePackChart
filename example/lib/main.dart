@@ -202,7 +202,7 @@ class BasicUsageExample extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            const Expanded(
+            Expanded(
               child: FlutterCirclePackChart(
                 title: 'Simple Chart',
                 children: [
