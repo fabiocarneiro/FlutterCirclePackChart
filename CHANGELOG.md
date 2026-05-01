@@ -1,3 +1,12 @@
+## 3.0.0
+
+* **Breaking Change:** **"Widget as Root" Architecture**. Removed the requirement for a mandatory root `CircleNode` wrapper. The widget now acts as the hierarchy's root.
+* **Breaking Change:** `FlutterCirclePackChart` constructor refactor: removed `root` parameter, added `children` (List<CircleNode>) and `title` (String).
+* **Breaking Change:** `FlutterCirclePackChartController` refactor: now initializes with `children` and `title` instead of a single root node.
+* **New Feature:** Added `CirclePacker.packList` for direct packing of node lists within a virtual root.
+* **Enhancement:** Navigation logic now supports a "virtual root" (Top Level) state where the focused node is null.
+* Updated all examples and documentation to reflect the new simplified API.
+
 ## 2.1.0
 
 * **New Feature:** **Interactive Legend**. Users can now tap on legend items to drill down into sub-categories.
