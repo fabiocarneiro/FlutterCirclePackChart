@@ -86,7 +86,7 @@ Previous versions required users to define a single `CircleNode` as the root of 
 
 Version 3.0 introduces a virtual root system:
 - **Simplified Data Model:** You provide a `List<CircleNode>` representing your top-level categories.
-- **Automatic Packing:** The internal `CirclePacker.packList` utility automatically creates a virtual parent to manage the layout of these items within the viewport.
+- **Automatic Layout:** The library automatically calculates the initial layout of these items within the viewport without requiring a parent node.
 - **Cleaner API:** The `title` property of the widget now defines the label for the top-most navigation level, separating display metadata from your raw data structure.
 
 ## 🛠️ Customization
