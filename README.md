@@ -35,25 +35,31 @@ flutter pub add flutter_circle_pack_chart
 ## 🚀 Getting Started
 
 ### 1. Define your data
-Create a hierarchy of `CircleNode` objects. Use `displayValue` to show custom-formatted data like currency:
+Create a list of `CircleNode` objects. Use `displayValue` to show custom-formatted data like currency:
 
 ```dart
-final root = CircleNode(
-  label: 'Monthly Budget',
-  color: Colors.blueGrey,
-  children: [
-    CircleNode(
-      label: 'Needs',
-      value: 2500.0,
-      displayValue: '\$2500',
-      color: Colors.orange,
-      children: [
-        CircleNode(label: 'Rent', value: 1500.0, displayValue: '\$1500'),
-        CircleNode(label: 'Groceries', value: 400.0, displayValue: '\$400'),
-      ],
-    ),
-  ],
-);
+final children = [
+  CircleNode(
+    label: 'Needs',
+    value: 2500.0,
+    displayValue: '\$2500',
+    color: Colors.orange,
+    children: [
+      CircleNode(label: 'Rent', value: 1500.0, displayValue: '\$1500'),
+      CircleNode(label: 'Groceries', value: 400.0, displayValue: '\$400'),
+    ],
+  ),
+  CircleNode(
+    label: 'Wants',
+    value: 1100.0,
+    displayValue: '\$1100',
+    color: Colors.pink,
+    children: [
+      CircleNode(label: 'Dining', value: 300.0, displayValue: '\$300'),
+      CircleNode(label: 'Subs', value: 50.0, displayValue: '\$50'),
+    ],
+  ),
+];
 ```
 
 ### 2. Add the Widget
@@ -61,11 +67,15 @@ Place the `FlutterCirclePackChart` in your widget tree.
 
 ```dart
 // Initialize the controller
-final controller = FlutterCirclePackChartController(root: root);
+final controller = FlutterCirclePackChartController(
+  children: children,
+  title: 'Monthly Budget',
+);
 
 // In your build method
 FlutterCirclePackChart(
-  root: root,
+  children: children,
+  title: 'Monthly Budget',
   controller: controller,
   showValue: true, // Toggle value visibility in circles
 )
@@ -75,6 +85,7 @@ FlutterCirclePackChart(
 
 | Property | Description | Default |
 | :--- | :--- | :--- |
+| `title` | The label for the top-level (virtual root) of the chart. | `'Chart'` |
 | `showValue` | Whether to display values/formatted values inside the circles. | `true` |
 | `minRadiusRatio` | Minimum radius of a child circle as a fraction of its parent. | `0.20` |
 | `fontSizeFactor` | A multiplier to adjust the responsive font size globally. | `1.0` |

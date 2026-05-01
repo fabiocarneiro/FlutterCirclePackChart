@@ -1,24 +1,24 @@
 # Implementation Plan - v3.0.0 "Widget as Root" Refactor
 
 ## Phase 1: Controller & Navigation Logic
-- [~] Task: Refactor `FlutterCirclePackChartController`
-    - [ ] Support initialization with a list of top-level nodes instead of a single root.
-    - [ ] Update navigation stack to handle the "virtual root" (no node focused).
-    - [ ] Ensure `goBack` and `drillDown` correctly manage the new state.
+- [x] Task: Refactor `FlutterCirclePackChartController` fa93a2b
+    - [x] Support initialization with a list of top-level nodes instead of a single root.
+    - [x] Update navigation stack to handle the "virtual root" (no node focused).
+    - [x] Ensure `goBack` and `drillDown` correctly manage the new state.
 
 ## Phase 2: Widget & Internal Engine
-- [ ] Task: Refactor `FlutterCirclePackChart` Widget
-    - [ ] Update constructor to accept `title` and `children`.
-    - [ ] Refactor internal `_packedNode` state initialization.
-- [ ] Task: Refactor `CirclePacker`
-    - [ ] Create a new entry point that packs a list of nodes within a given radius, without needing a parent node.
-- [ ] Task: Update `FlutterCirclePackChartPainter`
-    - [ ] Update drawing logic to start from the top-level list.
+- [x] Task: Refactor `FlutterCirclePackChart` Widget fa93a2b
+    - [x] Update constructor to accept `title` and `children`.
+    - [x] Refactor internal `_packedNode` state initialization.
+- [x] Task: Refactor `CirclePacker` fa93a2b
+    - [x] Create a new entry point that packs a list of nodes within a given radius, without needing a parent node.
+- [x] Task: Update `FlutterCirclePackChartPainter` fa93a2b
+    - [x] Update drawing logic to start from the top-level list.
 
 ## Phase 3: Tests & Integration
-- [ ] Task: Update all Unit Tests
-- [ ] Task: Update all Widget Tests
-- [ ] Task: Refactor Example App
-    - [ ] Update Countries, Budget, and Stress Tests to the new API.
+- [x] Task: Update all Unit Tests fa93a2b
+- [x] Task: Update all Widget Tests fa93a2b
+- [x] Task: Refactor Example App fa93a2b
+    - [x] Update Countries, Budget, and Stress Tests to the new API.
 - [ ] Task: Update README
 - [ ] Task: Conductor - Final Manual Verification (Protocol in workflow.md)
