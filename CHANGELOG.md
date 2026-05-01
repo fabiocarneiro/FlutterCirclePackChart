@@ -1,3 +1,9 @@
+## 2.1.0
+
+* **New Feature:** **Interactive Legend**. Users can now tap on legend items to drill down into sub-categories.
+* **UI Refinement:** Added visual cues (chevron icons) and hover/tap states to the legend to indicate interactivity.
+* Improved legend layout with expanded labels to prevent truncation in the middle of long names.
+
 ## 2.0.1
 
 * **Bug Fix:** Implemented linear canvas anti-scaling to eliminate vertical jitter and "jumping" of labels during zoom animations.
