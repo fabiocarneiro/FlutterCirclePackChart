@@ -6,14 +6,11 @@ void main() {
   testWidgets('FlutterCirclePackChartLegend should display items for focused node', (
     WidgetTester tester,
   ) async {
-    final root = CircleNode(
-      label: 'Root',
-      children: [
-        CircleNode(label: 'A', value: 10, color: Colors.red),
-        CircleNode(label: 'B', value: 20, color: Colors.blue),
-      ],
-    );
-    final controller = FlutterCirclePackChartController(root: root);
+    final children = [
+      CircleNode(label: 'A', value: 10, color: Colors.red),
+      CircleNode(label: 'B', value: 20, color: Colors.blue),
+    ];
+    final controller = FlutterCirclePackChartController(children: children);
 
     await tester.pumpWidget(
       MaterialApp(

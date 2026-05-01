@@ -8,8 +8,8 @@ class FlutterCirclePackChartPainter extends CustomPainter {
   /// The absolute root of the packed hierarchy.
   final PackedNode root;
 
-  /// The currently focused node.
-  final CircleNode focusedNode;
+  /// The currently focused node. If null, the top-level (virtual root) is focused.
+  final CircleNode? focusedNode;
 
   /// The node that was focused before the current transition.
   final CircleNode? previousFocusedNode;
@@ -34,7 +34,7 @@ class FlutterCirclePackChartPainter extends CustomPainter {
 
   FlutterCirclePackChartPainter({
     required this.root,
-    required this.focusedNode,
+    this.focusedNode,
     this.previousFocusedNode,
     required this.animationValue,
     required this.isDrillingIn,
@@ -55,7 +55,9 @@ class FlutterCirclePackChartPainter extends CustomPainter {
   void _drawNode(Canvas canvas, PackedNode node, Color parentColor) {
     final Color color = node.node.color ?? parentColor;
 
-    if (node.node == focusedNode) {
+    final bool isFocused = (focusedNode == null && node == root) || (focusedNode != null && node.node == focusedNode);
+
+    if (isFocused) {
       // Current focus level
       final sortedChildren = List<PackedNode>.from(node.children)
         ..sort((a, b) => a.r.compareTo(b.r));
@@ -66,7 +68,7 @@ class FlutterCirclePackChartPainter extends CustomPainter {
 
       for (final child in sortedChildren) {
         // Dynamic opacity with a tight range (0.85 - 1.0)
-        final double importance = (focusedNode == root.node)
+        final double importance = (isFocused && node == root)
             ? 1.0
             : (maxValue == minValue
                 ? 1.0
@@ -108,7 +110,7 @@ class FlutterCirclePackChartPainter extends CustomPainter {
     final double minValue = node.children.isEmpty ? 0.0 : node.children.map((c) => c.node.value).reduce((a, b) => a < b ? a : b);
 
     for (final child in sortedChildren) {
-      final double importance = (focusedNode == root.node)
+      final double importance = (focusedNode == null)
           ? 1.0
           : (maxValue == minValue
               ? 1.0
@@ -146,7 +148,8 @@ class FlutterCirclePackChartPainter extends CustomPainter {
     _drawLabel(canvas, node, Offset(x, y), effectiveRadius, opacity);
   }
 
-  bool _isAncestor(CircleNode potentialAncestor, CircleNode target) {
+  bool _isAncestor(CircleNode potentialAncestor, CircleNode? target) {
+    if (target == null) return false;
     if (potentialAncestor.children.isEmpty) return false;
     for (final child in potentialAncestor.children) {
       if (child == target) return true;

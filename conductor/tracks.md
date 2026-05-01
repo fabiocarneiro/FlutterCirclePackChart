@@ -4,7 +4,10 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [~] **Track: Major Refactor: Value Formatting & Dynamic Opacity (v2.0.0)**
+- [~] **Track: Explicit Data Model & Root Refactor (v3.0.0)**
+  *Link: [./tracks/v3_refactor_20260423/](./tracks/v3_refactor_20260423/)*
+
+- [x] **Track: Major Refactor: Value Formatting & Dynamic Opacity (v2.0.0)**
   *Link: [./tracks/v2_refactor_20260423/](./tracks/v2_refactor_20260423/)*
 
 - [x] **Track: Rename project to FlutterCirclePackChart**

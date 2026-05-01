@@ -13,10 +13,11 @@ class FlutterCirclePackChartLegend extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: controller,
       builder: (context, focusedNode, _) {
-        final children = focusedNode.children;
+        final children = focusedNode?.children ?? controller.children;
         if (children.isEmpty) return const SizedBox.shrink();
 
-        final Color parentColor = focusedNode.color ?? Colors.blue;
+        final Color parentColor = focusedNode?.color ?? Colors.blue;
+        final String label = focusedNode?.label ?? controller.title;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,7 +26,7 @@ class FlutterCirclePackChartLegend extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Text(
-                'Items in ${focusedNode.label}',
+                'Items in $label',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   color: Colors.grey[700],
                   fontWeight: FontWeight.bold,

@@ -40,6 +40,18 @@ class CirclePacker {
     return _packNode(root, 0.0, 0.0, radius, minRadiusRatio);
   }
 
+  /// Packs a list of [children] into a circle with the given [radius],
+  /// creating a virtual root with the given [label].
+  static PackedNode packList(
+    List<CircleNode> children, {
+    required double radius,
+    String label = 'Root',
+    double minRadiusRatio = 0.1,
+  }) {
+    final virtualRoot = CircleNode(label: label, children: children);
+    return _packNode(virtualRoot, 0.0, 0.0, radius, minRadiusRatio);
+  }
+
   static PackedNode _packNode(
     CircleNode node,
     double x,

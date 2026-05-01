@@ -6,8 +6,11 @@ import 'flutter_circle_pack_chart.dart';
 
 /// A widget that displays an animated circular treemap with camera-style drill-down.
 class FlutterCirclePackChart extends StatefulWidget {
-  /// The root node of the hierarchical data to display.
-  final CircleNode root;
+  /// The top-level children nodes to display.
+  final List<CircleNode> children;
+
+  /// The title for the overall chart.
+  final String title;
 
   /// Optional controller to manage the navigation state.
   final FlutterCirclePackChartController? controller;
@@ -30,7 +33,8 @@ class FlutterCirclePackChart extends StatefulWidget {
 
   const FlutterCirclePackChart({
     super.key,
-    required this.root,
+    required this.children,
+    this.title = 'Chart',
     this.controller,
     this.minRadiusRatio = 0.20,
     this.fontSizeFactor = 1.0,
@@ -51,7 +55,7 @@ class _FlutterCirclePackChartState extends State<FlutterCirclePackChart>
   PackedNode? _packedRoot;
 
   // State tracking for transitions
-  late CircleNode _currentFocus;
+  CircleNode? _currentFocus;
   CircleNode? _previousFocus;
   bool _isDrillingIn = true;
 
@@ -65,7 +69,11 @@ class _FlutterCirclePackChartState extends State<FlutterCirclePackChart>
   void initState() {
     super.initState();
     _controller =
-        widget.controller ?? FlutterCirclePackChartController(root: widget.root);
+        widget.controller ??
+        FlutterCirclePackChartController(
+          children: widget.children,
+          title: widget.title,
+        );
     _currentFocus = _controller.value;
     _controller.addListener(_onStateChanged);
 
@@ -79,8 +87,9 @@ class _FlutterCirclePackChartState extends State<FlutterCirclePackChart>
     );
 
     // Initial packing
-    _packedRoot = CirclePacker.pack(
-      widget.root,
+    _packedRoot = CirclePacker.packList(
+      widget.children,
+      label: widget.title,
       radius: 100.0,
       minRadiusRatio: widget.minRadiusRatio,
     );
@@ -93,13 +102,19 @@ class _FlutterCirclePackChartState extends State<FlutterCirclePackChart>
     if (widget.controller != oldWidget.controller) {
       oldWidget.controller?.removeListener(_onStateChanged);
       _controller =
-          widget.controller ?? FlutterCirclePackChartController(root: widget.root);
+          widget.controller ??
+          FlutterCirclePackChartController(
+            children: widget.children,
+            title: widget.title,
+          );
       _controller.addListener(_onStateChanged);
     }
-    if (widget.root != oldWidget.root ||
+    if (widget.children != oldWidget.children ||
+        widget.title != oldWidget.title ||
         widget.minRadiusRatio != oldWidget.minRadiusRatio) {
-      _packedRoot = CirclePacker.pack(
-        widget.root,
+      _packedRoot = CirclePacker.packList(
+        widget.children,
+        label: widget.title,
         radius: 100.0,
         minRadiusRatio: widget.minRadiusRatio,
       );
@@ -138,8 +153,10 @@ class _FlutterCirclePackChartState extends State<FlutterCirclePackChart>
     });
   }
 
-  bool _isAncestor(CircleNode potentialAncestor, CircleNode target) {
-    if (potentialAncestor.children.isEmpty) return false;
+  bool _isAncestor(CircleNode? potentialAncestor, CircleNode? target) {
+    if (target == null) return false;
+    if (potentialAncestor == null) return true; // Everything is a child of the top level
+    
     for (final child in potentialAncestor.children) {
       if (child == target) return true;
       if (_isAncestor(child, target)) return true;
@@ -147,7 +164,10 @@ class _FlutterCirclePackChartState extends State<FlutterCirclePackChart>
     return false;
   }
 
-  PackedNode? _findPackedNode(PackedNode root, CircleNode target) {
+  PackedNode? _findPackedNode(PackedNode root, CircleNode? target) {
+    // If target is null, we are looking for the virtual root
+    if (target == null) return root; 
+    
     if (root.node == target) return root;
     for (final child in root.children) {
       final result = _findPackedNode(child, target);
@@ -163,8 +183,6 @@ class _FlutterCirclePackChartState extends State<FlutterCirclePackChart>
         final double minSide = min(constraints.maxWidth, constraints.maxHeight);
         final double viewportRadius = minSide / 2;
 
-        // Responsive font calculation:
-        // Baseline 12.0 + small increment based on screen size, modified by factor.
         final double responsiveBaseFontSize =
             (10.0 + (minSide / 120)) * widget.fontSizeFactor;
 

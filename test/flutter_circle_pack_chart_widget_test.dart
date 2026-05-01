@@ -6,13 +6,10 @@ void main() {
   testWidgets('FlutterCirclePackChart widget should render', (
     WidgetTester tester,
   ) async {
-    final root = CircleNode(
-      label: 'Root',
-      children: [
-        CircleNode(label: 'A', value: 10.0),
-        CircleNode(label: 'B', value: 20.0),
-      ],
-    );
+    final children = [
+      CircleNode(label: 'A', value: 10.0),
+      CircleNode(label: 'B', value: 20.0),
+    ];
 
     await tester.pumpWidget(
       MaterialApp(
@@ -20,7 +17,7 @@ void main() {
           body: SizedBox(
             width: 500,
             height: 500,
-            child: FlutterCirclePackChart(root: root),
+            child: FlutterCirclePackChart(children: children, title: 'Root'),
           ),
         ),
       ),

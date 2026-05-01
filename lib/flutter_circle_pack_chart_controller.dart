@@ -2,13 +2,19 @@ import 'package:flutter/foundation.dart';
 import 'flutter_circle_pack_chart.dart';
 
 /// A controller for the [FlutterCirclePackChart] that manages the navigation state.
-class FlutterCirclePackChartController extends ValueNotifier<CircleNode> {
-  /// The absolute root of the hierarchy.
-  final CircleNode root;
+class FlutterCirclePackChartController extends ValueNotifier<CircleNode?> {
+  /// The top-level children nodes.
+  final List<CircleNode> children;
 
-  final List<CircleNode> _navigationStack = [];
+  /// The title for the top-level view.
+  final String title;
 
-  FlutterCirclePackChartController({required this.root}) : super(root);
+  final List<CircleNode?> _navigationStack = [];
+
+  FlutterCirclePackChartController({
+    required this.children,
+    this.title = 'Root',
+  }) : super(null);
 
   /// Whether it is possible to navigate back to a parent level.
   bool get canGoBack => _navigationStack.isNotEmpty;

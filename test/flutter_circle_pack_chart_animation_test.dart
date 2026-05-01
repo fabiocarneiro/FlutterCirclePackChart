@@ -10,9 +10,9 @@ void main() {
       label: 'Child',
       children: [CircleNode(label: 'Leaf', value: 10.0)],
     );
-    final root = CircleNode(label: 'Root', children: [child]);
+    final children = [child];
 
-    final controller = FlutterCirclePackChartController(root: root);
+    final controller = FlutterCirclePackChartController(children: children);
 
     await tester.pumpWidget(
       MaterialApp(
@@ -20,7 +20,11 @@ void main() {
           body: SizedBox(
             width: 500,
             height: 500,
-            child: FlutterCirclePackChart(root: root, controller: controller),
+            child: FlutterCirclePackChart(
+              children: children,
+              title: 'Root',
+              controller: controller,
+            ),
           ),
         ),
       ),
