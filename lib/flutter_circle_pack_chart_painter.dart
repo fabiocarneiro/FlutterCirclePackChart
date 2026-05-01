@@ -4,7 +4,7 @@ import 'flutter_circle_pack_chart.dart';
 
 /// A [CustomPainter] that renders the circular treemap circles with symmetric 
 /// explosion/implosion animations, dynamic opacity, and anti-scaled labels.
-class CirclePackChartScopePainter extends CustomPainter {
+class FlutterCirclePackChartPainter extends CustomPainter {
   /// The absolute root of the packed hierarchy.
   final PackedNode root;
 
@@ -32,7 +32,7 @@ class CirclePackChartScopePainter extends CustomPainter {
   /// Whether to show the [CircleNode.label] in the circles.
   final bool showLabels;
 
-  CirclePackChartScopePainter({
+  FlutterCirclePackChartPainter({
     required this.root,
     this.focusedNode,
     this.previousFocusedNode,
@@ -240,7 +240,7 @@ class CirclePackChartScopePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CirclePackChartScopePainter oldDelegate) {
+  bool shouldRepaint(covariant FlutterCirclePackChartPainter oldDelegate) {
     return oldDelegate.root != root ||
         oldDelegate.focusedNode != focusedNode ||
         oldDelegate.previousFocusedNode != previousFocusedNode ||

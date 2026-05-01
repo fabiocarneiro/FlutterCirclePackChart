@@ -8,13 +8,17 @@ void main() {
 }
 
 final _router = GoRouter(
-  initialLocation: '/countries',
+  initialLocation: '/basic',
   routes: [
     ShellRoute(
       builder: (context, state, child) {
         return MainNavigationScreen(child: child);
       },
       routes: [
+        GoRoute(
+          path: '/basic',
+          builder: (context, state) => const BasicUsageExample(),
+        ),
         GoRoute(
           path: '/countries',
           builder: (context, state) => const WorldPopulationExample(),
@@ -55,6 +59,11 @@ class MainNavigationScreen extends StatelessWidget {
 
   static final List<_ExamplePage> _pages = [
     const _ExamplePage(
+      title: 'Basic Usage',
+      path: '/basic',
+      icon: Icons.star_border,
+    ),
+    const _ExamplePage(
       title: 'Countries',
       path: '/countries',
       icon: Icons.public,
@@ -73,8 +82,9 @@ class MainNavigationScreen extends StatelessWidget {
 
   int _getSelectedIndex(BuildContext context) {
     final String location = GoRouterState.of(context).uri.path;
-    if (location.startsWith('/budget')) return 1;
-    if (location.startsWith('/stress-tests')) return 2;
+    if (location.startsWith('/countries')) return 1;
+    if (location.startsWith('/budget')) return 2;
+    if (location.startsWith('/stress-tests')) return 3;
     return 0;
   }
 
@@ -162,6 +172,57 @@ class _ExamplePage {
     required this.path,
     required this.icon,
   });
+}
+
+class BasicUsageExample extends StatelessWidget {
+  const BasicUsageExample({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            const Text(
+              'SIMPLE IMPLEMENTATION',
+              style: TextStyle(
+                color: Colors.grey,
+                letterSpacing: 1.2,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Basic Usage',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 24),
+            const Expanded(
+              child: FlutterCirclePackChart(
+                title: 'Simple Chart',
+                children: [
+                  CircleNode(label: 'Item A', value: 100, color: Colors.blue),
+                  CircleNode(label: 'Item B', value: 150, color: Colors.red),
+                  CircleNode(label: 'Item C', value: 80, color: Colors.green),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'This example uses FlutterCirclePackChart directly without a provider or legend.',
+              style: TextStyle(color: Colors.grey, fontSize: 12),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 /// A generic base widget for the examples to maintain consistency

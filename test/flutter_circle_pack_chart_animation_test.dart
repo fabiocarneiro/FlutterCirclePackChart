@@ -30,8 +30,6 @@ void main() {
     expect(find.byType(FlutterCirclePackChart), findsOneWidget);
 
     // Find the child circle and tap it to trigger drill down
-    // Since we don't have an explicit controller to call drillDown on,
-    // we must tap the UI.
     await tester.tap(find.byType(FlutterCirclePackChart));
     await tester.pump();
 
@@ -42,7 +40,7 @@ void main() {
     expect(tester.hasRunningAnimations, isFalse);
   });
 
-  testWidgets('FlutterCirclePackChart should work with Scope', (
+  testWidgets('FlutterCirclePackChart should work with CirclePackProvider', (
     WidgetTester tester,
   ) async {
     final child = CircleNode(
@@ -54,7 +52,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: CirclePackChart(
+          body: CirclePackProvider(
             children: children,
             title: 'Scope Root',
             child: const FlutterCirclePackChart(),

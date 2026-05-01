@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'flutter_circle_pack_chart.dart';
 
-/// A controller for the [CirclePackChartScope] that manages the navigation state.
-class CirclePackChartScopeController extends ValueNotifier<CircleNode?> {
+/// A controller for the [FlutterCirclePackChart] that manages the navigation state.
+class CirclePackChartController extends ValueNotifier<CircleNode?> {
   final List<CircleNode?> _navigationStack = [];
 
-  CirclePackChartScopeController() : super(null);
+  CirclePackChartController() : super(null);
 
   /// Whether it is possible to navigate back to a parent level.
   bool get canGoBack => _navigationStack.isNotEmpty;
@@ -32,5 +32,5 @@ class CirclePackChartScopeController extends ValueNotifier<CircleNode?> {
   }
 }
 
-/// Legacy alias for [CirclePackChartScopeController].
-typedef CirclePackChartScopeController = CirclePackChartScopeController;
+/// Legacy alias for [CirclePackChartController].
+typedef FlutterCirclePackChartController = CirclePackChartController;

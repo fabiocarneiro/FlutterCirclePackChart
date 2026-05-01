@@ -289,7 +289,7 @@ class _FlutterCirclePackChartState extends State<FlutterCirclePackChart>
                       ),
                       alignment: Alignment.center,
                       child: CustomPaint(
-                        painter: CirclePackChartPainter(
+                        painter: FlutterCirclePackChartPainter(
                           root: _packedRoot!,
                           focusedNode: _activeController?.value,
                           previousFocusedNode: _animationController.isAnimating

@@ -3,27 +3,26 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_circle_pack_chart/flutter_circle_pack_chart.dart';
 
 void main() {
-  testWidgets('FlutterCirclePackChartPainter should render circles', (
+  testWidgets('FlutterCirclePackChartPainter should render', (
     WidgetTester tester,
   ) async {
-    final root = CircleNode(label: 'Root', value: 100.0);
-    final packedNode = CirclePacker.pack(root, radius: 100.0);
+    final root = CircleNode(
+      label: 'Root',
+      children: [CircleNode(label: 'Child', value: 10.0)],
+    );
+    final packedRoot = CirclePacker.pack(root, radius: 100.0);
 
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: Center(
-            child: CustomPaint(
-              painter: FlutterCirclePackChartPainter(
-                root: packedNode,
-                focusedNode: root,
-                animationValue: 1.0,
-                isDrillingIn: true,
-                cameraScale: 1.0,
-                baseFontSize: 12.0,
-                showValue: true,
-              ),
-              size: const Size(200, 200),
+          body: CustomPaint(
+            painter: FlutterCirclePackChartPainter(
+              root: packedRoot,
+              focusedNode: null,
+              animationValue: 1.0,
+              isDrillingIn: true,
+              cameraScale: 1.0,
+              baseFontSize: 12.0,
             ),
           ),
         ),

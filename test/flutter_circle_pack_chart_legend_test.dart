@@ -28,7 +28,7 @@ void main() {
     expect(find.text('B'), findsOneWidget);
   });
 
-  testWidgets('FlutterCirclePackChartLegend should work with Scope', (
+  testWidgets('FlutterCirclePackChartLegend should work with CirclePackProvider', (
     WidgetTester tester,
   ) async {
     final children = [
@@ -39,7 +39,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: CirclePackChart(
+          body: CirclePackProvider(
             children: children,
             title: 'Scope Root',
             child: const FlutterCirclePackChartLegend(),
