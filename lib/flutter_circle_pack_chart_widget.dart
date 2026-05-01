@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 import 'flutter_circle_pack_chart.dart';
-import 'circle_pack_chart_scope.dart';
 
 /// A widget that displays an animated circular treemap with camera-style drill-down.
 ///

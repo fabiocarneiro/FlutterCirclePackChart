@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_circle_pack_chart/flutter_circle_pack_chart.dart';
-import 'dart:math';
 
 void main() {
   test('CirclePacker scales relative to total value, not absolute sqrt', () {

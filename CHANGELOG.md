@@ -1,3 +1,7 @@
+## 3.0.1
+
+* **Internal:** Removed redundant imports to improve pub.dev analysis score.
+
 ## 3.0.0
 
 * **Breaking Change:** **"Widget as Root" Architecture**. Removed the requirement for a mandatory root `CircleNode` wrapper. The widget now acts as the hierarchy's root.
