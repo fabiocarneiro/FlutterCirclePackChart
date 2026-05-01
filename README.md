@@ -22,7 +22,7 @@ A powerful, interactive, and highly customizable Circle Pack Chart (Circular Tre
   - **Anti-Scaled Consistency:** Labels maintain a constant visual size on screen regardless of the zoom level.
   - **Visibility Toggle:** Control whether values are shown inside circles using the `showValue` flag.
 - **✨ Dynamic Opacity:** Automatically scales child circle opacity based on their relative values, visually highlighting more important data points.
-- **📋 Dynamic Legend:** Includes a built-in vertical legend component that automatically updates to reflect labels and display values of the currently focused level.
+- **📋 Interactive Legend:** Includes a built-in vertical legend component that automatically updates to reflect labels and display values. Tapping a legend item triggers a drill-down into that category.
 
 ## 📦 Installation
 

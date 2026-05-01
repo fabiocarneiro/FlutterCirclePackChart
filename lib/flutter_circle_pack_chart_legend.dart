@@ -34,34 +34,48 @@ class FlutterCirclePackChartLegend extends StatelessWidget {
             ),
             ...children.map((node) {
               final Color color = node.color ?? parentColor;
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 14,
-                      height: 12, // Slightly wider for a "pill" or just 12x12
-                      decoration: BoxDecoration(
-                        color: color.withValues(alpha: 0.8),
-                        borderRadius: BorderRadius.circular(4),
+              final bool canDrill = node.children.isNotEmpty;
+
+              return InkWell(
+                onTap: canDrill ? () => controller.drillDown(node) : null,
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 14,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: color.withValues(alpha: 0.8),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      node.label,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w500,
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          node.label,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w500,
+                              ),
+                        ),
                       ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      node.displayValue ?? node.value.toStringAsFixed(0),
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey,
+                      Text(
+                        node.displayValue ?? node.value.toStringAsFixed(0),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.grey,
+                            ),
                       ),
-                    ),
-                  ],
+                      if (canDrill) ...[
+                        const SizedBox(width: 8),
+                        Icon(
+                          Icons.chevron_right,
+                          size: 14,
+                          color: Colors.grey.withValues(alpha: 0.5),
+                        ),
+                      ],
+                    ],
+                  ),
                 ),
               );
             }),
