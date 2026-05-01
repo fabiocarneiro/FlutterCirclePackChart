@@ -68,7 +68,7 @@ class FlutterCirclePackChartPainter extends CustomPainter {
 
       for (final child in sortedChildren) {
         // Dynamic opacity with a tight range (0.85 - 1.0)
-        final double importance = (isFocused && node == root)
+        final double importance = (focusedNode == null)
             ? 1.0
             : (maxValue == minValue
                 ? 1.0

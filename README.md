@@ -17,16 +17,13 @@ A powerful, interactive, and highly customizable Circle Pack Chart (Circular Tre
 - **♾️ Infinite Zoom Context:** Sibling nodes remain visible and partially overflow the square viewport during transitions, maintaining clear hierarchical context.
 - **🔄 Bidirectional Navigation:** Seamlessly supports both drill-in (explosion) and drill-out (implosion) animations for a natural, physical feel.
 - **📏 Professional Label System:**
-  - **Structured Data:** Use `label` for the name and `displayValue` for monetary values, percentages, or custom strings (rendered larger and bold on top).
+  - **Structured Data:** Use `label` for the name and `displayValue` for monetary values, percentages, or custom strings.
   - **Guaranteed Visibility:** Enforces a minimum circle size to ensure every item has a legible label.
   - **Anti-Scaled Consistency:** Labels maintain a constant visual size on screen regardless of the zoom level.
-  - **Visibility Toggle:** Control whether values are shown inside circles using the `showValue` flag.
 - **✨ Dynamic Opacity:** Automatically scales child circle opacity based on their relative values, visually highlighting more important data points.
-- **📋 Interactive Legend:** Includes a built-in vertical legend component that automatically updates to reflect labels and display values. Tapping a legend item triggers a drill-down into that category.
+- **📋 Interactive Legend:** Includes a built-in vertical legend component that automatically updates.
 
 ## 📦 Installation
-
-To add **flutter_circle_pack_chart** to your project, run:
 
 ```bash
 flutter pub add flutter_circle_pack_chart
@@ -35,7 +32,7 @@ flutter pub add flutter_circle_pack_chart
 ## 🚀 Getting Started
 
 ### 1. Define your data
-Create a list of `CircleNode` objects. Use `displayValue` to show custom-formatted data like currency:
+Create a list of `CircleNode` objects:
 
 ```dart
 final children = [
@@ -56,28 +53,34 @@ final children = [
     color: Colors.pink,
     children: [
       CircleNode(label: 'Dining', value: 300.0, displayValue: '\$300'),
-      CircleNode(label: 'Subs', value: 50.0, displayValue: '\$50'),
     ],
   ),
 ];
 ```
 
-### 2. Add the Widget
-Place the `FlutterCirclePackChart` in your widget tree.
+### 2. Basic Usage
+For a simple chart, just drop the widget in:
 
 ```dart
-// Initialize the controller
-final controller = FlutterCirclePackChartController(
-  children: children,
-  title: 'Monthly Budget',
-);
-
-// In your build method
 FlutterCirclePackChart(
   children: children,
   title: 'Monthly Budget',
-  controller: controller,
-  showValue: true, // Toggle value visibility in circles
+)
+```
+
+### 3. Usage with Legend
+To include an interactive legend, wrap them in a `CirclePackChart` scope:
+
+```dart
+CirclePackChart(
+  children: children,
+  title: 'Monthly Budget',
+  child: Column(
+    children: [
+      Expanded(child: FlutterCirclePackChart()),
+      FlutterCirclePackChartLegend(),
+    ],
+  ),
 )
 ```
 
@@ -85,15 +88,16 @@ FlutterCirclePackChart(
 
 | Property | Description | Default |
 | :--- | :--- | :--- |
-| `title` | The label for the top-level (virtual root) of the chart. | `'Chart'` |
-| `showValue` | Whether to display values/formatted values inside the circles. | `true` |
-| `minRadiusRatio` | Minimum radius of a child circle as a fraction of its parent. | `0.20` |
-| `fontSizeFactor` | A multiplier to adjust the responsive font size globally. | `1.0` |
+| `children` | The top-level data nodes. (Required if not in scope) | `null` |
+| `title` | The label for the top-most level. | `'Chart'` |
+| `showValue` | Whether to display values inside circles. | `true` |
+| `minRadiusRatio` | Minimum radius fraction for children. | `0.20` |
+| `fontSizeFactor` | Responsive font size multiplier. | `1.0` |
 
 ## 🤝 Contributing
 
-Contributions are welcome! If you find a bug or have a feature request, please open an issue or submit a pull request.
+Contributions are welcome! Please open an issue or submit a pull request.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE) for details.

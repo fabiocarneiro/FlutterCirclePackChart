@@ -183,69 +183,70 @@ class ChartExampleScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = FlutterCirclePackChartController(
+    return CirclePackChart(
       children: children,
       title: chartTitle,
-    );
-
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 24.0),
-              child: ValueListenableBuilder<CircleNode?>(
-                valueListenable: controller,
-                builder: (context, value, _) {
-                  return Column(
-                    children: [
-                      Text(
-                        title,
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                              color: Colors.grey,
-                              letterSpacing: 1.2,
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 24.0),
+                child: Builder(
+                  builder: (context) {
+                    final controller = CirclePackChartScope.of(context)!.controller;
+                    return ValueListenableBuilder<CircleNode?>(
+                      valueListenable: controller,
+                      builder: (context, value, _) {
+                        return Column(
+                          children: [
+                            Text(
+                              title,
+                              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                    color: Colors.grey,
+                                    letterSpacing: 1.2,
+                                  ),
                             ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        value?.label ?? chartTitle,
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
+                            const SizedBox(height: 4),
+                            Text(
+                              value?.label ?? chartTitle,
+                              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                             ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-            Expanded(
-              child: FlutterCirclePackChart(
-                children: children,
-                title: chartTitle,
-                controller: controller,
-                showValue: showValue,
-              ),
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              height: 200,
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: FlutterCirclePackChartLegend(controller: controller),
+                          ],
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                subtitle,
-                style: const TextStyle(color: Colors.grey, fontSize: 12),
-                textAlign: TextAlign.center,
+              Expanded(
+                child: FlutterCirclePackChart(
+                  showValue: showValue,
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 24),
+              const SizedBox(
+                height: 200,
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: FlutterCirclePackChartLegend(),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  subtitle,
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

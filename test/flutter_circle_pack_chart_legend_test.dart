@@ -3,18 +3,48 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_circle_pack_chart/flutter_circle_pack_chart.dart';
 
 void main() {
-  testWidgets('FlutterCirclePackChartLegend should display items for focused node', (
+  testWidgets('FlutterCirclePackChartLegend should work with explicit controller and data', (
     WidgetTester tester,
   ) async {
     final children = [
       CircleNode(label: 'A', value: 10, color: Colors.red),
       CircleNode(label: 'B', value: 20, color: Colors.blue),
     ];
-    final controller = FlutterCirclePackChartController(children: children);
+    final controller = CirclePackChartController();
 
     await tester.pumpWidget(
       MaterialApp(
-        home: Scaffold(body: FlutterCirclePackChartLegend(controller: controller)),
+        home: Scaffold(
+          body: FlutterCirclePackChartLegend(
+            controller: controller,
+            children: children,
+            title: 'Test Root',
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('A'), findsOneWidget);
+    expect(find.text('B'), findsOneWidget);
+  });
+
+  testWidgets('FlutterCirclePackChartLegend should work with Scope', (
+    WidgetTester tester,
+  ) async {
+    final children = [
+      CircleNode(label: 'A', value: 10, color: Colors.red),
+      CircleNode(label: 'B', value: 20, color: Colors.blue),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: CirclePackChart(
+            children: children,
+            title: 'Scope Root',
+            child: const FlutterCirclePackChartLegend(),
+          ),
+        ),
       ),
     );
 

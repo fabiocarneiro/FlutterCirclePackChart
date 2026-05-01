@@ -5,6 +5,7 @@ export 'flutter_circle_pack_chart_painter.dart';
 export 'flutter_circle_pack_chart_widget.dart';
 export 'flutter_circle_pack_chart_controller.dart';
 export 'flutter_circle_pack_chart_legend.dart';
+export 'circle_pack_chart_scope.dart';
 
 /// Represents a node in the hierarchical data structure for the Circle Pack Chart.
 class CircleNode {

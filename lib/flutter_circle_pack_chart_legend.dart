@@ -1,23 +1,47 @@
 import 'package:flutter/material.dart';
 import 'flutter_circle_pack_chart.dart';
+import 'circle_pack_chart_scope.dart';
 
 /// A widget that displays a vertical legend for the currently focused level of a circular treemap.
 class FlutterCirclePackChartLegend extends StatelessWidget {
   /// The controller whose navigation state this legend follows.
-  final FlutterCirclePackChartController controller;
+  /// If null, will attempt to find one from a [CirclePackChart] scope.
+  final CirclePackChartController? controller;
 
-  const FlutterCirclePackChartLegend({super.key, required this.controller});
+  /// The top-level children nodes.
+  /// If null, will attempt to find them from a [CirclePackChart] scope.
+  final List<CircleNode>? children;
+
+  /// The title for the top-level view.
+  /// If null, will attempt to find it from a [CirclePackChart] scope.
+  final String? title;
+
+  const FlutterCirclePackChartLegend({
+    super.key,
+    this.controller,
+    this.children,
+    this.title,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: controller,
+    final scope = CirclePackChartScope.of(context);
+    final effectiveController = controller ?? scope?.controller;
+    final effectiveChildren = children ?? scope?.children;
+    final effectiveTitle = title ?? scope?.title ?? 'Root';
+
+    if (effectiveController == null || effectiveChildren == null) {
+      return const SizedBox.shrink();
+    }
+
+    return ValueListenableBuilder<CircleNode?>(
+      valueListenable: effectiveController,
       builder: (context, focusedNode, _) {
-        final children = focusedNode?.children ?? controller.children;
-        if (children.isEmpty) return const SizedBox.shrink();
+        final currentChildren = focusedNode?.children ?? effectiveChildren;
+        if (currentChildren.isEmpty) return const SizedBox.shrink();
 
         final Color parentColor = focusedNode?.color ?? Colors.blue;
-        final String label = focusedNode?.label ?? controller.title;
+        final String currentLabel = focusedNode?.label ?? effectiveTitle;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,19 +50,19 @@ class FlutterCirclePackChartLegend extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Text(
-                'Items in $label',
+                'Items in $currentLabel',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   color: Colors.grey[700],
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            ...children.map((node) {
+            ...currentChildren.map((node) {
               final Color color = node.color ?? parentColor;
               final bool canDrill = node.children.isNotEmpty;
 
               return InkWell(
-                onTap: canDrill ? () => controller.drillDown(node) : null,
+                onTap: canDrill ? () => effectiveController.drillDown(node) : null,
                 borderRadius: BorderRadius.circular(8),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
