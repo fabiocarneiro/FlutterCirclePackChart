@@ -183,7 +183,7 @@ class ChartExampleScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CirclePackChart(
+    return CirclePackProvider(
       children: children,
       title: chartTitle,
       child: SafeArea(
@@ -195,7 +195,7 @@ class ChartExampleScaffold extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 24.0),
                 child: Builder(
                   builder: (context) {
-                    final controller = CirclePackChartScope.of(context)!.controller;
+                    final controller = CirclePackScope.of(context)!.controller;
                     return ValueListenableBuilder<CircleNode?>(
                       valueListenable: controller,
                       builder: (context, value, _) {

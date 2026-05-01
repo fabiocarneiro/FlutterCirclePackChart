@@ -5,15 +5,15 @@ import 'circle_pack_chart_scope.dart';
 /// A widget that displays a vertical legend for the currently focused level of a circular treemap.
 class FlutterCirclePackChartLegend extends StatelessWidget {
   /// The controller whose navigation state this legend follows.
-  /// If null, will attempt to find one from a [CirclePackChart] scope.
+  /// If null, will attempt to find one from a [CirclePackProvider] scope.
   final CirclePackChartController? controller;
 
   /// The top-level children nodes.
-  /// If null, will attempt to find them from a [CirclePackChart] scope.
+  /// If null, will attempt to find them from a [CirclePackProvider] scope.
   final List<CircleNode>? children;
 
   /// The title for the top-level view.
-  /// If null, will attempt to find it from a [CirclePackChart] scope.
+  /// If null, will attempt to find it from a [CirclePackProvider] scope.
   final String? title;
 
   const FlutterCirclePackChartLegend({
@@ -25,7 +25,7 @@ class FlutterCirclePackChartLegend extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scope = CirclePackChartScope.of(context);
+    final scope = CirclePackScope.of(context);
     final effectiveController = controller ?? scope?.controller;
     final effectiveChildren = children ?? scope?.children;
     final effectiveTitle = title ?? scope?.title ?? 'Root';

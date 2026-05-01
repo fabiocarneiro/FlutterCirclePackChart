@@ -69,10 +69,10 @@ FlutterCirclePackChart(
 ```
 
 ### 3. Usage with Legend
-To include an interactive legend, wrap them in a `CirclePackChart` scope:
+To include an interactive legend, wrap them in a `CirclePackProvider`:
 
 ```dart
-CirclePackChart(
+CirclePackProvider(
   children: children,
   title: 'Monthly Budget',
   child: Column(

@@ -8,18 +8,18 @@ import 'circle_pack_chart_scope.dart';
 /// A widget that displays an animated circular treemap with camera-style drill-down.
 ///
 /// Can be used as a standalone widget by providing [children] and [title],
-/// or it can automatically consume state from a parent [CirclePackChart] scope.
+/// or it can automatically consume state from a parent [CirclePackProvider].
 class FlutterCirclePackChart extends StatefulWidget {
   /// The top-level children nodes to display.
-  /// If null, will attempt to find them from a [CirclePackChart] scope.
+  /// If null, will attempt to find them from a [CirclePackProvider] scope.
   final List<CircleNode>? children;
 
   /// The title for the overall chart.
-  /// If null, will attempt to find it from a [CirclePackChart] scope.
+  /// If null, will attempt to find it from a [CirclePackProvider] scope.
   final String? title;
 
   /// Optional controller to manage the navigation state.
-  /// If null, will attempt to find one from a [CirclePackChart] scope,
+  /// If null, will attempt to find one from a [CirclePackProvider] scope,
   /// or create an internal one.
   final CirclePackChartController? controller;
 
@@ -91,7 +91,7 @@ class _FlutterCirclePackChartState extends State<FlutterCirclePackChart>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final scope = CirclePackChartScope.of(context);
+    final scope = CirclePackScope.of(context);
     final controller = widget.controller ?? scope?.controller;
 
     if (controller != null) {
@@ -289,7 +289,7 @@ class _FlutterCirclePackChartState extends State<FlutterCirclePackChart>
                       ),
                       alignment: Alignment.center,
                       child: CustomPaint(
-                        painter: FlutterCirclePackChartPainter(
+                        painter: CirclePackChartPainter(
                           root: _packedRoot!,
                           focusedNode: _activeController?.value,
                           previousFocusedNode: _animationController.isAnimating
