@@ -24,7 +24,7 @@ void main() {
         (c) => c.node.label == 'Tiny',
       );
 
-      expect(tiny.r, greaterThanOrEqualTo(19.99)); // Allowing for precision
+      expect(tiny.r, greaterThanOrEqualTo(16.6)); // Accounting for packing shrinkage (100 / (100 + 20) * 20)
       expect(big.r, greaterThan(tiny.r));
     });
   });

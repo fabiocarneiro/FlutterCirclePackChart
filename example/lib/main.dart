@@ -210,13 +210,13 @@ class BasicUsageExample extends StatelessWidget {
                     label: 'Category 1',
                     color: Colors.blue,
                     children: [
-                      CircleNode(label: 'Nested A', value: 120),
+                      CircleNode(label: 'Nested A', value: 850),
                       CircleNode(label: 'Nested B', value: 80),
                     ],
                   ),
                   CircleNode(
                     label: 'Category 2',
-                    value: 150,
+                    value: 50,
                     color: Colors.red,
                   ),
                 ],

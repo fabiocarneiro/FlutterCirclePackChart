@@ -79,7 +79,7 @@ class CirclePacker {
     final double minR = r * minRadiusRatio;
 
     final List<_Circle> circles = node.children.map((child) {
-      final double calculatedR = sqrt(child.value);
+      final double calculatedR = r * sqrt(child.value / totalValue);
       // Ensure it doesn't fall below minR.
       // We use a simple max here; the packing algorithm will handle the layout.
       return _Circle(radius: max(calculatedR, minR));
